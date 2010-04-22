@@ -11,5 +11,9 @@ public abstract class OperationFactory {
 	public OperationFactory(GraphDatabaseService db) {
 		this.db= db;
 	}
-	public abstract Operation nextOperation();
+	
+	public abstract boolean hasNext();
+	public abstract Operation next();
+	public abstract void shutdown();
+	
 }

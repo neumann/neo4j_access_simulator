@@ -16,7 +16,7 @@ public class AddNodeOperation extends Operation {
 	private PGraphDatabaseService pDB = null;
 	
 	public AddNodeOperation(GraphDatabaseService db, long id) {
-		super(db,id);
+		super(db,id, null);
 		try {
 			this.pDB = (PGraphDatabaseService)getDB();
 		} catch (Exception e) {

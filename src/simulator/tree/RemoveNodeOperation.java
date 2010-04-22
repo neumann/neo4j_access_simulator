@@ -17,7 +17,7 @@ public class RemoveNodeOperation extends Operation {
 	private PGraphDatabaseService pDB = null;
 	
 	public RemoveNodeOperation(GraphDatabaseService db, long id) {
-		super(db, id);
+		super(db, id, null);
 		try {
 			this.pDB = (PGraphDatabaseService)getDB();
 		} catch (Exception e) {

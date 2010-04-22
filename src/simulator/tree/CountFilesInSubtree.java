@@ -12,11 +12,11 @@ import p_graph_service.PGraphDatabaseService;
 import simulator.Operation;
 import simulator.Rnd;
 
-public class CalculateSubtreeOperation extends Operation{
+public class CountFilesInSubtree extends Operation{
 	private PGraphDatabaseService pDB = null;
 	
-	public CalculateSubtreeOperation(GraphDatabaseService db, long id) {
-		super(db, id);
+	public CountFilesInSubtree(GraphDatabaseService db, long id) {
+		super(db, id, null);
 		try {
 			this.pDB = (PGraphDatabaseService)getDB();
 		} catch (Exception e) {
@@ -53,9 +53,10 @@ public class CalculateSubtreeOperation extends Operation{
 	}
 	
 	private long countFiles(int maxDeep, Node curNode){
-		long res = 1;
+		long res = 0;
 		for(Relationship rs : curNode.getRelationships(Direction.OUTGOING)){
 			logMovement(rs);
+			
 			res = countFiles(maxDeep-1, rs.getEndNode());
 		}
 		return res; 
