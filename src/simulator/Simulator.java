@@ -6,13 +6,12 @@ import java.util.HashMap;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 public abstract class Simulator extends Thread {
-	private static final String delim = ";";
+	private static final String logFileDelim = ";";
+	private PrintStream log = null;
 	
 	private GraphDatabaseService db = null;
-	private PrintStream log = null;
-	private boolean exit;
-	private boolean active;
-	private boolean toHold;
+	private boolean toExit = false;
+	private boolean toHold = false;
 	
 	protected GraphDatabaseService getDB(){
 		return db;
@@ -22,7 +21,7 @@ public abstract class Simulator extends Thread {
 		HashMap<String, String> info = op.getHopInfo();
 		for(String str : Operation.getInfoHeader()){
 			log.print(info.get(str));
-			log.print(delim);
+			log.print(logFileDelim);
 		}
 		log.println();
 	}
@@ -32,12 +31,13 @@ public abstract class Simulator extends Thread {
 		try {
 			this.log = new PrintStream(logFile);
 		} catch (Exception e) {
+			System.out.println("Cannot create logfile");
 		}
 	}
 	
 	public void shutdown(){
-		this.exit = true;
-		if(!active){
+		this.toExit = true;
+		if(getState()== Thread.State.WAITING){
 			this.notify();
 		}
 	}
@@ -45,8 +45,11 @@ public abstract class Simulator extends Thread {
 	public abstract void initiate();
 	public abstract void loop();
 	
-	public void start(){
-		run();
+	public void startSIM(){
+		if(getState() == Thread.State.NEW){
+			initiate();
+			run();
+		}
 	}
 	
 	public void toHold(){
@@ -55,23 +58,25 @@ public abstract class Simulator extends Thread {
 	
 	public void unHold(){
 		this.toHold = false;
-		if(!active){
+		if(getState()== Thread.State.WAITING){
 			this.notify();
 		}
 	}
 	
 	@Override
 	public void run() {
-		while (!exit) {
-			while (active && !toHold ){
+		while (!toExit) {
+			if(!toHold){
 				loop();
 			}
-			try {
-				active = false;
-				wait();
-			} catch (InterruptedException ie) {
-				active = true;
-			}
+			if(toHold){
+				try {
+					toHold = false;
+					wait();
+				} catch (InterruptedException ie) {
+					// do nothing
+				}
+			}	
 		}
 		log.flush();
 		log.close();

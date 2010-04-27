@@ -7,12 +7,13 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Relationship;
 
 public abstract class Operation {
-	private static final String type_tag = "type";
-	private static final String args_tag = "args";
-	private static final String interHop_tag = "interHop";
 	private static final String isHalf_tag = "_IsHalf";
-	private static final String hop_tag = "hop";
-	private static final String id_tag = "id";
+	
+	protected static final String type_tag = "type";
+	protected static final String args_tag = "args";
+	protected static final String interHop_tag = "interHop";
+	protected static final String hop_tag = "hop";
+	protected static final String id_tag = "id";
 	
 	public static String[] getInfoHeader(){
 		String[] res = new String[4];
@@ -24,7 +25,7 @@ public abstract class Operation {
 	}
 	
 	private GraphDatabaseService db;
-	private HashMap<String, String> info;
+	protected HashMap<String, String> info;
 	protected final String[] args;
 	
 	public String getType(){
