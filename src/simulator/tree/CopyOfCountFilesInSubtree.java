@@ -18,17 +18,17 @@ public class CopyOfCountFilesInSubtree extends Operation{
 	public CopyOfCountFilesInSubtree(GraphDatabaseService db, long id) {
 		super(db, id, null);
 		try {
-			this.pDB = (PGraphDatabaseService)getDB();
+			this.pDB = (PGraphDatabaseService)db;
 		} catch (Exception e) {
 			throw new Error("This class only works for PGraphDatabaseService implementations of the GraphDatabaseService interface");
 		}
 	}
 
 	@Override
-	public boolean execute() {
+	public boolean onExecute() {
 		boolean sucessful = false;
 		
-		Transaction tx = getDB().beginTx();
+		Transaction tx = pDB.beginTx();
 		try {
 			
 			// choose StartNode
@@ -55,11 +55,9 @@ public class CopyOfCountFilesInSubtree extends Operation{
 	private long countFiles(int maxDeep, Node curNode){
 		long res = 0;
 		for(Relationship rs : curNode.getRelationships(Direction.OUTGOING)){
-			logMovement(rs);
 			
 			res = countFiles(maxDeep-1, rs.getEndNode());
 		}
 		return res; 
 	}
-
 }
