@@ -23,9 +23,8 @@ public class TreeTest {
 		Simulator sim = new RandomStaticSimulator(pDB, "log.txt");
 		sim.startSIM();
 		System.out.println("done");
-		
-		
-		//convertDB();
+
+		// convertDB();
 	}
 
 	public static void convertDB() {

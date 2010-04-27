@@ -12,7 +12,7 @@ public class OperationDeleteNode extends Operation {
 	}
 
 	@Override
-	public boolean execute() {
+	public boolean onExecute() {
 		// TODO Auto-generated method stub
 		return false;
 	}
