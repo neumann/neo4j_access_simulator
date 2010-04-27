@@ -1,14 +1,12 @@
 package simulator.gis;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-
 import simulator.LogOperationFactory;
 import simulator.Operation;
 
 public class LogOperationFactoryGIS extends LogOperationFactory {
 
-	public LogOperationFactoryGIS(GraphDatabaseService db, String fn) {
-		super(db, fn);
+	public LogOperationFactoryGIS(String fn) {
+		super(fn);
 		// TODO Auto-generated constructor stub
 	}
 
