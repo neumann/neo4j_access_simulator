@@ -16,7 +16,7 @@ public class CopyOfCountFilesInSubtree extends Operation{
 	private PGraphDatabaseService pDB = null;
 	
 	public CopyOfCountFilesInSubtree(GraphDatabaseService db, long id) {
-		super(db, id, null);
+		super(id, null);
 		try {
 			this.pDB = (PGraphDatabaseService)db;
 		} catch (Exception e) {
@@ -25,7 +25,7 @@ public class CopyOfCountFilesInSubtree extends Operation{
 	}
 
 	@Override
-	public boolean onExecute() {
+	public boolean onExecute(GraphDatabaseService db) {
 		boolean sucessful = false;
 		
 		Transaction tx = pDB.beginTx();

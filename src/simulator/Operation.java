@@ -22,7 +22,6 @@ public abstract class Operation {
 		return res;
 	}
 
-	protected final GraphDatabaseService db;
 	protected final String[] args;
 	protected HashMap<String, String> info;
 
@@ -34,8 +33,7 @@ public abstract class Operation {
 		return Long.parseLong(info.get(id_tag));
 	}
 
-	public Operation(GraphDatabaseService db, long id, String[] args) {
-		this.db = db;
+	public Operation(long id, String[] args) {
 		this.info = new HashMap<String, String>();
 		for (String key : getInfoHeader()) {
 			info.put(key, "");
@@ -48,11 +46,11 @@ public abstract class Operation {
 		this.args = args;
 	}
 
-	public final boolean execute() {
-		return onExecute();
+	public final boolean executeOn(GraphDatabaseService db) {
+		return onExecute(db);
 	}
 
-	public abstract boolean onExecute();
+	public abstract boolean onExecute(GraphDatabaseService db);
 
 	private String appendix = "";
 

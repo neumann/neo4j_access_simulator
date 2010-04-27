@@ -17,7 +17,7 @@ public class RemoveNodeOperation extends Operation {
 	private PGraphDatabaseService pDB = null;
 	
 	public RemoveNodeOperation(GraphDatabaseService db, long id) {
-		super(db, id, null);
+		super(id, null);
 		try {
 			this.pDB = (PGraphDatabaseService)db;
 		} catch (Exception e) {
@@ -26,7 +26,7 @@ public class RemoveNodeOperation extends Operation {
 	}
 
 	@Override
-	public boolean onExecute() {
+	public boolean onExecute(GraphDatabaseService db) {
 		boolean success = false;
 		
 		Transaction tx = pDB.beginTx();

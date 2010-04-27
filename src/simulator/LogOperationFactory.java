@@ -3,15 +3,12 @@ package simulator;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-
-public abstract class LogOperationFactory extends OperationFactory {
+public abstract class LogOperationFactory implements OperationFactory {
 	private RandomAccessFile file = null;
 	private String curLine = null;
 	private long count;
 
-	public LogOperationFactory(GraphDatabaseService db, String fn) {
-		super(db);
+	public LogOperationFactory(String fn) {
 		this.count = 0;
 		try {
 			file = new RandomAccessFile(fn, "r");

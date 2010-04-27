@@ -13,11 +13,11 @@ import simulator.Operation;
 public class CountFilesInSubtree extends Operation{
 	
 	public CountFilesInSubtree(GraphDatabaseService db, long id, String[] args) {
-		super(db, id, args);
+		super(id, args);
 	}
 
 	@Override
-	public boolean onExecute() {
+	public boolean onExecute(GraphDatabaseService db) {
 		boolean sucessful = false;
 		long startID = Long.parseLong(args[1]);
 		

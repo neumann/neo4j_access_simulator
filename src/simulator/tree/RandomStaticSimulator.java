@@ -30,7 +30,7 @@ public class RandomStaticSimulator extends Simulator {
 		System.out.println(op.getId());
 		System.out.println(op.getType());
 		System.out.println("--------------------"+ count);
-		op.execute();
+		op.executeOn(getDB());
 		logOperation(op);
 	}
 

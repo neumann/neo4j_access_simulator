@@ -16,7 +16,7 @@ public class AddNodeOperation extends Operation {
 	private PGraphDatabaseService pDB = null;
 	
 	public AddNodeOperation(GraphDatabaseService db, long id) {
-		super(db,id, null);
+		super(id, null);
 		try {
 			this.pDB = (PGraphDatabaseService)db;
 		} catch (Exception e) {
@@ -25,7 +25,7 @@ public class AddNodeOperation extends Operation {
 	}
 
 	@Override
-	public boolean onExecute() {
+	public boolean onExecute(GraphDatabaseService db) {
 		boolean success = false;
 		
 		Transaction tx = pDB.beginTx();
