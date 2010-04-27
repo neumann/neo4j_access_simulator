@@ -1,7 +1,6 @@
 package simulator;
 
 import java.io.PrintStream;
-import java.util.HashMap;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
@@ -18,11 +17,12 @@ public abstract class Simulator extends Thread {
 	}
 	
 	protected void logOperation(Operation op){
-		HashMap<String, String> info = op.getHopInfo();
 		for(String str : Operation.getInfoHeader()){
-			log.print(info.get(str));
+			log.print(op.info.get(str));
 			log.print(logFileDelim);
 		}
+		log.print(op.getApendix());
+		log.print(logFileDelim);
 		log.println();
 	}
 	

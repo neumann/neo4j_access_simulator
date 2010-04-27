@@ -3,10 +3,7 @@ package simulator;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 public abstract class OperationFactory {
-	private GraphDatabaseService db;
-	protected GraphDatabaseService getDB(){
-		return db;
-	}
+	protected final GraphDatabaseService db;
 	
 	public OperationFactory(GraphDatabaseService db) {
 		this.db= db;

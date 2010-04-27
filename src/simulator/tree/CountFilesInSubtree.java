@@ -1,5 +1,7 @@
 package simulator.tree;
 
+import javax.print.attribute.standard.PDLOverrideSupported;
+
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -15,13 +17,13 @@ public class CountFilesInSubtree extends Operation{
 	}
 
 	@Override
-	public boolean execute() {
+	public boolean onExecute() {
 		boolean sucessful = false;
 		long startID = Long.parseLong(args[1]);
 		
-		Transaction tx = getDB().beginTx();
+		Transaction tx = db.beginTx();
 		try {
-			Node srtNode = getDB().getNodeById(startID);
+			Node srtNode = db.getNodeById(startID);
 			long subfiles = countFiles(5, srtNode);
 			
 			System.out.println("subfiles: "+subfiles);
@@ -36,14 +38,9 @@ public class CountFilesInSubtree extends Operation{
 	
 	private long countFiles(int maxDeep, Node curNode){
 		long res = 0;
-		for(Relationship rs : curNode.getRelationships(Direction.OUTGOING)){
-			
-			logMovement(rs);
-			
-			
+		for(Relationship rs : curNode.getRelationships(Direction.OUTGOING)){		
 			res = countFiles(maxDeep-1, rs.getEndNode());
 		}
 		return res; 
 	}
-
 }

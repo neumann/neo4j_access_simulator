@@ -18,14 +18,14 @@ public class AddNodeOperation extends Operation {
 	public AddNodeOperation(GraphDatabaseService db, long id) {
 		super(db,id, null);
 		try {
-			this.pDB = (PGraphDatabaseService)getDB();
+			this.pDB = (PGraphDatabaseService)db;
 		} catch (Exception e) {
 			throw new Error("This class only works for PGraphDatabaseService implementations of the GraphDatabaseService interface");
 		}
 	}
 
 	@Override
-	public boolean execute() {
+	public boolean onExecute() {
 		boolean success = false;
 		
 		Transaction tx = pDB.beginTx();
@@ -58,5 +58,4 @@ public class AddNodeOperation extends Operation {
 		
 		return success;
 	}
-
 }

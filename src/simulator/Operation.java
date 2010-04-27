@@ -2,18 +2,15 @@ package simulator;
 
 import java.util.Arrays;
 import java.util.HashMap;
-
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Relationship;
 
 public abstract class Operation {
-	private static final String isHalf_tag = "_IsHalf";
-	
 	protected static final String type_tag = "type";
 	protected static final String args_tag = "args";
 	protected static final String interHop_tag = "interHop";
 	protected static final String hop_tag = "hop";
 	protected static final String id_tag = "id";
+	protected static final String traffic_tag = "traffic";
 	
 	public static String[] getInfoHeader(){
 		String[] res = new String[4];
@@ -21,12 +18,13 @@ public abstract class Operation {
 		res[1] = type_tag;
 		res[2] = hop_tag;
 		res[3] = interHop_tag;
+		res[4] = traffic_tag;
 		return res;
 	}
 	
-	private GraphDatabaseService db;
-	protected HashMap<String, String> info;
+	protected final GraphDatabaseService db;
 	protected final String[] args;
+	protected HashMap<String, String> info;
 	
 	public String getType(){
 		return (String)info.get(type_tag);
@@ -34,22 +32,6 @@ public abstract class Operation {
 	
 	public long getId(){
 		return Long.parseLong(info.get(id_tag));
-	}
-	
-	protected GraphDatabaseService getDB(){
-		return db;
-	}
-	
-	protected void logMovement(Relationship rs){
-		long count = Long.parseLong(info.get(hop_tag));
-		count ++;
-		info.put(hop_tag, Long.toString(count));
-		
-		if(rs.hasProperty(isHalf_tag)){
-			long iCount = Long.parseLong(info.get(hop_tag));
-			iCount ++;
-			info.put(hop_tag, Long.toString(iCount));			
-		}
 	}
 	
 	public Operation(GraphDatabaseService db, long id, String[] args) {
@@ -66,9 +48,17 @@ public abstract class Operation {
 		this.args = args;
 	}
 	
-	public abstract boolean execute();
+	public final boolean execute(){
+		return onExecute();
+	}
 	
-	public HashMap<String, String> getHopInfo(){
-		return info;
+	public abstract boolean onExecute();
+	
+	private  String appendix = "";
+	public String getApendix(){
+		return appendix;
+	}
+	public final void appendToLog(String item){
+		appendix += item;
 	}
 }

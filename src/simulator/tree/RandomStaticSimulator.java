@@ -31,7 +31,6 @@ public class RandomStaticSimulator extends Simulator {
 		System.out.println(op.getType());
 		System.out.println("--------------------"+ count);
 		op.execute();
-		System.out.println(op.getHopInfo());
 		logOperation(op);
 	}
 
