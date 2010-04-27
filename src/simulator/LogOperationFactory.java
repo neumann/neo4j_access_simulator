@@ -9,7 +9,7 @@ public abstract class LogOperationFactory extends OperationFactory {
 	private RandomAccessFile file = null;
 	private String curLine = null;
 	private long count;
-	
+
 	public LogOperationFactory(GraphDatabaseService db, String fn) {
 		super(db);
 		this.count = 0;
@@ -18,22 +18,23 @@ public abstract class LogOperationFactory extends OperationFactory {
 		} catch (Exception e) {
 		}
 	}
-	
+
 	@Override
 	public boolean hasNext() {
-		if(curLine!=null)return true;
-		if(file != null){
+		if (curLine != null)
+			return true;
+		if (file != null) {
 			try {
 				curLine = file.readLine();
-				if(curLine!=null){
+				if (curLine != null) {
 					return true;
-				}else{
+				} else {
 					file.close();
 					file = null;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-			}			
+			}
 		}
 		return false;
 	}
@@ -45,9 +46,9 @@ public abstract class LogOperationFactory extends OperationFactory {
 		String[] split = curLine.split("* ");
 		return createOperation(count, split[0], split);
 	}
-	
-	public abstract Operation createOperation(long id, String type, String[] args);
-	
+
+	public abstract Operation createOperation(long id, String type,
+			String[] args);
 
 	@Override
 	public void shutdown() {
