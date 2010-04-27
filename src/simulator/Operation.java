@@ -11,8 +11,8 @@ public abstract class Operation {
 	protected static final String hop_tag = "hop";
 	protected static final String id_tag = "id";
 	protected static final String traffic_tag = "traffic";
-	
-	public static String[] getInfoHeader(){
+
+	public static String[] getInfoHeader() {
 		String[] res = new String[4];
 		res[0] = id_tag;
 		res[1] = type_tag;
@@ -21,44 +21,46 @@ public abstract class Operation {
 		res[4] = traffic_tag;
 		return res;
 	}
-	
+
 	protected final GraphDatabaseService db;
 	protected final String[] args;
 	protected HashMap<String, String> info;
-	
-	public String getType(){
-		return (String)info.get(type_tag);
+
+	public String getType() {
+		return (String) info.get(type_tag);
 	}
-	
-	public long getId(){
+
+	public long getId() {
 		return Long.parseLong(info.get(id_tag));
 	}
-	
+
 	public Operation(GraphDatabaseService db, long id, String[] args) {
 		this.db = db;
 		this.info = new HashMap<String, String>();
-		for(String key : getInfoHeader()){
+		for (String key : getInfoHeader()) {
 			info.put(key, "");
 		}
 		this.info.put(interHop_tag, Long.toString(0));
 		this.info.put(hop_tag, Long.toString(0));
-		this.info.put(id_tag,Long.toString(id));
+		this.info.put(id_tag, Long.toString(id));
 		this.info.put(args_tag, Arrays.toString(args));
-		this.info.put(type_tag,getClass().getName());
+		this.info.put(type_tag, getClass().getName());
 		this.args = args;
 	}
-	
-	public final boolean execute(){
+
+	public final boolean execute() {
 		return onExecute();
 	}
-	
+
 	public abstract boolean onExecute();
-	
-	private  String appendix = "";
-	public String getApendix(){
+
+	private String appendix = "";
+
+	public String getApendix() {
 		return appendix;
 	}
-	public final void appendToLog(String item){
+
+	public final void appendToLog(String item) {
 		appendix += item;
 	}
 }
