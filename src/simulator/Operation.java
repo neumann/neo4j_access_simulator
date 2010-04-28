@@ -44,6 +44,11 @@ public abstract class Operation {
 		this.info.put(args_tag, Arrays.toString(args));
 		this.info.put(type_tag, getClass().getName());
 		this.args = args;
+		
+		if(!args[0].equals(getType())){
+			throw new Error("Wrong Type " + args[0] + " called " + getType());
+		}
+		
 	}
 
 	public final boolean executeOn(GraphDatabaseService db) {

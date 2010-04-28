@@ -1,5 +1,7 @@
 package simulator;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 public class Rnd {
@@ -34,6 +36,34 @@ public class Rnd {
 			throw new Error("Not supported RndType");
 		}
 	}
+	
+	public static Object[] getSample(Map<Object, Double> map, double max, int samplesize, RndType type){
+		Object[] res  = new Object[samplesize];
+		double[] val = new double[samplesize];
+		for (int i = 0; i < val.length ; i++){
+			val[i] = nextDouble(type)*max;
+			res[i] = null;
+		}
+		
+		boolean done = false;
+		Iterator<Object> iterOnMap = map.keySet().iterator();
+		while(iterOnMap.hasNext() && !done){
+			Object cur = iterOnMap.next();
+			double curVal = map.get(cur);
+			done = true;
+			for (int i = 0; i < val.length ; i++){
+				if(res[i]==null){
+					val[i] -=curVal;
+					if(val[i]<=0){
+						res[i]=cur;
+					}else{
+						done = false;
+					}
+				}		
+			}
+		}
+		return res;
+ 	}
 
 	public static long nextLong(long start, long end, RndType type) {
 		double val = nextDouble(type);

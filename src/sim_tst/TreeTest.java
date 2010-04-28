@@ -39,7 +39,7 @@ public class TreeTest {
 		db.shutdown();
 
 		PGraphDatabaseService pDB = new PGraphDatabaseServiceImpl("var/pDB", 0);
-		pDB.createDistribution("var/sampleDB");
+		//pDB.createDistribution("var/sampleDB");
 		pDB.shutdown();
 	}
 }
