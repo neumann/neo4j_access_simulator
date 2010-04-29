@@ -1,22 +1,15 @@
 package simulator.gis;
 
-import java.util.LinkedHashMap;
-
 import graph_gen_utils.general.Consts;
 
-import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
-
-import simulator.Operation;
-import simulator.gis.astar.GISRelationshipTypes;
 
 public class OperationGISAddNode extends OperationGIS {
 
-	private DistributionStateGIS distributionState = null;
+	private DistributionStateGIS distribStateDistance = null;
 
 	private double lat = 0.0;
 	private double lon = 0.0;
@@ -42,7 +35,7 @@ public class OperationGISAddNode extends OperationGIS {
 	}
 
 	public OperationGISAddNode(long id, String[] args,
-			DistributionStateGIS distributionState) throws Exception {
+			DistributionStateGIS distribStateDistance) throws Exception {
 		super(id, args);
 
 		if (args[0].equals(getClass().getName()) == false)
@@ -53,7 +46,7 @@ public class OperationGISAddNode extends OperationGIS {
 		this.startGid = Long.parseLong(args[3]);
 		this.endGid = Long.parseLong(args[4]);
 
-		this.distributionState = distributionState;
+		this.distribStateDistance = distribStateDistance;
 	}
 
 	@Override
@@ -87,14 +80,15 @@ public class OperationGISAddNode extends OperationGIS {
 						.getProperty(Consts.WEIGHT) / 2);
 
 				rel.delete();
+
 			}
 
-			if (distributionState != null) {
-				double minDistanceToCityScore = getMinDistanceToCityScore(lon,
-						lat);
-				distributionState.sumValues += minDistanceToCityScore;
-				distributionState.values.put(newNode.getId(),
-						getMinDistanceToCityScore(lon, lat));
+			if (distribStateDistance != null) {
+				double minDistanceToCityScore = OperationGIS
+						.getMinDistanceToCityScore(lon, lat);
+				distribStateDistance.sumValues += minDistanceToCityScore;
+				distribStateDistance.values.put(newNode.getId(), OperationGIS
+						.getMinDistanceToCityScore(lon, lat));
 			}
 
 			tx.success();

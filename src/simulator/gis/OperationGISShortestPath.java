@@ -4,7 +4,6 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
-import simulator.Operation;
 import simulator.gis.astar.AStarRouting;
 
 public class OperationGISShortestPath extends OperationGIS {
@@ -12,6 +11,10 @@ public class OperationGISShortestPath extends OperationGIS {
 	private long startGid = -1;
 	private long endGid = -1;
 
+	// args
+	// -> 0 type
+	// -> 1 startGid
+	// -> 2 endGid
 	public OperationGISShortestPath(long id, String[] args) throws Exception {
 		super(id, args);
 

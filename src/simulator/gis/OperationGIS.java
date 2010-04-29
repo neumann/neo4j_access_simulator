@@ -18,7 +18,8 @@ public abstract class OperationGIS extends Operation {
 	public abstract boolean onExecute(GraphDatabaseService db);
 
 	// Top Romanian cities, largest-to-smallest
-	protected double getMinDistanceToCityScore(double sourceLon, double sourceLat) {
+	public static double getMinDistanceToCityScore(double sourceLon,
+			double sourceLat) {
 
 		// ArrayList<ArrayList<Double>> citiesCoords = new
 		// ArrayList<ArrayList<Double>>();

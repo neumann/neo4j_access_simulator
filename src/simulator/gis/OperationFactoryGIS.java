@@ -93,29 +93,19 @@ public class OperationFactoryGIS implements OperationFactory {
 	}
 
 	private Operation createOperation() throws Exception {
-		double opTypeRandVal = sumRatios * Rnd.nextDouble(RndType.unif);
-		int opTypeIndx = -1;
-
-		for (Entry<Integer, Double> opRatioEntry : opRatios.entrySet()) {
-			opTypeRandVal -= opRatioEntry.getValue();
-			if (opTypeRandVal <= 0) {
-				opTypeIndx = opRatioEntry.getKey();
-				break;
-			}
-		}
-
-		if (opTypeIndx == -1)
-			throw new Exception("createOperation() failed");
-
-		long startNodeGid = lookupNodeIdFromDistanceScore(Rnd
-				.nextDouble(RndType.unif)
-				* distanceDistributionState.sumValues);
-
-		Node startNode = graphDb.getNodeById(startNodeGid);
+		int opTypeIndx = getRandomOperationType();
 
 		switch (opTypeIndx) {
-		case ADD_RATIO_INDX:
-			Node endNode = getRandNeighbour(startNode);
+
+		case ADD_RATIO_INDX: {
+			Object[] results = Rnd.getSample(distanceDistributionState.values,
+					distanceDistributionState.sumValues, 1, RndType.unif);
+
+			long startNodeGid = (Long) results[0];
+
+			Node startNode = graphDb.getNodeById(startNodeGid);
+
+			Node endNode = doRandomWalk(startNode, 1);
 
 			double lonStart = (Double) startNode.getProperty(Consts.LONGITUDE);
 			double latStart = (Double) startNode.getProperty(Consts.LATITUDE);
@@ -136,46 +126,110 @@ public class OperationFactoryGIS implements OperationFactory {
 			// -> 4 endGid
 			String[] args = new String[] { OperationGISAddNode.class.getName(),
 					Double.toString(lonNew), Double.toString(latNew),
-					Long.toString(startNode.getId()),
-					Long.toString(endNode.getId()) };
+					Long.toString(startNodeGid), Long.toString(endNode.getId()) };
 
 			return new OperationGISAddNode(opId, args,
 					distanceDistributionState);
+		}
 
-		case DELETE_RATIO_INDX:
-			return null;
+		case DELETE_RATIO_INDX: {
+			Object[] results = Rnd.getSample(distanceDistributionState.values,
+					distanceDistributionState.sumValues, 1, RndType.unif);
 
-		case LOCAL_SEARCH_RATIO_INDX:
-			return null;
+			long startNodeGid = (Long) results[0];
 
-		case GLOBAL_SEARCH_RATIO_INDX:
-			return null;
+			Node startNode = graphDb.getNodeById(startNodeGid);
+
+			// args
+			// -> 0 type
+			// -> 1 gid
+			String[] args = new String[] {
+					OperationGISDeleteNode.class.getName(),
+					Long.toString(startNode.getId()) };
+
+			return new OperationGISDeleteNode(opId, args,
+					distanceDistributionState);
+		}
+
+		case LOCAL_SEARCH_RATIO_INDX: {
+			Object[] results = Rnd.getSample(distanceDistributionState.values,
+					distanceDistributionState.sumValues, 1, RndType.unif);
+
+			long startNodeGid = (Long) results[0];
+			Node startNode = graphDb.getNodeById(startNodeGid);
+
+			// FIXME change walkLength to a random value, maybe between 1 &
+			// Network Diameter?
+			int walkLength = 10;
+			Node endNode = doRandomWalk(startNode, walkLength);
+
+			// args
+			// -> 0 type
+			// -> 1 startGid
+			// -> 2 endGid
+			String[] args = new String[] {
+					OperationGISShortestPath.class.getName(),
+					Long.toString(startNodeGid), Long.toString(endNode.getId()) };
+
+			return new OperationGISShortestPath(opId, args);
+		}
+
+		case GLOBAL_SEARCH_RATIO_INDX: {
+			Object[] results = Rnd.getSample(distanceDistributionState.values,
+					distanceDistributionState.sumValues, 2, RndType.unif);
+
+			long startNodeGid = (Long) results[0];
+			long endNodeGid = (Long) results[1];
+
+			// args
+			// -> 0 type
+			// -> 1 startGid
+			// -> 2 endGid
+			String[] args = new String[] {
+					OperationGISShortestPath.class.getName(),
+					Long.toString(startNodeGid), Long.toString(endNodeGid) };
+
+			return new OperationGISShortestPath(opId, args);
+		}
 
 		}
 
 		return null;
 	}
 
-	private Node getRandNeighbour(Node startNode) {
-		ArrayList<Node> neighbours = new ArrayList<Node>();
+	private int getRandomOperationType() throws Exception {
+		double opTypeRandVal = sumRatios * Rnd.nextDouble(RndType.unif);
+		int opTypeIndx = -1;
 
-		for (Relationship rel : startNode.getRelationships())
-			neighbours.add(rel.getOtherNode(startNode));
-
-		return neighbours.get((int) Rnd.nextLong(0, neighbours.size() - 1,
-				RndType.unif));
-	}
-
-	private Long lookupNodeIdFromDistanceScore(double randValue)
-			throws Exception {
-		for (Entry<Long, Double> distanceEntry : distanceDistributionState.values
-				.entrySet()) {
-			randValue -= distanceEntry.getValue();
-			if (randValue <= 0)
-				return distanceEntry.getKey();
+		for (Entry<Integer, Double> opRatioEntry : opRatios.entrySet()) {
+			opTypeRandVal -= opRatioEntry.getValue();
+			if (opTypeRandVal <= 0) {
+				opTypeIndx = opRatioEntry.getKey();
+				break;
+			}
 		}
 
-		throw new Exception("Node-from-distance lookup failed");
+		if (opTypeIndx == -1)
+			throw new Exception("createOperation() failed");
+
+		return opTypeIndx;
+	}
+
+	private Node doRandomWalk(Node startNode, int steps) {
+		Node randNode = startNode;
+
+		for (int i = 0; i < steps; i++) {
+
+			ArrayList<Node> neighbours = new ArrayList<Node>();
+
+			for (Relationship rel : randNode.getRelationships())
+				neighbours.add(rel.getOtherNode(startNode));
+
+			randNode = neighbours.get((int) Rnd.nextLong(0,
+					neighbours.size() - 1, RndType.unif));
+		}
+
+		return randNode;
 	}
 
 	private void populateNodesDistanceFromCity() {
@@ -193,8 +247,8 @@ public class OperationFactoryGIS implements OperationFactory {
 			for (Node v : graphDb.getAllNodes()) {
 				nodeLon = (Double) v.getProperty(Consts.LONGITUDE);
 				nodeLat = (Double) v.getProperty(Consts.LATITUDE);
-				nodeDistanceToCityScore = 1 / minDistanceToCityScore(nodeLon,
-						nodeLat);
+				nodeDistanceToCityScore = 1 / OperationGIS
+						.getMinDistanceToCityScore(nodeLon, nodeLat);
 
 				distanceDistributionState.values.put((Long) v
 						.getProperty(Consts.NODE_GID), nodeDistanceToCityScore);
@@ -213,60 +267,6 @@ public class OperationFactoryGIS implements OperationFactory {
 				distanceDistributionState.values.size(),
 				distanceDistributionState.sumValues);
 
-	}
-
-	// Top Romanian cities, largest-to-smallest
-	private double minDistanceToCityScore(double sourceLon, double sourceLat) {
-
-		// ArrayList<ArrayList<Double>> citiesCoords = new
-		// ArrayList<ArrayList<Double>>();
-		ArrayList<Coordinates> citiesCoords = new ArrayList<Coordinates>();
-
-		// Romania [longitude=24.9804, latitude=45.946949]
-
-		// Bucharest [longitude=26.102965, latitude=44.434295]
-		citiesCoords.add(new Coordinates(45.946949, 24.9804));
-
-		// Iasi [longitude=27.590505, latitude=47.160365]
-		citiesCoords.add(new Coordinates(47.160365, 27.590505));
-
-		// Galati [longitude=28.054665, latitude=45.433675]
-		citiesCoords.add(new Coordinates(45.433675, 28.054665));
-
-		// Timisoara [longitude=21.223305, latitude=45.75343]
-		citiesCoords.add(new Coordinates(45.75343, 21.223305));
-
-		// Constanta [longitude=28.65328, latitude=44.176975]
-		citiesCoords.add(new Coordinates(44.176975, 28.65328));
-
-		// // Cluj-Napoca [longitude=23.585135, latitude=46.768515]
-		// citiesCoords.add(new Coordinates(46.768515, 23.585135));
-		//
-		// // Craiova [longitude=23.80195, latitude=44.31942]
-		// citiesCoords.add(new Coordinates(44.31942, 23.80195));
-		//
-		// // Brasov [longitude=25.588544, latitude=45.642314]
-		// citiesCoords.add(new Coordinates(45.642314, 25.588544));
-		//
-		// // Ploiesti [longitude=26.023307, latitude=44.940682]
-		// citiesCoords.add(new Coordinates(44.940682, 26.023307));
-		//
-		// // Braila [longitude=27.95651, latitude=45.271135]
-		// citiesCoords.add(new Coordinates(45.271135, 27.95651));
-
-		double minDistanceToCity = Double.MAX_VALUE;
-
-		for (Coordinates cityCoords : citiesCoords) {
-
-			double distanceToCity = GeoCostEvaluator.distance(cityCoords
-					.getLatitude(), cityCoords.getLongtude(), sourceLat,
-					sourceLon);
-
-			if (distanceToCity < minDistanceToCity)
-				minDistanceToCity = distanceToCity;
-		}
-
-		return minDistanceToCity;
 	}
 
 }

@@ -7,11 +7,13 @@ import org.neo4j.graphdb.Transaction;
 
 public class OperationGISDeleteNode extends OperationGIS {
 
+	private DistributionStateGIS distribStateDistance = null;
+
 	private long gid = -1;
 
 	// args
 	// -> 0 type
-	// -> 4 gid
+	// -> 1 gid
 	public OperationGISDeleteNode(long id, String[] args) throws Exception {
 		super(id, args);
 
@@ -19,6 +21,18 @@ public class OperationGISDeleteNode extends OperationGIS {
 			throw new Exception("Invalid Operation Type");
 
 		gid = Long.parseLong(args[1]);
+	}
+
+	public OperationGISDeleteNode(long id, String[] args,
+			DistributionStateGIS distribStateDistance) throws Exception {
+		super(id, args);
+
+		if (args[0].equals(getClass().getName()) == false)
+			throw new Exception("Invalid Operation Type");
+
+		gid = Long.parseLong(args[1]);
+
+		this.distribStateDistance = distribStateDistance;
 	}
 
 	@Override
@@ -33,6 +47,11 @@ public class OperationGISDeleteNode extends OperationGIS {
 				rel.delete();
 			}
 			deleteNode.delete();
+
+			if (distribStateDistance != null) {
+				double deleteNodeVal = distribStateDistance.values.remove(gid);
+				distribStateDistance.sumValues -= deleteNodeVal;
+			}
 
 			tx.success();
 		} catch (Exception e) {
