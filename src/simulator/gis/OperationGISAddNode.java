@@ -7,9 +7,11 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 
+import simulator.DistributionState;
+
 public class OperationGISAddNode extends OperationGIS {
 
-	private DistributionStateGIS distribStateDistance = null;
+	private DistributionState distribStateDistance = null;
 
 	private double lat = 0.0;
 	private double lon = 0.0;
@@ -35,7 +37,7 @@ public class OperationGISAddNode extends OperationGIS {
 	}
 
 	public OperationGISAddNode(long id, String[] args,
-			DistributionStateGIS distribStateDistance) throws Exception {
+			DistributionState distribStateDistance) throws Exception {
 		super(id, args);
 
 		if (args[0].equals(getClass().getName()) == false)

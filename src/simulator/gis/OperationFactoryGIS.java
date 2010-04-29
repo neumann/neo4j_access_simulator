@@ -25,6 +25,7 @@ import org.neo4j.graphdb.RelationshipExpander;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
+import simulator.DistributionState;
 import simulator.Operation;
 import simulator.OperationFactory;
 import simulator.Rnd;
@@ -35,7 +36,7 @@ import simulator.gis.astar.GeoCostEvaluator;
 
 public class OperationFactoryGIS implements OperationFactory {
 
-	private DistributionStateGIS distanceDistributionState = new DistributionStateGIS();
+	private DistributionState distanceDistributionState = new DistributionState();
 
 	private GraphDatabaseService graphDb = null;
 
@@ -58,7 +59,12 @@ public class OperationFactoryGIS implements OperationFactory {
 
 		Rnd.initiate(1000);
 
+		long time = System.currentTimeMillis();
+		System.out.printf("Populating distance scores...");
+
 		populateNodesDistanceFromCity();
+
+		System.out.printf("%s", getTimeStr(System.currentTimeMillis() - time));
 
 		this.opRatios.put(ADD_RATIO_INDX, addRatio);
 		this.opRatios.put(DELETE_RATIO_INDX, deleteRatio);
@@ -336,4 +342,13 @@ public class OperationFactoryGIS implements OperationFactory {
 
 		return 0;
 	}
+
+	private static String getTimeStr(long msTotal) {
+		long ms = msTotal % 1000;
+		long s = (msTotal / 1000) % 60;
+		long m = (msTotal / 1000) / 60;
+
+		return String.format("%d(m):%d(s):%d(ms)%n", m, s, ms);
+	}
+
 }

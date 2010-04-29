@@ -13,7 +13,7 @@ public abstract class Operation {
 	protected static final String traffic_tag = "traffic";
 
 	public static String[] getInfoHeader() {
-		String[] res = new String[4];
+		String[] res = new String[5];
 		res[0] = id_tag;
 		res[1] = type_tag;
 		res[2] = hop_tag;

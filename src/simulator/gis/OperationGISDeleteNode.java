@@ -5,9 +5,11 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 
+import simulator.DistributionState;
+
 public class OperationGISDeleteNode extends OperationGIS {
 
-	private DistributionStateGIS distribStateDistance = null;
+	private DistributionState distribStateDistance = null;
 
 	private long gid = -1;
 
@@ -24,7 +26,7 @@ public class OperationGISDeleteNode extends OperationGIS {
 	}
 
 	public OperationGISDeleteNode(long id, String[] args,
-			DistributionStateGIS distribStateDistance) throws Exception {
+			DistributionState distribStateDistance) throws Exception {
 		super(id, args);
 
 		if (args[0].equals(getClass().getName()) == false)

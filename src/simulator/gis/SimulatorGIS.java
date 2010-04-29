@@ -2,17 +2,24 @@ package simulator.gis;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
+import simulator.LogOperationFactory;
 import simulator.Operation;
+import simulator.OperationFactory;
 import simulator.Rnd;
 import simulator.Simulator;
-	
+
 public class SimulatorGIS extends Simulator {
 	private long count = 0;
-	private LogOperationFactoryGIS logOperationFactory = null;
+	private OperationFactory operationFactory = null;
 
 	public SimulatorGIS(GraphDatabaseService db, String logFile) {
 		super(db, logFile);
-		logOperationFactory = new LogOperationFactoryGIS(logFile);
+	}
+
+	public SimulatorGIS(GraphDatabaseService db, String logFile,
+			OperationFactory operationFactory) {
+		super(db, logFile);
+		this.operationFactory = operationFactory;
 	}
 
 	@Override
@@ -27,15 +34,28 @@ public class SimulatorGIS extends Simulator {
 			getDB().shutdown();
 			this.shutdown();
 		}
+
 		count++;
 
-		while (logOperationFactory.hasNext()) {
-			Operation op = logOperationFactory.next();
-			System.out.println(op.getId());
-			System.out.println(op.getType());
-			System.out.println("--------------------" + count);
-			op.executeOn(getDB());
+		System.out.println("*****");
+		if (operationFactory.hasNext()) {
+
+			Operation op = operationFactory.next();
+
+			System.out.printf("Operation[%d]: ID[%d] Type[%s]\n", count, op
+					.getId(), op.getType());
+
+			if (op.executeOn(getDB()) == false)
+				System.out.println("\tFAILED!");
+
 			logOperation(op);
+
+			System.out.println("*****");
+		} else {
+			System.out
+					.printf("Operation[%d]: No Operations remaining\n", count);
+
+			System.out.println("*****");
 		}
 
 	}
