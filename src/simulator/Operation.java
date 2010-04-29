@@ -44,11 +44,11 @@ public abstract class Operation {
 		this.info.put(args_tag, Arrays.toString(args));
 		this.info.put(type_tag, getClass().getName());
 		this.args = args;
-		
-		if(!args[0].equals(getType())){
+
+		if (!args[0].equals(getType())) {
 			throw new Error("Wrong Type " + args[0] + " called " + getType());
 		}
-		
+
 	}
 
 	public final boolean executeOn(GraphDatabaseService db) {
@@ -58,7 +58,7 @@ public abstract class Operation {
 	public abstract boolean onExecute(GraphDatabaseService db);
 
 	private String appendix = "";
- 
+
 	public String getApendix() {
 		return appendix;
 	}
