@@ -2,7 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>AM_Master</groupId>
-	<artifactId>Neo4j_API_Test</artifactId>
+	<artifactId>neo4j_access_simulator</artifactId>
+	<name>Access pattern simulator</name>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<repositories>
@@ -22,6 +23,11 @@
 			<artifactId>neo4j-apoc</artifactId>
 			<version>0.5</version>
 			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-graph-algo</artifactId>
+			<version>0.5-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

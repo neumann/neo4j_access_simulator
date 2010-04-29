@@ -37,7 +37,7 @@ public class Rnd {
 
 	public static long nextLong(long start, long end, RndType type) {
 		double val = nextDouble(type);
-		return Math.round(((val + start) * (end - start)));
+		return Math.round((val * (end - start)) + start);
 	}
 
 }

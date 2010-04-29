@@ -5,7 +5,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import simulator.Operation;
 import simulator.Rnd;
 import simulator.Simulator;
-
+	
 public class SimulatorGIS extends Simulator {
 	private long count = 0;
 	private LogOperationFactoryGIS logOperationFactory = null;

@@ -53,7 +53,7 @@ public abstract class Operation {
 	public abstract boolean onExecute(GraphDatabaseService db);
 
 	private String appendix = "";
-
+ 
 	public String getApendix() {
 		return appendix;
 	}
