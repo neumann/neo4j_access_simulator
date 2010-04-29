@@ -88,7 +88,6 @@ public class AStarRouting {
 
 				sumClusterCoefficients += nodeClusterCoefficient;
 
-				// TODO use Consts.NODE_GID instead of getId() for final version
 				nodesClusterCoefficient.put(v.getId(), nodeClusterCoefficient);
 
 			}
@@ -120,7 +119,6 @@ public class AStarRouting {
 
 				sumDegrees += nodeDegree;
 
-				// TODO use Consts.NODE_GID instead of getId() for final version
 				nodesDegree.put(v.getId(), nodeDegree);
 
 			}

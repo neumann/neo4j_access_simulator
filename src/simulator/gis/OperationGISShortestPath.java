@@ -8,21 +8,21 @@ import simulator.gis.astar.AStarRouting;
 
 public class OperationGISShortestPath extends OperationGIS {
 
-	private long startGid = -1;
-	private long endGid = -1;
+	private long startId = -1;
+	private long endId = -1;
 
 	// args
 	// -> 0 type
-	// -> 1 startGid
-	// -> 2 endGid
+	// -> 1 startId
+	// -> 2 endId
 	public OperationGISShortestPath(long id, String[] args) throws Exception {
 		super(id, args);
 
 		if (args[0].equals(getClass().getName()) == false)
 			throw new Exception("Invalid Operation Type");
 
-		startGid = Long.parseLong(args[1]);
-		endGid = Long.parseLong(args[2]);
+		startId = Long.parseLong(args[1]);
+		endId = Long.parseLong(args[2]);
 	}
 
 	@Override
@@ -31,11 +31,12 @@ public class OperationGISShortestPath extends OperationGIS {
 
 		Transaction tx = db.beginTx();
 		try {
-			Node startNode = db.getNodeById(startGid);
-			Node endNode = db.getNodeById(endGid);
+			Node startNode = db.getNodeById(startId);
+			Node endNode = db.getNodeById(endId);
 
 			AStarRouting astar = new AStarRouting();
-			astar.doShortestPath(db, startNode, endNode);
+			Iterable<Node> pathNodes = astar.doShortestPath(db, startNode,
+					endNode);
 
 			tx.success();
 		} catch (Exception e) {

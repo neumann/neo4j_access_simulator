@@ -11,18 +11,18 @@ public class OperationGISDeleteNode extends OperationGIS {
 
 	private DistributionState distribStateDistance = null;
 
-	private long gid = -1;
+	private long id = -1;
 
 	// args
 	// -> 0 type
-	// -> 1 gid
+	// -> 1 id
 	public OperationGISDeleteNode(long id, String[] args) throws Exception {
 		super(id, args);
 
 		if (args[0].equals(getClass().getName()) == false)
 			throw new Exception("Invalid Operation Type");
 
-		gid = Long.parseLong(args[1]);
+		id = Long.parseLong(args[1]);
 	}
 
 	public OperationGISDeleteNode(long id, String[] args,
@@ -32,7 +32,7 @@ public class OperationGISDeleteNode extends OperationGIS {
 		if (args[0].equals(getClass().getName()) == false)
 			throw new Exception("Invalid Operation Type");
 
-		gid = Long.parseLong(args[1]);
+		id = Long.parseLong(args[1]);
 
 		this.distribStateDistance = distribStateDistance;
 	}
@@ -44,14 +44,14 @@ public class OperationGISDeleteNode extends OperationGIS {
 		Transaction tx = db.beginTx();
 
 		try {
-			Node deleteNode = db.getNodeById(gid);
+			Node deleteNode = db.getNodeById(id);
 			for (Relationship rel : deleteNode.getRelationships()) {
 				rel.delete();
 			}
 			deleteNode.delete();
 
 			if (distribStateDistance != null) {
-				double deleteNodeVal = distribStateDistance.values.remove(gid);
+				double deleteNodeVal = distribStateDistance.values.remove(id);
 				distribStateDistance.sumValues -= deleteNodeVal;
 			}
 

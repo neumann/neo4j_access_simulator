@@ -37,7 +37,6 @@ public class SimulatorGIS extends Simulator {
 
 		count++;
 
-		System.out.println("*****");
 		if (operationFactory.hasNext()) {
 
 			Operation op = operationFactory.next();

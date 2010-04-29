@@ -119,12 +119,14 @@ public class OperationFactoryGIS implements OperationFactory {
 		switch (opTypeIndx) {
 
 		case ADD_RATIO_INDX: {
+			System.out.printf("---\n\tAdd\n---\n");
+
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
-			long startNodeGid = (Long) results[0];
+			long startNodeId = (Long) results[0];
 
-			Node startNode = graphDb.getNodeById(startNodeGid);
+			Node startNode = graphDb.getNodeById(startNodeId);
 
 			Node endNode = doRandomWalk(startNode, 1);
 
@@ -143,27 +145,29 @@ public class OperationFactoryGIS implements OperationFactory {
 			// -> 0 type
 			// -> 1 lon
 			// -> 2 lan
-			// -> 3 startGid
-			// -> 4 endGid
+			// -> 3 startId
+			// -> 4 endId
 			String[] args = new String[] { OperationGISAddNode.class.getName(),
 					Double.toString(lonNew), Double.toString(latNew),
-					Long.toString(startNodeGid), Long.toString(endNode.getId()) };
+					Long.toString(startNodeId), Long.toString(endNode.getId()) };
 
 			return new OperationGISAddNode(opId, args,
 					distanceDistributionState);
 		}
 
 		case DELETE_RATIO_INDX: {
+			System.out.printf("---\n\tDelete\n---\n");
+
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
-			long startNodeGid = (Long) results[0];
+			long startNodeId = (Long) results[0];
 
-			Node startNode = graphDb.getNodeById(startNodeGid);
+			Node startNode = graphDb.getNodeById(startNodeId);
 
 			// args
 			// -> 0 type
-			// -> 1 gid
+			// -> 1 id
 			String[] args = new String[] {
 					OperationGISDeleteNode.class.getName(),
 					Long.toString(startNode.getId()) };
@@ -173,11 +177,13 @@ public class OperationFactoryGIS implements OperationFactory {
 		}
 
 		case LOCAL_SEARCH_RATIO_INDX: {
+			System.out.printf("---\n\tLocal\n---\n");
+
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
-			long startNodeGid = (Long) results[0];
-			Node startNode = graphDb.getNodeById(startNodeGid);
+			long startNodeId = (Long) results[0];
+			Node startNode = graphDb.getNodeById(startNodeId);
 
 			// FIXME change walkLength to a random value, maybe between 1 &
 			// Network Diameter?
@@ -186,29 +192,31 @@ public class OperationFactoryGIS implements OperationFactory {
 
 			// args
 			// -> 0 type
-			// -> 1 startGid
-			// -> 2 endGid
+			// -> 1 startId
+			// -> 2 endId
 			String[] args = new String[] {
 					OperationGISShortestPath.class.getName(),
-					Long.toString(startNodeGid), Long.toString(endNode.getId()) };
+					Long.toString(startNodeId), Long.toString(endNode.getId()) };
 
 			return new OperationGISShortestPath(opId, args);
 		}
 
 		case GLOBAL_SEARCH_RATIO_INDX: {
+			System.out.printf("---\n\tGlobal\n---\n");
+
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 2, RndType.unif);
 
-			long startNodeGid = (Long) results[0];
-			long endNodeGid = (Long) results[1];
+			long startNodeId = (Long) results[0];
+			long endNodeId = (Long) results[1];
 
 			// args
 			// -> 0 type
-			// -> 1 startGid
-			// -> 2 endGid
+			// -> 1 startId
+			// -> 2 endId
 			String[] args = new String[] {
 					OperationGISShortestPath.class.getName(),
-					Long.toString(startNodeGid), Long.toString(endNodeGid) };
+					Long.toString(startNodeId), Long.toString(endNodeId) };
 
 			return new OperationGISShortestPath(opId, args);
 		}
@@ -244,7 +252,7 @@ public class OperationFactoryGIS implements OperationFactory {
 			ArrayList<Node> neighbours = new ArrayList<Node>();
 
 			for (Relationship rel : randNode.getRelationships())
-				neighbours.add(rel.getOtherNode(startNode));
+				neighbours.add(rel.getOtherNode(randNode));
 
 			randNode = neighbours.get((int) Rnd.nextLong(0,
 					neighbours.size() - 1, RndType.unif));
@@ -271,8 +279,8 @@ public class OperationFactoryGIS implements OperationFactory {
 				nodeDistanceToCityScore = 1 / OperationGIS
 						.getMinDistanceToCityScore(nodeLon, nodeLat);
 
-				distanceDistributionState.values.put((Long) v
-						.getProperty(Consts.NODE_GID), nodeDistanceToCityScore);
+				distanceDistributionState.values.put(v.getId(),
+						nodeDistanceToCityScore);
 				distanceDistributionState.sumValues += nodeDistanceToCityScore;
 
 			}
@@ -284,7 +292,7 @@ public class OperationFactoryGIS implements OperationFactory {
 			tx.finish();
 		}
 
-		System.out.printf("Entries[%d] SumScores[%f]\n",
+		System.out.printf("Values[%d] SumValues[%f]...",
 				distanceDistributionState.values.size(),
 				distanceDistributionState.sumValues);
 
