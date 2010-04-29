@@ -36,34 +36,35 @@ public class Rnd {
 			throw new Error("Not supported RndType");
 		}
 	}
-	
-	public static Object[] getSample(Map<Object, Double> map, double max, int samplesize, RndType type){
-		Object[] res  = new Object[samplesize];
-		double[] val = new double[samplesize];
-		for (int i = 0; i < val.length ; i++){
-			val[i] = nextDouble(type)*max;
+
+	public static Object[] getSample(Map<Object, Double> elements,
+			double sumOfElements, int sampleSize, RndType rndType) {
+		Object[] res = new Object[sampleSize];
+		double[] val = new double[sampleSize];
+		for (int i = 0; i < val.length; i++) {
+			val[i] = nextDouble(rndType) * sumOfElements;
 			res[i] = null;
 		}
-		
+
 		boolean done = false;
-		Iterator<Object> iterOnMap = map.keySet().iterator();
-		while(iterOnMap.hasNext() && !done){
+		Iterator<Object> iterOnMap = elements.keySet().iterator();
+		while (iterOnMap.hasNext() && !done) {
 			Object cur = iterOnMap.next();
-			double curVal = map.get(cur);
+			double curVal = elements.get(cur);
 			done = true;
-			for (int i = 0; i < val.length ; i++){
-				if(res[i]==null){
-					val[i] -=curVal;
-					if(val[i]<=0){
-						res[i]=cur;
-					}else{
+			for (int i = 0; i < val.length; i++) {
+				if (res[i] == null) {
+					val[i] -= curVal;
+					if (val[i] <= 0) {
+						res[i] = cur;
+					} else {
 						done = false;
 					}
-				}		
+				}
 			}
 		}
 		return res;
- 	}
+	}
 
 	public static long nextLong(long start, long end, RndType type) {
 		double val = nextDouble(type);
