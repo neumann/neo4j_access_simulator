@@ -3,12 +3,26 @@ package simulator.gis;
 import graph_gen_utils.general.Consts;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.Map.Entry;
 
+import org.neo4j.graphalgo.centrality.NetworkDiameter;
+import org.neo4j.graphalgo.shortestpath.CostAccumulator;
+import org.neo4j.graphalgo.shortestpath.CostEvaluator;
+import org.neo4j.graphalgo.shortestpath.Dijkstra;
+import org.neo4j.graphalgo.shortestpath.EstimateEvaluator;
+import org.neo4j.graphalgo.shortestpath.PathFinder;
+import org.neo4j.graphalgo.shortestpath.SingleSourceShortestPathDijkstra;
+import org.neo4j.graphalgo.shortestpath.std.DoubleEvaluator;
+
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipExpander;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 
 import simulator.Operation;
@@ -16,6 +30,7 @@ import simulator.OperationFactory;
 import simulator.Rnd;
 import simulator.Rnd.RndType;
 import simulator.gis.astar.Coordinates;
+import simulator.gis.astar.GISRelationshipTypes;
 import simulator.gis.astar.GeoCostEvaluator;
 
 public class OperationFactoryGIS implements OperationFactory {
@@ -269,4 +284,56 @@ public class OperationFactoryGIS implements OperationFactory {
 
 	}
 
+	private long getNetworkDiameter(GraphDatabaseService graphDb) {
+		//
+		// CostEvaluator<Integer> costEval = new CostEvaluator<Integer>() {
+		//
+		// @Override
+		// public Integer getCost(Relationship relationship, boolean backwards)
+		// {
+		// return 1;
+		// }
+		// };
+		//
+		// CostAccumulator<Integer> costAcc = new CostAccumulator<Integer>() {
+		//
+		// @Override
+		// public Integer addCosts(Integer c1, Integer c2) {
+		// return c1 + c2;
+		// }
+		// };
+		//
+		// Comparator<Integer> costComp = new Comparator<Integer>() {
+		//
+		// @Override
+		// public int compare(Integer arg0, Integer arg1) {
+		// if (arg0 > arg1)
+		// return -1;
+		// if (arg0 < arg1)
+		// return 1;
+		// return 0;
+		// }
+		// };
+		//
+		// Node startNode = graphDb.getReferenceNode();
+		// Integer startCost = 0;
+		// SingleSourceShortestPathDijkstra<Integer> singleSourceShortestPath =
+		// new SingleSourceShortestPathDijkstra<Integer>(
+		// startCost, startNode, costEval, costAcc, costComp,
+		// Direction.BOTH, RelationshipExpander.forTypes(
+		// GISRelationshipTypes.FOOT_WAY, Direction.BOTH,
+		// GISRelationshipTypes.BICYCLE_WAY, Direction.BOTH,
+		// GISRelationshipTypes.CAR_WAY, Direction.BOTH,
+		// GISRelationshipTypes.CAR_SHORTEST_WAY, Direction.BOTH));
+		//
+		// Integer zeroValue = 0;
+		//
+		// Set<Node> nodeSet = graphDb.getAllNodes();
+		//
+		// NetworkDiameter<Integer> networkDiameter = new
+		// NetworkDiameter<Integer>(
+		// singleSourceShortestPath, zeroValue, nodeSet, costComp);
+
+		return 0;
+	}
 }
