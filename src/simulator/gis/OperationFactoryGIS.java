@@ -173,16 +173,23 @@ public class OperationFactoryGIS implements OperationFactory {
 		}
 
 		case LOCAL_SEARCH_RATIO_INDX: {
-			Object[] results = Rnd.getSample(distanceDistributionState.values,
-					distanceDistributionState.sumValues, 1, RndType.unif);
+			long startNodeId = -1;
+			Node startNode = null;
+			Node endNode = null;
 
-			long startNodeId = (Long) results[0];
-			Node startNode = graphDb.getNodeById(startNodeId);
+			while (endNode == null) {
+				Object[] results = Rnd.getSample(
+						distanceDistributionState.values,
+						distanceDistributionState.sumValues, 1, RndType.unif);
 
-			// FIXME change walkLength to a random value, maybe between 1 &
-			// Network Diameter?
-			int walkLength = 10;
-			Node endNode = doRandomWalk(startNode, walkLength);
+				startNodeId = (Long) results[0];
+				startNode = graphDb.getNodeById(startNodeId);
+
+				// FIXME change walkLength to a random value, maybe between 1 &
+				// Network Diameter?
+				int walkLength = 10;
+				endNode = doRandomWalk(startNode, walkLength);
+			}
 
 			// args
 			// -> 0 type
@@ -197,10 +204,16 @@ public class OperationFactoryGIS implements OperationFactory {
 
 		case GLOBAL_SEARCH_RATIO_INDX: {
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
-					distanceDistributionState.sumValues, 2, RndType.unif);
+					distanceDistributionState.sumValues, 1, RndType.unif);
 
 			long startNodeId = (Long) results[0];
-			long endNodeId = (Long) results[1];
+			long endNodeId = startNodeId;
+
+			while (endNodeId == startNodeId) {
+				results = Rnd.getSample(distanceDistributionState.values,
+						distanceDistributionState.sumValues, 1, RndType.unif);
+				endNodeId = (Long) results[0];
+			}
 
 			// args
 			// -> 0 type
@@ -258,6 +271,9 @@ public class OperationFactoryGIS implements OperationFactory {
 			randNode = neighbours.get((int) Rnd.nextLong(0,
 					neighbours.size() - 1, RndType.unif));
 		}
+
+		if (randNode.getId() == startNode.getId())
+			return null;
 
 		return randNode;
 	}
