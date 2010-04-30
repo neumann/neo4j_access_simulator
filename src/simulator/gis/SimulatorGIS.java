@@ -30,9 +30,12 @@ public class SimulatorGIS extends Simulator {
 
 	@Override
 	public void loop() {
+		if (count > 100)
+			return;
+
 		if (count == 100) {
 			getDB().shutdown();
-			this.shutdown();
+			shutdown();
 		}
 
 		count++;
