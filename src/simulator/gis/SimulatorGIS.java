@@ -43,8 +43,6 @@ public class SimulatorGIS extends Simulator {
 				System.out.println("\tFAILED!");
 
 			logOperation(op);
-
-			System.out.println("*****");
 		} else {
 			getDB().shutdown();
 			shutdown();
