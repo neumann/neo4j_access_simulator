@@ -5,20 +5,25 @@ import java.util.HashMap;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 public abstract class Operation {
-	protected static final String type_tag = "type";
-	protected static final String args_tag = "args";
-	protected static final String interHop_tag = "interHop";
-	protected static final String hop_tag = "hop";
-	protected static final String id_tag = "id";
-	protected static final String traffic_tag = "traffic";
+	protected static final String ID_TAG = "id";
+	protected static final String TYPE_TAG = "type";
+	protected static final String ARGS_TAG = "args";
+	protected static final String HOP_TAG = "hop";
+	protected static final String INTERHOP_TAG = "interhop";
+	protected static final String TRAFFIC_TAG = "traffic";
+	protected static final String GIS_PATH_LENGTH_TAG = "pathlen";
+	protected static final String GIS_DISTANCE_TAG = "distance";
 
 	public static String[] getInfoHeader() {
-		String[] res = new String[5];
-		res[0] = id_tag;
-		res[1] = type_tag;
-		res[2] = hop_tag;
-		res[3] = interHop_tag;
-		res[4] = traffic_tag;
+		String[] res = new String[6];
+		res[0] = ID_TAG;
+		res[1] = TYPE_TAG; // FIXME can remove this, its in ARGS anyway
+		res[2] = ARGS_TAG;
+		res[3] = HOP_TAG;
+		res[4] = INTERHOP_TAG;
+		res[5] = TRAFFIC_TAG;
+		res[6] = GIS_PATH_LENGTH_TAG;
+		res[7] = GIS_DISTANCE_TAG;
 		return res;
 	}
 
@@ -26,11 +31,11 @@ public abstract class Operation {
 	protected HashMap<String, String> info;
 
 	public String getType() {
-		return (String) info.get(type_tag);
+		return (String) info.get(TYPE_TAG);
 	}
 
 	public long getId() {
-		return Long.parseLong(info.get(id_tag));
+		return Long.parseLong(info.get(ID_TAG));
 	}
 
 	public Operation(long id, String[] args) {
@@ -38,11 +43,15 @@ public abstract class Operation {
 		for (String key : getInfoHeader()) {
 			info.put(key, "");
 		}
-		this.info.put(interHop_tag, Long.toString(0));
-		this.info.put(hop_tag, Long.toString(0));
-		this.info.put(id_tag, Long.toString(id));
-		this.info.put(args_tag, Arrays.toString(args));
-		this.info.put(type_tag, getClass().getName());
+		this.info.put(ID_TAG, Long.toString(id));
+		this.info.put(TYPE_TAG, getClass().getName());
+		this.info.put(ARGS_TAG, Arrays.toString(args));
+		this.info.put(HOP_TAG, Long.toString(0));
+		this.info.put(INTERHOP_TAG, Long.toString(0));
+		this.info.put(TRAFFIC_TAG, Long.toString(0));
+		this.info.put(GIS_PATH_LENGTH_TAG, Long.toString(0));
+		this.info.put(GIS_DISTANCE_TAG, Long.toString(0));
+
 		this.args = args;
 
 		if (!args[0].equals(getType())) {
