@@ -15,7 +15,7 @@ public abstract class Operation {
 	protected static final String GIS_DISTANCE_TAG = "distance";
 
 	public static String[] getInfoHeader() {
-		String[] res = new String[6];
+		String[] res = new String[8];
 		res[0] = ID_TAG;
 		res[1] = TYPE_TAG; // FIXME can remove this, its in ARGS anyway
 		res[2] = ARGS_TAG;
