@@ -177,8 +177,6 @@ public class OperationFactoryGIS implements OperationFactory {
 		}
 
 		case LOCAL_SEARCH_RATIO_INDX: {
-			System.out.printf("---\n\tLocal\n---\n");
-
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
@@ -189,6 +187,9 @@ public class OperationFactoryGIS implements OperationFactory {
 			// Network Diameter?
 			int walkLength = 10;
 			Node endNode = doRandomWalk(startNode, walkLength);
+
+			System.out.printf("\tLocal[%d]->[%d]\n", startNodeId, endNode
+					.getId());
 
 			// args
 			// -> 0 type
@@ -202,13 +203,13 @@ public class OperationFactoryGIS implements OperationFactory {
 		}
 
 		case GLOBAL_SEARCH_RATIO_INDX: {
-			System.out.printf("---\n\tGlobal\n---\n");
-
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 2, RndType.unif);
 
 			long startNodeId = (Long) results[0];
 			long endNodeId = (Long) results[1];
+
+			System.out.printf("\tGlobal[%d]->[%d]\n", startNodeId, endNodeId);
 
 			// args
 			// -> 0 type
@@ -251,8 +252,17 @@ public class OperationFactoryGIS implements OperationFactory {
 
 			ArrayList<Node> neighbours = new ArrayList<Node>();
 
-			for (Relationship rel : randNode.getRelationships())
-				neighbours.add(rel.getOtherNode(randNode));
+			for (Relationship rel : randNode.getRelationships()) {
+				Node otherNode = rel.getOtherNode(randNode);
+
+				if (otherNode.getId() == startNode.getId())
+					continue;
+
+				neighbours.add(otherNode);
+			}
+
+			if (neighbours.size() == 0)
+				continue;
 
 			randNode = neighbours.get((int) Rnd.nextLong(0,
 					neighbours.size() - 1, RndType.unif));
