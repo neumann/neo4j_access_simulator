@@ -34,6 +34,7 @@ public abstract class Simulator extends Thread {
 				log.print(tag);
 				log.print(logFileDelim);
 			}
+			log.println();
 		} catch (Exception e) {
 			System.out.println("Cannot create logfile");
 		}
