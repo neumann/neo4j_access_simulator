@@ -193,7 +193,7 @@ public class OperationFactoryGIS implements OperationFactory {
 			// -> 1 startId
 			// -> 2 endId
 			String[] args = new String[] {
-					OperationGISShortestPath.class.getName(),
+					OperationGISShortestPathLocal.class.getName(),
 					Long.toString(startNodeId), Long.toString(endNode.getId()) };
 
 			return new OperationGISShortestPathLocal(opId, args);
@@ -211,7 +211,7 @@ public class OperationFactoryGIS implements OperationFactory {
 			// -> 1 startId
 			// -> 2 endId
 			String[] args = new String[] {
-					OperationGISShortestPath.class.getName(),
+					OperationGISShortestPathGlobal.class.getName(),
 					Long.toString(startNodeId), Long.toString(endNodeId) };
 
 			return new OperationGISShortestPathGlobal(opId, args);
