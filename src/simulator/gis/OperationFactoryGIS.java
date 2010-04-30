@@ -188,9 +188,6 @@ public class OperationFactoryGIS implements OperationFactory {
 			int walkLength = 10;
 			Node endNode = doRandomWalk(startNode, walkLength);
 
-			System.out.printf("\tLocal[%d]->[%d]\n", startNodeId, endNode
-					.getId());
-
 			// args
 			// -> 0 type
 			// -> 1 startId
@@ -199,7 +196,7 @@ public class OperationFactoryGIS implements OperationFactory {
 					OperationGISShortestPath.class.getName(),
 					Long.toString(startNodeId), Long.toString(endNode.getId()) };
 
-			return new OperationGISShortestPath(opId, args);
+			return new OperationGISShortestPathLocal(opId, args);
 		}
 
 		case GLOBAL_SEARCH_RATIO_INDX: {
@@ -209,8 +206,6 @@ public class OperationFactoryGIS implements OperationFactory {
 			long startNodeId = (Long) results[0];
 			long endNodeId = (Long) results[1];
 
-			System.out.printf("\tGlobal[%d]->[%d]\n", startNodeId, endNodeId);
-
 			// args
 			// -> 0 type
 			// -> 1 startId
@@ -219,7 +214,7 @@ public class OperationFactoryGIS implements OperationFactory {
 					OperationGISShortestPath.class.getName(),
 					Long.toString(startNodeId), Long.toString(endNodeId) };
 
-			return new OperationGISShortestPath(opId, args);
+			return new OperationGISShortestPathGlobal(opId, args);
 		}
 
 		}

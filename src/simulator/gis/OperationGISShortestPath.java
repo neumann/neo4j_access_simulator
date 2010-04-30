@@ -9,7 +9,7 @@ import org.neo4j.graphdb.Transaction;
 import simulator.gis.astar.AStarRouting;
 import simulator.gis.astar.GeoCostEvaluator;
 
-public class OperationGISShortestPath extends OperationGIS {
+public abstract class OperationGISShortestPath extends OperationGIS {
 
 	private long startId = -1;
 	private long endId = -1;
@@ -42,9 +42,10 @@ public class OperationGISShortestPath extends OperationGIS {
 					endNode);
 
 			Integer pathLen = 0;
-			for (Node node : pathNodes) {
-				pathLen++;
-			}
+			if (pathNodes != null)
+				for (Node node : pathNodes) {
+					pathLen++;
+				}
 
 			this.info.put(GIS_PATH_LENGTH_TAG, pathLen.toString());
 
