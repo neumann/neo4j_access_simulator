@@ -119,8 +119,6 @@ public class OperationFactoryGIS implements OperationFactory {
 		switch (opTypeIndx) {
 
 		case ADD_RATIO_INDX: {
-			System.out.printf("---\n\tAdd\n---\n");
-
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
@@ -156,8 +154,6 @@ public class OperationFactoryGIS implements OperationFactory {
 		}
 
 		case DELETE_RATIO_INDX: {
-			System.out.printf("---\n\tDelete\n---\n");
-
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 

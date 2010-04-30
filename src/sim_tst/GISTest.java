@@ -18,18 +18,21 @@ public class GISTest {
 		GraphDatabaseService db = new EmbeddedGraphDatabase(
 				"var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS");
 
-		double addRatio = 0.0;
-		double delRatio = 0.0;
+		double addRatio = 0.25;
+		double delRatio = 0.25;
 		double localRatio = 0.25;
 		double globalRatio = 0.25;
+		long opCount = 20;
 		OperationFactory operationFactory = new OperationFactoryGIS(db,
-				addRatio, delRatio, localRatio, globalRatio, 20);
+				addRatio, delRatio, localRatio, globalRatio, opCount);
 
 		Simulator sim = new SimulatorGIS(db, "var/gis/log-gis-romania.txt",
 				operationFactory);
 		sim.startSIM();
 
 		System.out.println("SLUT");
+
+		db.shutdown();
 	}
 
 }
