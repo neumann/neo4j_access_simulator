@@ -1,6 +1,9 @@
 package sim_tst;
 
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 import p_graph_service.PGraphDatabaseService;
@@ -18,11 +21,22 @@ public class TreeTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		GraphDatabaseService dbn = new EmbeddedGraphDatabase("var/db");
+		Transaction tx = dbn.beginTx();
+		try {
+			for(RelationshipType t :dbn.getRelationshipTypes() ){
+				System.out.println(t);
+			}
+			tx.success();
+		} finally {
+			tx.finish();
+		}
 
-		PGraphDatabaseService pDB = new PGraphDatabaseServiceImpl("var/pDB", 0);
-		Simulator sim = new RandomStaticSimulator(pDB, "log.txt");
-		sim.startSIM();
-		System.out.println("done");
+//		PGraphDatabaseService pDB = new PGraphDatabaseServiceImpl("var/pDB", 0);
+//		Simulator sim = new RandomStaticSimulator(pDB, "log.txt");
+//		sim.startSIM();
+//		System.out.println("done");
 
 		// convertDB();
 	}

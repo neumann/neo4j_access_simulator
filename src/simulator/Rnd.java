@@ -70,13 +70,13 @@ public class Rnd {
 		return res;
 	}
 
-	public static Node[] getSampleFromDB(GraphDatabaseService db,String wheightKey,
+	public static long[] getSampleFromDB(GraphDatabaseService db,String wheightKey,
 			double sumOfElements, int sampleSize, RndType rndType) {
-		Node[] res = new Node[sampleSize];
+		long[] res = new long[sampleSize];
 		double[] val = new double[sampleSize];
 		for (int i = 0; i < val.length; i++) {
 			val[i] = nextDouble(rndType) * sumOfElements;
-			res[i] = null;
+			res[i] = -1;
 		}
 
 		boolean done = false;
@@ -91,10 +91,10 @@ public class Rnd {
 				}
 				done = true;
 				for (int i = 0; i < val.length; i++) {
-					if (res[i] == null) {
+					if (res[i] == -1) {
 						val[i] -= curVal;
 						if (val[i] <= 0) {
-							res[i] = cur;
+							res[i] = cur.getId();
 						} else {
 							done = false;
 						}
