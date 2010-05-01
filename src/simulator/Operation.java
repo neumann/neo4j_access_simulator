@@ -5,6 +5,15 @@ import java.util.HashMap;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 public abstract class Operation {
+	public static final int ID_TAG_INDX = 0;
+	public static final int TYPE_TAG_INDX = 1;
+	public static final int ARGS_TAG_INDX = 2;
+	public static final int HOP_TAG_INDX = 3;
+	public static final int INTERHOP_TAG_INDX = 4;
+	public static final int TRAFFIC_TAG_INDX = 5;
+	public static final int GIS_PATH_LENGTH_TAG_INDX = 6;
+	public static final int GIS_DISTANCE_TAG_INDX = 7;
+
 	protected static final String ID_TAG = "id";
 	protected static final String TYPE_TAG = "type";
 	protected static final String ARGS_TAG = "args";
@@ -16,14 +25,14 @@ public abstract class Operation {
 
 	public static String[] getInfoHeader() {
 		String[] res = new String[8];
-		res[0] = ID_TAG;
-		res[1] = TYPE_TAG; // FIXME can remove this, its in ARGS anyway
-		res[2] = ARGS_TAG;
-		res[3] = HOP_TAG;
-		res[4] = INTERHOP_TAG;
-		res[5] = TRAFFIC_TAG;
-		res[6] = GIS_PATH_LENGTH_TAG;
-		res[7] = GIS_DISTANCE_TAG;
+		res[ID_TAG_INDX] = ID_TAG;
+		res[TYPE_TAG_INDX] = TYPE_TAG;
+		res[ARGS_TAG_INDX] = ARGS_TAG;
+		res[HOP_TAG_INDX] = HOP_TAG;
+		res[INTERHOP_TAG_INDX] = INTERHOP_TAG;
+		res[TRAFFIC_TAG_INDX] = TRAFFIC_TAG;
+		res[GIS_PATH_LENGTH_TAG_INDX] = GIS_PATH_LENGTH_TAG;
+		res[GIS_DISTANCE_TAG_INDX] = GIS_DISTANCE_TAG;
 		return res;
 	}
 
@@ -38,12 +47,12 @@ public abstract class Operation {
 		return Long.parseLong(info.get(ID_TAG));
 	}
 
-	public Operation(long id, String[] args) {
+	public Operation(String[] args) {
 		this.info = new HashMap<String, String>();
 		for (String key : getInfoHeader()) {
 			info.put(key, "");
 		}
-		this.info.put(ID_TAG, Long.toString(id));
+		this.info.put(ID_TAG, args[0]);
 		this.info.put(TYPE_TAG, getClass().getName());
 		this.info.put(ARGS_TAG, Arrays.toString(args));
 		this.info.put(HOP_TAG, Long.toString(0));
@@ -54,8 +63,9 @@ public abstract class Operation {
 
 		this.args = args;
 
-		if (!args[0].equals(getType())) {
-			throw new Error("Wrong Type " + args[0] + " called " + getType());
+		if (!args[TYPE_TAG_INDX].equals(getType())) {
+			throw new Error("Wrong Type " + args[TYPE_TAG_INDX] + " called "
+					+ getType());
 		}
 
 	}
