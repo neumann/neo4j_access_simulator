@@ -88,6 +88,8 @@ public class OperationGISAddNode extends OperationGIS {
 						1 / OperationGIS.getMinDistanceToCityScore(lon, lat));
 			}
 
+			appendToLog(Long.toString(newNode.getId()));
+
 			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
