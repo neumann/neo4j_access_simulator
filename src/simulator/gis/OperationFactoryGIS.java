@@ -119,8 +119,6 @@ public class OperationFactoryGIS implements OperationFactory {
 		switch (opTypeIndx) {
 
 		case ADD_RATIO_INDX: {
-			System.out.printf("---\n\tAdd\n---\n");
-
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
@@ -156,8 +154,6 @@ public class OperationFactoryGIS implements OperationFactory {
 		}
 
 		case DELETE_RATIO_INDX: {
-			System.out.printf("---\n\tDelete\n---\n");
-
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
@@ -177,48 +173,57 @@ public class OperationFactoryGIS implements OperationFactory {
 		}
 
 		case LOCAL_SEARCH_RATIO_INDX: {
-			System.out.printf("---\n\tLocal\n---\n");
+			long startNodeId = -1;
+			Node startNode = null;
+			Node endNode = null;
 
+			while (endNode == null) {
+				Object[] results = Rnd.getSample(
+						distanceDistributionState.values,
+						distanceDistributionState.sumValues, 1, RndType.unif);
+
+				startNodeId = (Long) results[0];
+				startNode = graphDb.getNodeById(startNodeId);
+
+				// FIXME change walkLength to a random value, maybe between 1 &
+				// Network Diameter?
+				int walkLength = 10;
+				endNode = doRandomWalk(startNode, walkLength);
+			}
+
+			// args
+			// -> 0 type
+			// -> 1 startId
+			// -> 2 endId
+			String[] args = new String[] {
+					OperationGISShortestPathLocal.class.getName(),
+					Long.toString(startNodeId), Long.toString(endNode.getId()) };
+
+			return new OperationGISShortestPathLocal(opId, args);
+		}
+
+		case GLOBAL_SEARCH_RATIO_INDX: {
 			Object[] results = Rnd.getSample(distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
 			long startNodeId = (Long) results[0];
-			Node startNode = graphDb.getNodeById(startNodeId);
+			long endNodeId = startNodeId;
 
-			// FIXME change walkLength to a random value, maybe between 1 &
-			// Network Diameter?
-			int walkLength = 10;
-			Node endNode = doRandomWalk(startNode, walkLength);
-
-			// args
-			// -> 0 type
-			// -> 1 startId
-			// -> 2 endId
-			String[] args = new String[] {
-					OperationGISShortestPath.class.getName(),
-					Long.toString(startNodeId), Long.toString(endNode.getId()) };
-
-			return new OperationGISShortestPath(opId, args);
-		}
-
-		case GLOBAL_SEARCH_RATIO_INDX: {
-			System.out.printf("---\n\tGlobal\n---\n");
-
-			Object[] results = Rnd.getSample(distanceDistributionState.values,
-					distanceDistributionState.sumValues, 2, RndType.unif);
-
-			long startNodeId = (Long) results[0];
-			long endNodeId = (Long) results[1];
+			while (endNodeId == startNodeId) {
+				results = Rnd.getSample(distanceDistributionState.values,
+						distanceDistributionState.sumValues, 1, RndType.unif);
+				endNodeId = (Long) results[0];
+			}
 
 			// args
 			// -> 0 type
 			// -> 1 startId
 			// -> 2 endId
 			String[] args = new String[] {
-					OperationGISShortestPath.class.getName(),
+					OperationGISShortestPathGlobal.class.getName(),
 					Long.toString(startNodeId), Long.toString(endNodeId) };
 
-			return new OperationGISShortestPath(opId, args);
+			return new OperationGISShortestPathGlobal(opId, args);
 		}
 
 		}
@@ -251,12 +256,24 @@ public class OperationFactoryGIS implements OperationFactory {
 
 			ArrayList<Node> neighbours = new ArrayList<Node>();
 
-			for (Relationship rel : randNode.getRelationships())
-				neighbours.add(rel.getOtherNode(randNode));
+			for (Relationship rel : randNode.getRelationships()) {
+				Node otherNode = rel.getOtherNode(randNode);
+
+				if (otherNode.getId() == startNode.getId())
+					continue;
+
+				neighbours.add(otherNode);
+			}
+
+			if (neighbours.size() == 0)
+				continue;
 
 			randNode = neighbours.get((int) Rnd.nextLong(0,
 					neighbours.size() - 1, RndType.unif));
 		}
+
+		if (randNode.getId() == startNode.getId())
+			return null;
 
 		return randNode;
 	}

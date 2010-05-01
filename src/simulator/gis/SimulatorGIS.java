@@ -30,11 +30,6 @@ public class SimulatorGIS extends Simulator {
 
 	@Override
 	public void loop() {
-		if (count == 100) {
-			getDB().shutdown();
-			this.shutdown();
-		}
-
 		count++;
 
 		if (operationFactory.hasNext()) {
@@ -48,13 +43,9 @@ public class SimulatorGIS extends Simulator {
 				System.out.println("\tFAILED!");
 
 			logOperation(op);
-
-			System.out.println("*****");
 		} else {
-			System.out
-					.printf("Operation[%d]: No Operations remaining\n", count);
-
-			System.out.println("*****");
+			getDB().shutdown();
+			shutdown();
 		}
 
 	}

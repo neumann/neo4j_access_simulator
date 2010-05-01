@@ -30,6 +30,11 @@ public abstract class Simulator extends Thread {
 		this.db = db;
 		try {
 			this.log = new PrintStream(logFile);
+			for (String tag : Operation.getInfoHeader()) {
+				log.print(tag);
+				log.print(logFileDelim);
+			}
+			log.println();
 		} catch (Exception e) {
 			System.out.println("Cannot create logfile");
 		}

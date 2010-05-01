@@ -1,12 +1,15 @@
 package simulator.gis;
 
+import graph_gen_utils.general.Consts;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
 import simulator.gis.astar.AStarRouting;
+import simulator.gis.astar.GeoCostEvaluator;
 
-public class OperationGISShortestPath extends OperationGIS {
+public abstract class OperationGISShortestPath extends OperationGIS {
 
 	private long startId = -1;
 	private long endId = -1;
@@ -37,6 +40,22 @@ public class OperationGISShortestPath extends OperationGIS {
 			AStarRouting astar = new AStarRouting();
 			Iterable<Node> pathNodes = astar.doShortestPath(db, startNode,
 					endNode);
+
+			Integer pathLen = 0;
+			if (pathNodes != null)
+				for (Node node : pathNodes) {
+					pathLen++;
+				}
+
+			this.info.put(GIS_PATH_LENGTH_TAG, pathLen.toString());
+
+			Double distance = GeoCostEvaluator.distance((Double) startNode
+					.getProperty(Consts.LATITUDE), (Double) startNode
+					.getProperty(Consts.LONGITUDE), (Double) endNode
+					.getProperty(Consts.LATITUDE), (Double) endNode
+					.getProperty(Consts.LONGITUDE));
+
+			this.info.put(GIS_DISTANCE_TAG, distance.toString());
 
 			tx.success();
 		} catch (Exception e) {

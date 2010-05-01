@@ -88,9 +88,9 @@ public class OperationGISAddNode extends OperationGIS {
 			if (distribStateDistance != null) {
 				double minDistanceToCityScore = OperationGIS
 						.getMinDistanceToCityScore(lon, lat);
-				distribStateDistance.sumValues += minDistanceToCityScore;
-				distribStateDistance.values.put(newNode.getId(), OperationGIS
-						.getMinDistanceToCityScore(lon, lat));
+				distribStateDistance.sumValues += 1 / minDistanceToCityScore;
+				distribStateDistance.values.put(newNode.getId(),
+						1 / OperationGIS.getMinDistanceToCityScore(lon, lat));
 			}
 
 			tx.success();
