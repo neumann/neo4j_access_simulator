@@ -24,19 +24,16 @@ public class SimulatorGIS extends Simulator {
 	@Override
 	public void initiate() {
 		Rnd.initiate(1000);
-		count = 0;
 	}
 
 	@Override
 	public void loop() {
-		count++;
-
 		if (operationFactory.hasNext()) {
 
 			Operation op = operationFactory.next();
 
-			System.out.printf("Operation[%d]: ID[%d] Type[%s]\n", count, op
-					.getId(), op.getType());
+			System.out.printf("Operation[%d] Type[%s]\n", op.getId(), op
+					.getType());
 
 			if (op.executeOn(getDB()) == false)
 				System.out.println("\tFAILED!");
