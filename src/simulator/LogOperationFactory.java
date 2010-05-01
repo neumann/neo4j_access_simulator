@@ -14,6 +14,10 @@ public abstract class LogOperationFactory implements OperationFactory {
 		this.count = 0;
 		try {
 			file = new RandomAccessFile(fn, "r");
+
+			// Skip headers
+			hasNext();
+			curLine = null;
 		} catch (Exception e) {
 		}
 	}
@@ -40,9 +44,12 @@ public abstract class LogOperationFactory implements OperationFactory {
 
 	@Override
 	public Operation next() {
-		hasNext();
+		if (hasNext() == false)
+			return null;
+
 		count++;
 		String[] args = extractArgs(curLine);
+		curLine = null;
 		return createOperation(args);
 	}
 
