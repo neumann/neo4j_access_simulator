@@ -7,12 +7,12 @@ import java.util.Vector;
 import simulator.LogOperationFactory;
 import simulator.Operation;
 
-public class LogOperationFactoryImplGIS extends LogOperationFactory {
+public class LogOperationFactoryGIS extends LogOperationFactory {
 	protected RandomAccessFile file = null;
 	protected String curLine = null;
 	protected long count;
 
-	public LogOperationFactoryImplGIS(String fn) {
+	public LogOperationFactoryGIS(String fn) {
 		super(fn);
 	}
 
@@ -43,36 +43,6 @@ public class LogOperationFactoryImplGIS extends LogOperationFactory {
 		count++;
 		String[] args = extractArgs(curLine);
 		return createOperation(args);
-	}
-
-	@Override
-	protected String[] extractArgs(String curLine) {
-
-		Vector<String> resultVector = new Vector<String>();
-
-		int index = -1;
-
-		String tokenOuter = null;
-
-		StringTokenizer stOuter = new StringTokenizer(curLine, ";\t\n\r\f");
-
-		while (stOuter.hasMoreTokens()) {
-
-			index++;
-
-			tokenOuter = stOuter.nextToken();
-
-			if (index == Operation.ARGS_TAG_INDX) {
-				for (String arg : tokenOuter.replaceAll("[\\[\\]]", "").split(
-						", ")) {
-					resultVector.add(arg);
-				}
-				break;
-			}
-
-		}
-
-		return resultVector.toArray(new String[resultVector.size()]);
 	}
 
 }

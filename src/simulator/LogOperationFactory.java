@@ -2,6 +2,8 @@ package simulator;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 public abstract class LogOperationFactory implements OperationFactory {
 	protected RandomAccessFile file = null;
@@ -45,7 +47,32 @@ public abstract class LogOperationFactory implements OperationFactory {
 	}
 
 	protected String[] extractArgs(String curLine) {
-		return curLine.split("* ");
+
+		Vector<String> resultVector = new Vector<String>();
+
+		int index = -1;
+
+		String tokenOuter = null;
+
+		StringTokenizer stOuter = new StringTokenizer(curLine, ";\t\n\r\f");
+
+		while (stOuter.hasMoreTokens()) {
+
+			index++;
+
+			tokenOuter = stOuter.nextToken();
+
+			if (index == Operation.ARGS_TAG_INDX) {
+				for (String arg : tokenOuter.replaceAll("[\\[\\]]", "").split(
+						", ")) {
+					resultVector.add(arg);
+				}
+				break;
+			}
+
+		}
+
+		return resultVector.toArray(new String[resultVector.size()]);
 	}
 
 	public abstract Operation createOperation(String[] args);
