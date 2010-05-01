@@ -4,6 +4,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
+
 public class Rnd {
 	public static enum RndType {
 		expo, unif, norm
@@ -37,7 +41,7 @@ public class Rnd {
 		}
 	}
 
-	public static Object[] getSample(Map<Object, Double> elements,
+	public static Object[] getSampleFromMap(Map<Object, Double> elements,
 			double sumOfElements, int sampleSize, RndType rndType) {
 		Object[] res = new Object[sampleSize];
 		double[] val = new double[sampleSize];
@@ -66,6 +70,47 @@ public class Rnd {
 		return res;
 	}
 
+	public static Node[] getSampleFromDB(GraphDatabaseService db,String wheightKey,
+			double sumOfElements, int sampleSize, RndType rndType) {
+		Node[] res = new Node[sampleSize];
+		double[] val = new double[sampleSize];
+		for (int i = 0; i < val.length; i++) {
+			val[i] = nextDouble(rndType) * sumOfElements;
+			res[i] = null;
+		}
+
+		boolean done = false;
+		Transaction tx = db.beginTx();
+		try {
+			Iterator<Node> iterOnMap = db.getAllNodes().iterator();
+			while (iterOnMap.hasNext() && !done) {
+				Node cur = iterOnMap.next();
+				double curVal =0;
+				if(cur.hasProperty(wheightKey)){
+					curVal = (Double) cur.getProperty(wheightKey);
+				}
+				done = true;
+				for (int i = 0; i < val.length; i++) {
+					if (res[i] == null) {
+						val[i] -= curVal;
+						if (val[i] <= 0) {
+							res[i] = cur;
+						} else {
+							done = false;
+						}
+					}
+				}
+			}
+			tx.success();
+		} finally {
+			tx.finish();
+		}
+		
+		return res;
+	}
+	
+	
+	
 	public static long nextLong(long start, long end, RndType type) {
 		double val = nextDouble(type);
 		return Math.round((val * (end - start)) + start);
