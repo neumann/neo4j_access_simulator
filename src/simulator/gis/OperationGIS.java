@@ -10,8 +10,8 @@ import simulator.gis.astar.GeoCostEvaluator;
 
 public abstract class OperationGIS extends Operation {
 
-	public OperationGIS(long id, String[] args) {
-		super(id, args);
+	public OperationGIS(String[] args) {
+		super(args);
 	}
 
 	@Override

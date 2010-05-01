@@ -40,7 +40,7 @@ public class OperationFactoryGIS implements OperationFactory {
 
 	private GraphDatabaseService graphDb = null;
 
-	private long opId = 0;
+	private Long opId = new Long(0);
 
 	private final int ADD_RATIO_INDX = 0;
 	private final int DELETE_RATIO_INDX = 1;
@@ -119,7 +119,8 @@ public class OperationFactoryGIS implements OperationFactory {
 		switch (opTypeIndx) {
 
 		case ADD_RATIO_INDX: {
-			Object[] results = Rnd.getSample(distanceDistributionState.values,
+			Object[] results = Rnd.getSampleFromMap(
+					distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
 			long startNodeId = (Long) results[0];
@@ -140,21 +141,23 @@ public class OperationFactoryGIS implements OperationFactory {
 					- Math.abs(latStart - latEnd);
 
 			// args
-			// -> 0 type
-			// -> 1 lon
-			// -> 2 lan
-			// -> 3 startId
-			// -> 4 endId
-			String[] args = new String[] { OperationGISAddNode.class.getName(),
+			// -> 0 id
+			// -> 1 type
+			// -> 2 lon
+			// -> 3 lan
+			// -> 4 startGid
+			// -> 5 endGid
+			String[] args = new String[] { opId.toString(),
+					OperationGISAddNode.class.getName(),
 					Double.toString(lonNew), Double.toString(latNew),
 					Long.toString(startNodeId), Long.toString(endNode.getId()) };
 
-			return new OperationGISAddNode(opId, args,
-					distanceDistributionState);
+			return new OperationGISAddNode(args, distanceDistributionState);
 		}
 
 		case DELETE_RATIO_INDX: {
-			Object[] results = Rnd.getSample(distanceDistributionState.values,
+			Object[] results = Rnd.getSampleFromMap(
+					distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
 			long startNodeId = (Long) results[0];
@@ -162,14 +165,14 @@ public class OperationFactoryGIS implements OperationFactory {
 			Node startNode = graphDb.getNodeById(startNodeId);
 
 			// args
-			// -> 0 type
-			// -> 1 id
-			String[] args = new String[] {
+			// -> 0 id
+			// -> 1 type
+			// -> 2 startId
+			String[] args = new String[] { opId.toString(),
 					OperationGISDeleteNode.class.getName(),
 					Long.toString(startNode.getId()) };
 
-			return new OperationGISDeleteNode(opId, args,
-					distanceDistributionState);
+			return new OperationGISDeleteNode(args, distanceDistributionState);
 		}
 
 		case LOCAL_SEARCH_RATIO_INDX: {
@@ -178,7 +181,7 @@ public class OperationFactoryGIS implements OperationFactory {
 			Node endNode = null;
 
 			while (endNode == null) {
-				Object[] results = Rnd.getSample(
+				Object[] results = Rnd.getSampleFromMap(
 						distanceDistributionState.values,
 						distanceDistributionState.sumValues, 1, RndType.unif);
 
@@ -192,38 +195,42 @@ public class OperationFactoryGIS implements OperationFactory {
 			}
 
 			// args
-			// -> 0 type
-			// -> 1 startId
-			// -> 2 endId
-			String[] args = new String[] {
+			// -> 0 id
+			// -> 1 type
+			// -> 2 startId
+			// -> 3 endId
+			String[] args = new String[] { opId.toString(),
 					OperationGISShortestPathLocal.class.getName(),
 					Long.toString(startNodeId), Long.toString(endNode.getId()) };
 
-			return new OperationGISShortestPathLocal(opId, args);
+			return new OperationGISShortestPathLocal(args);
 		}
 
 		case GLOBAL_SEARCH_RATIO_INDX: {
-			Object[] results = Rnd.getSample(distanceDistributionState.values,
+			Object[] results = Rnd.getSampleFromMap(
+					distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
 
 			long startNodeId = (Long) results[0];
 			long endNodeId = startNodeId;
 
 			while (endNodeId == startNodeId) {
-				results = Rnd.getSample(distanceDistributionState.values,
+				results = Rnd.getSampleFromMap(
+						distanceDistributionState.values,
 						distanceDistributionState.sumValues, 1, RndType.unif);
 				endNodeId = (Long) results[0];
 			}
 
 			// args
-			// -> 0 type
-			// -> 1 startId
-			// -> 2 endId
-			String[] args = new String[] {
+			// -> 0 id
+			// -> 1 type
+			// -> 2 startId
+			// -> 3 endId
+			String[] args = new String[] { opId.toString(),
 					OperationGISShortestPathGlobal.class.getName(),
 					Long.toString(startNodeId), Long.toString(endNodeId) };
 
-			return new OperationGISShortestPathGlobal(opId, args);
+			return new OperationGISShortestPathGlobal(args);
 		}
 
 		}

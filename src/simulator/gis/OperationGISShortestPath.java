@@ -15,17 +15,15 @@ public abstract class OperationGISShortestPath extends OperationGIS {
 	private long endId = -1;
 
 	// args
-	// -> 0 type
-	// -> 1 startId
-	// -> 2 endId
-	public OperationGISShortestPath(long id, String[] args) throws Exception {
-		super(id, args);
+	// -> 0 id
+	// -> 1 type
+	// -> 2 startId
+	// -> 3 endId
+	public OperationGISShortestPath(String[] args) {
+		super(args);
 
-		if (args[0].equals(getClass().getName()) == false)
-			throw new Exception("Invalid Operation Type");
-
-		startId = Long.parseLong(args[1]);
-		endId = Long.parseLong(args[2]);
+		startId = Long.parseLong(args[2]);
+		endId = Long.parseLong(args[3]);
 	}
 
 	@Override

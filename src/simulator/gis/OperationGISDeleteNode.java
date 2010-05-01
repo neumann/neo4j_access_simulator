@@ -14,25 +14,20 @@ public class OperationGISDeleteNode extends OperationGIS {
 	private long startId = -1;
 
 	// args
-	// -> 0 type
-	// -> 1 id
-	public OperationGISDeleteNode(long id, String[] args) throws Exception {
-		super(id, args);
+	// -> 0 id
+	// -> 1 type
+	// -> 2 startId
+	public OperationGISDeleteNode(String[] args) {
+		super(args);
 
-		if (args[0].equals(getClass().getName()) == false)
-			throw new Exception("Invalid Operation Type");
-
-		this.startId = Long.parseLong(args[1]);
+		this.startId = Long.parseLong(args[2]);
 	}
 
-	public OperationGISDeleteNode(long id, String[] args,
-			DistributionState distribStateDistance) throws Exception {
-		super(id, args);
+	public OperationGISDeleteNode(String[] args,
+			DistributionState distribStateDistance) {
+		super(args);
 
-		if (args[0].equals(getClass().getName()) == false)
-			throw new Exception("Invalid Operation Type");
-
-		this.startId = Long.parseLong(args[1]);
+		this.startId = Long.parseLong(args[2]);
 
 		this.distribStateDistance = distribStateDistance;
 	}

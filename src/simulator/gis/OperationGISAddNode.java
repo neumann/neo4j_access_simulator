@@ -19,34 +19,29 @@ public class OperationGISAddNode extends OperationGIS {
 	private long endGid = -1;
 
 	// args
-	// -> 0 type
-	// -> 1 lon
-	// -> 2 lan
-	// -> 3 startGid
-	// -> 4 endGid
-	public OperationGISAddNode(long id, String[] args) throws Exception {
-		super(id, args);
+	// -> 0 id
+	// -> 1 type
+	// -> 2 lon
+	// -> 3 lan
+	// -> 4 startGid
+	// -> 5 endGid
+	public OperationGISAddNode(String[] args) {
+		super(args);
 
-		if (args[0].equals(getClass().getName()) == false)
-			throw new Exception("Invalid Operation Type");
-
-		this.lon = Double.parseDouble(args[1]);
-		this.lat = Double.parseDouble(args[2]);
-		this.startGid = Long.parseLong(args[3]);
-		this.endGid = Long.parseLong(args[4]);
+		this.lon = Double.parseDouble(args[2]);
+		this.lat = Double.parseDouble(args[3]);
+		this.startGid = Long.parseLong(args[4]);
+		this.endGid = Long.parseLong(args[5]);
 	}
 
-	public OperationGISAddNode(long id, String[] args,
-			DistributionState distribStateDistance) throws Exception {
-		super(id, args);
+	public OperationGISAddNode(String[] args,
+			DistributionState distribStateDistance) {
+		super(args);
 
-		if (args[0].equals(getClass().getName()) == false)
-			throw new Exception("Invalid Operation Type");
-
-		this.lon = Double.parseDouble(args[1]);
-		this.lat = Double.parseDouble(args[2]);
-		this.startGid = Long.parseLong(args[3]);
-		this.endGid = Long.parseLong(args[4]);
+		this.lon = Double.parseDouble(args[2]);
+		this.lat = Double.parseDouble(args[3]);
+		this.startGid = Long.parseLong(args[4]);
+		this.endGid = Long.parseLong(args[5]);
 
 		this.distribStateDistance = distribStateDistance;
 	}

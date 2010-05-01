@@ -2,7 +2,6 @@ package simulator.gis;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
-import simulator.LogOperationFactory;
 import simulator.Operation;
 import simulator.OperationFactory;
 import simulator.Rnd;

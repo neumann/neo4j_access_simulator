@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public abstract class LogOperationFactory implements OperationFactory {
-	private RandomAccessFile file = null;
-	private String curLine = null;
-	private long count;
+	protected RandomAccessFile file = null;
+	protected String curLine = null;
+	protected long count;
 
 	public LogOperationFactory(String fn) {
 		this.count = 0;
@@ -40,12 +40,15 @@ public abstract class LogOperationFactory implements OperationFactory {
 	public Operation next() {
 		hasNext();
 		count++;
-		String[] split = curLine.split("* ");
-		return createOperation(count, split[0], split);
+		String[] args = extractArgs(curLine);
+		return createOperation(args);
 	}
 
-	public abstract Operation createOperation(long id, String type,
-			String[] args);
+	protected String[] extractArgs(String curLine) {
+		return curLine.split("* ");
+	}
+
+	public abstract Operation createOperation(String[] args);
 
 	@Override
 	public void shutdown() {
