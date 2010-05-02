@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import org.neo4j.graphdb.GraphDatabaseService;
 
+import p_graph_service.PGraphDatabaseService;
+import p_graph_service.core.PGraphDatabaseServiceImpl;
+
 public abstract class Operation {
 	public static final int ID_TAG_INDX = 0;
 	public static final int TYPE_TAG_INDX = 1;
@@ -20,6 +23,10 @@ public abstract class Operation {
 	protected static final String HOP_TAG = "hop";
 	protected static final String INTERHOP_TAG = "interhop";
 	protected static final String TRAFFIC_TAG = "traffic";
+	protected static final String NODE_CHANGE = "n_change";
+	protected static final String REL_CHANGE = "rel_change";
+	
+	
 	protected static final String GIS_PATH_LENGTH_TAG = "pathlen";
 	protected static final String GIS_DISTANCE_TAG = "distance";
 
@@ -70,8 +77,41 @@ public abstract class Operation {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public final boolean executeOn(GraphDatabaseService db) {
-		return onExecute(db);
+		
+		if(db instanceof PGraphDatabaseService){
+			PGraphDatabaseService pdb = (PGraphDatabaseService)db;
+			//take system snapshot
+			long[] ids = pdb.getInstancesIDs();
+			long[] nodes = new long[ids.length];
+			long[] relas = new long[ids.length];
+			
+			// reset traffic
+			pdb.resetTrafficRecords();
+			for(int i=0; i<ids.length; i++ ){
+				nodes[i] = pdb.getNumNodesOn(ids[i]);
+				relas[i] = pdb.getNumRelationsOn(ids[i]);
+			}
+			
+			// execute operation
+			boolean res = onExecute(db);
+			
+			long[] traffic = new long[ids.length];
+			HashMap[] hashMaps = new HashMap[ids.length];
+			
+			//take mesurements
+			for(int i=0; i<ids.length; i++ ){
+				nodes[i] -= pdb.getNumNodesOn(ids[i]);
+				relas[i] -= pdb.getNumRelationsOn(ids[i]);
+				traffic[i] = pdb.getTrafficOn(ids[i]);
+				hashMaps[i] = pdb.getTrafficRecordFor(ids[i]);
+			}			
+			
+			return res;	
+			
+		}
+		return onExecute(db);	
 	}
 
 	public abstract boolean onExecute(GraphDatabaseService db);
