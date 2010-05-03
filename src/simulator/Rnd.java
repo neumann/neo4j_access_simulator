@@ -1,5 +1,6 @@
 package simulator;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -9,25 +10,26 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
 public class Rnd {
+	private static long defaultSeed = 666; 
+	private static Random rnd = null;
+
 	public static enum RndType {
 		expo, unif, norm
 	}
-
-	private static Random rnd = null;
-
+	
 	private Rnd() {
 	}
 
-	public static void initiate(long seed) {
-		if (rnd == null) {
-			rnd = new Random(seed);
-		}
+	public static void setSeed(long seed){
+		defaultSeed = seed;
+		rnd = null;
 	}
 
 	public static double nextDouble(RndType type) {
-		if (rnd == null)
-			throw new Error("Generator not initialized");
-
+		if (rnd == null) {
+			rnd = new Random(defaultSeed);
+		}
+		
 		switch (type) {
 		case expo:
 			// cdf for exponential distribution 1 − e^(− λx)
@@ -43,6 +45,10 @@ public class Rnd {
 
 	public static Object[] getSampleFromMap(Map<Object, Double> elements,
 			double sumOfElements, int sampleSize, RndType rndType) {
+		if (rnd == null) {
+			rnd = new Random(defaultSeed);
+		}
+		
 		Object[] res = new Object[sampleSize];
 		double[] val = new double[sampleSize];
 		for (int i = 0; i < val.length; i++) {
@@ -68,10 +74,14 @@ public class Rnd {
 			}
 		}
 		return res;
-	}
-
+	}	
+	
 	public static long[] getSampleFromDB(GraphDatabaseService db,String wheightKey,
 			double sumOfElements, int sampleSize, RndType rndType) {
+		if (rnd == null) {
+			rnd = new Random(defaultSeed);
+		}
+		
 		long[] res = new long[sampleSize];
 		double[] val = new double[sampleSize];
 		for (int i = 0; i < val.length; i++) {
@@ -112,6 +122,10 @@ public class Rnd {
 	
 	
 	public static long nextLong(long start, long end, RndType type) {
+		if (rnd == null) {
+			rnd = new Random(defaultSeed);
+		}
+		
 		double val = nextDouble(type);
 		return Math.round((val * (end - start)) + start);
 	}
