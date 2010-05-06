@@ -14,8 +14,8 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipExpander;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.kernel.DefaultExpander;
 
 public class AStarRouting {
 	private static final EstimateEvaluator<Double> estimateEval = new GeoCostEvaluator();
@@ -31,9 +31,14 @@ public class AStarRouting {
 	public Iterable<Node> doShortestPath(final GraphDatabaseService graphDb,
 			Node startNode, Node endNode) {
 
-		AStar sp = new AStar(graphDb, RelationshipExpander.forTypes(
-				GISRelationshipTypes.BICYCLE_WAY, Direction.BOTH), costEval,
-				estimateEval);
+		DefaultExpander relExpander = new DefaultExpander();
+		// relExpander.add( GISRelationshipTypes.FOOT_WAY, Direction.BOTH );
+		relExpander.add(GISRelationshipTypes.BICYCLE_WAY, Direction.BOTH);
+		// relExpander.add( GISRelationshipTypes.CAR_WAY, Direction.BOTH );
+		// relExpander.add( GISRelationshipTypes.CAR_SHORTEST_WAY,
+		// Direction.BOTH );
+
+		AStar sp = new AStar(graphDb, relExpander, costEval, estimateEval);
 
 		Path path = sp.findSinglePath(startNode, endNode);
 
