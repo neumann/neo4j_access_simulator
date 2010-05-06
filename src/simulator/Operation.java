@@ -24,8 +24,7 @@ public abstract class Operation {
 	protected static final String TRAFFIC_TAG = "traffic";
 	protected static final String NODE_CHANGE = "n_change";
 	protected static final String REL_CHANGE = "rel_change";
-	
-	
+
 	protected static final String GIS_PATH_LENGTH_TAG = "pathlen";
 	protected static final String GIS_DISTANCE_TAG = "distance";
 
@@ -78,45 +77,60 @@ public abstract class Operation {
 
 	@SuppressWarnings("unchecked")
 	public final boolean executeOn(GraphDatabaseService db) {
-		
-		if(db instanceof PGraphDatabaseService){
-			PGraphDatabaseService pdb = (PGraphDatabaseService)db;
-			//take system snapshot
+
+		if (db instanceof PGraphDatabaseService) {
+			PGraphDatabaseService pdb = (PGraphDatabaseService) db;
+			// take system snapshot
 			long[] ids = pdb.getInstancesIDs();
 			long[] nodes = new long[ids.length];
 			long[] relas = new long[ids.length];
-			
+
 			// reset traffic
 			pdb.resetTrafficRecords();
-			for(int i=0; i<ids.length; i++ ){
+			for (int i = 0; i < ids.length; i++) {
 				nodes[i] = pdb.getNumNodesOn(ids[i]);
 				relas[i] = pdb.getNumRelationsOn(ids[i]);
 			}
-			
+
 			// execute operation
 			boolean res = onExecute(db);
-			
-			long[] traffic = new long[ids.length];
-			HashMap[] hashMaps = new HashMap[ids.length];
-			
-			//take mesurements
-			for(int i=0; i<ids.length; i++ ){
+
+			long[] serverTraffic = new long[ids.length];
+			HashMap[] serverInterhops = new HashMap[ids.length];
+
+			// take mesurements
+			for (int i = 0; i < ids.length; i++) {
 				nodes[i] -= pdb.getNumNodesOn(ids[i]);
 				relas[i] -= pdb.getNumRelationsOn(ids[i]);
-				traffic[i] = pdb.getTrafficOn(ids[i]);
-				hashMaps[i] = pdb.getTrafficRecordFor(ids[i]);
-			}			
-			
-			System.out.println("traffic "+Arrays.toString(traffic));
-			System.out.println("iterHop "+Arrays.toString(hashMaps));
-			
-			info.put(INTERHOP_TAG, hashMaps.toString());
-			info.put(TRAFFIC_TAG, hashMaps.toString());
-			
-			return res;	
-			
+				serverTraffic[i] = pdb.getTrafficOn(ids[i]);
+				serverInterhops[i] = pdb.getTrafficRecordFor(ids[i]);
+			}
+
+			// System.out.println("traffic " + Arrays.toString(serverTraffic));
+			// System.out.println("iterHop " +
+			// Arrays.toString(serverInterhops));
+
+			Long sumInterhops = (long) 0;
+			for (HashMap<Long, Long> partitionInterhops : serverInterhops) {
+				for (Long interhopsTo : partitionInterhops.values()) {
+					sumInterhops += interhopsTo;
+				}
+			}
+			sumInterhops = sumInterhops / 2;
+
+			info.put(INTERHOP_TAG, sumInterhops.toString());
+
+			Long sumTraffic = (long) 0;
+			for (long partitionTraffic : serverTraffic) {
+				sumTraffic += partitionTraffic;
+			}
+
+			info.put(TRAFFIC_TAG, sumTraffic.toString());
+
+			return res;
+
 		}
-		return onExecute(db);	
+		return onExecute(db);
 	}
 
 	public abstract boolean onExecute(GraphDatabaseService db);
