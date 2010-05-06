@@ -4,7 +4,7 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 
 public class TreeArgs {
-	public static final String listLenght = "list_lenght";
+	public static final String listLenght = "list_length";
 	public static final String hasSub = "has_sub_folders";
 	public static final String name = "name";
 	public static final String size = "size";

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import p_graph_service.PGraphDatabaseService;
-import p_graph_service.core.PGraphDatabaseServiceImpl;
 
 public abstract class Operation {
 	public static final int ID_TAG_INDX = 0;
@@ -107,6 +106,12 @@ public abstract class Operation {
 				traffic[i] = pdb.getTrafficOn(ids[i]);
 				hashMaps[i] = pdb.getTrafficRecordFor(ids[i]);
 			}			
+			
+			System.out.println("traffic "+Arrays.toString(traffic));
+			System.out.println("iterHop "+Arrays.toString(hashMaps));
+			
+			info.put(INTERHOP_TAG, hashMaps.toString());
+			info.put(TRAFFIC_TAG, hashMaps.toString());
 			
 			return res;	
 			

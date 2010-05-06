@@ -1,5 +1,6 @@
 package simulator.tree;
 
+import java.util.Arrays;
 import java.util.TreeMap;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -20,7 +21,7 @@ public class ReadOnly_Factory implements OperationFactory {
 		// calculate max
 		Transaction tx = db.beginTx();
 		try {
-			for(Node n : db.getAllNodes()){
+			for(Node n : db.getAllNodes()){			
 				if(n.hasProperty(TreeArgs.listLenght)){
 					int val = (Integer)n.getProperty(TreeArgs.listLenght);
 					max += val;
@@ -31,7 +32,9 @@ public class ReadOnly_Factory implements OperationFactory {
 		} finally {
 			tx.finish();
 		}
+		System.out.println(nodeMap);
 		sample = Rnd.getSampleFromMap(nodeMap, max, numOperation, Rnd.RndType.unif);
+		System.out.println(Arrays.toString(sample));
 	}
 	
 	@Override
@@ -41,6 +44,8 @@ public class ReadOnly_Factory implements OperationFactory {
 
 	@Override
 	public Operation next() {
+		System.out.println(((Long)sample[count]).toString());
+		
 		String[] args = {count+"", LogReadOp_CountFiles.class.getName(), ((Long)sample[count]).toString()};
 		count ++;
 		return new LogReadOp_CountFiles(args);

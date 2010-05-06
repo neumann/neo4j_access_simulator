@@ -27,29 +27,27 @@ public class LogWriteOp_DeleteItems extends Operation {
 			if(snode.hasProperty(TreeArgs.name)){
 				String name  = (String) snode.getProperty(TreeArgs.name);
 				
-				// if is a file or a folder fix parent
-				// if file fix listLength of parent
-				if(name.contains("File")){
-					Node parent = snode.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM,Direction.INCOMING).iterator().next().getStartNode();
-					int count = (Integer) parent.getProperty(TreeArgs.listLenght);
-					parent.setProperty(TreeArgs.listLenght, count-1);
-					
-				}
-				// if folder fix has subfolder of parent
-				else if(name.contains("Folder")){
-					Node parent = snode.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM,Direction.INCOMING).iterator().next().getStartNode();
-					Iterator<Relationship> outRel = parent.getRelationships(TreeArgs.TreeRelTypes.CHILD_FOLDER, Direction.OUTGOING).iterator();
-					outRel.next();
-					if(!outRel.hasNext()){
-						parent.removeProperty(TreeArgs.hasSub);
-					}
+				// fix parent values
+				// this code assumes that there is only one Parent, if there are more it might break
+				for(Relationship rs : snode.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.INCOMING)){
+					Node parent = rs.getStartNode();
+					if(name.contains("File")){
+						int count = (Integer) parent.getProperty(TreeArgs.listLenght);
+						parent.setProperty(TreeArgs.listLenght, count-1);
+					}else if(name.contains("Folder")){
+						Iterator<Relationship> outRel = parent.getRelationships(TreeArgs.TreeRelTypes.CHILD_FOLDER, Direction.OUTGOING).iterator();
+						outRel.next();
+						if(!outRel.hasNext()){
+							parent.removeProperty(TreeArgs.hasSub);
+						}
+					}	
 				}
 				
 				// delete subtree
 				LinkedList<Node> nodesToGo = new LinkedList<Node>();
 				nodesToGo.add(snode);
 				while (!nodesToGo.isEmpty()) {
-					Node n = nodesToGo.remove();
+					Node n = nodesToGo.poll();
 					// delete all incoming relationships
 					for(Relationship rs :  n.getRelationships(Direction.INCOMING)){
 						rs.delete();
@@ -62,10 +60,9 @@ public class LogWriteOp_DeleteItems extends Operation {
 							nodesToGo.add(rs.getEndNode());
 						}
 					}
+					n.delete();
 				}
 			}
-			
-			
 			res = true;
 			tx.success();
 		} finally{

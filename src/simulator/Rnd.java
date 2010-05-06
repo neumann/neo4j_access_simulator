@@ -1,6 +1,5 @@
 package simulator;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -97,7 +96,7 @@ public class Rnd {
 				Node cur = iterOnMap.next();
 				double curVal =0;
 				if(cur.hasProperty(wheightKey)){
-					curVal = (Double) cur.getProperty(wheightKey);
+					curVal = new Double ((Integer)cur.getProperty(wheightKey));
 				}
 				done = true;
 				for (int i = 0; i < val.length; i++) {
@@ -119,6 +118,48 @@ public class Rnd {
 		return res;
 	}
 	
+	public static long[] getInverseSampleFromDB(GraphDatabaseService db,String wheightKey,
+			double sumOfElements, int sampleSize, RndType rndType) {
+		if (rnd == null) {
+			rnd = new Random(defaultSeed);
+		}
+		
+		long[] res = new long[sampleSize];
+		double[] val = new double[sampleSize];
+		for (int i = 0; i < val.length; i++) {
+			val[i] = nextDouble(rndType) * sumOfElements;
+			res[i] = -1;
+		}
+
+		boolean done = false;
+		Transaction tx = db.beginTx();
+		try {
+			Iterator<Node> iterOnMap = db.getAllNodes().iterator();
+			while (iterOnMap.hasNext() && !done) {
+				Node cur = iterOnMap.next();
+				double curVal =0;
+				if(cur.hasProperty(wheightKey)){
+					curVal = 1/new Double((Integer)cur.getProperty(wheightKey));
+				}
+				done = true;
+				for (int i = 0; i < val.length; i++) {
+					if (res[i] == -1) {
+						val[i] -= curVal;
+						if (val[i] <= 0) {
+							res[i] = cur.getId();
+						} else {
+							done = false;
+						}
+					}
+				}
+			}
+			tx.success();
+		} finally {
+			tx.finish();
+		}
+		
+		return res;
+	}
 	
 	
 	public static long nextLong(long start, long end, RndType type) {

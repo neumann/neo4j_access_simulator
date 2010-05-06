@@ -2,6 +2,7 @@ package simulator.tree;
 
 import java.util.LinkedList;
 
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -33,12 +34,15 @@ public class LogReadOp_CountFiles extends Operation {
 				if(n.hasProperty(TreeArgs.hasSub)){
 					fileCount += (Integer)n.getProperty(TreeArgs.listLenght);
 					
-					for(Relationship rs : n.getRelationships(TreeArgs.TreeRelTypes.CHILD_FOLDER)){
+					for(Relationship rs : n.getRelationships(TreeArgs.TreeRelTypes.CHILD_FOLDER, Direction.OUTGOING)){
 						nodesToGo.add(rs.getEndNode());
 						folderCount ++;	
 					}	
 				}
 			}
+			
+			System.out.println("Filecount: "+ fileCount + " FolderCount "+ folderCount);
+			
 			res = true;
 			tx.success();
 		} finally{
