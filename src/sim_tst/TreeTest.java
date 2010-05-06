@@ -9,7 +9,6 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 import p_graph_service.PGraphDatabaseService;
 import p_graph_service.core.PGraphDatabaseServiceImpl;
 import simulator.Simulator;
-import simulator.tree.RandomStaticSimulator;
 
 import graph_gen_utils.NeoFromFile;
 import graph_gen_utils.partitioner.Partitioner;
@@ -21,11 +20,11 @@ public class TreeTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
+
 		GraphDatabaseService dbn = new EmbeddedGraphDatabase("var/db");
 		Transaction tx = dbn.beginTx();
 		try {
-			for(RelationshipType t :dbn.getRelationshipTypes() ){
+			for (RelationshipType t : dbn.getRelationshipTypes()) {
 				System.out.println(t);
 			}
 			tx.success();
@@ -33,10 +32,11 @@ public class TreeTest {
 			tx.finish();
 		}
 
-//		PGraphDatabaseService pDB = new PGraphDatabaseServiceImpl("var/pDB", 0);
-//		Simulator sim = new RandomStaticSimulator(pDB, "log.txt");
-//		sim.startSIM();
-//		System.out.println("done");
+		// PGraphDatabaseService pDB = new PGraphDatabaseServiceImpl("var/pDB",
+		// 0);
+		// Simulator sim = new RandomStaticSimulator(pDB, "log.txt");
+		// sim.startSIM();
+		// System.out.println("done");
 
 		// convertDB();
 	}
@@ -53,7 +53,7 @@ public class TreeTest {
 		db.shutdown();
 
 		PGraphDatabaseService pDB = new PGraphDatabaseServiceImpl("var/pDB", 0);
-		//pDB.createDistribution("var/sampleDB");
+		// pDB.createDistribution("var/sampleDB");
 		pDB.shutdown();
 	}
 }

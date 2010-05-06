@@ -57,8 +57,6 @@ public class OperationFactoryGIS implements OperationFactory {
 
 		this.graphDb = graphDb;
 
-		Rnd.initiate(1000);
-
 		long time = System.currentTimeMillis();
 		System.out.printf("Populating distance scores...");
 

@@ -1,5 +1,7 @@
 package sim_tst;
 
+import graph_gen_utils.NeoFromFile;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
@@ -19,15 +21,20 @@ public class GISTest {
 		GraphDatabaseService db = new EmbeddedGraphDatabase(
 				"var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS");
 
-		// double addRatio = 0.25;
-		// double delRatio = 0.25;
-		// double localRatio = 0.25;
-		// double globalRatio = 0.25;
-		// long opCount = 20;
-		// OperationFactory operationFactory = new OperationFactoryGIS(db,
-		// addRatio, delRatio, localRatio, globalRatio, opCount);
-		OperationFactory operationFactory = new LogOperationFactoryGIS(
-				"var/gis/log-gis-romania-input.txt");
+		// GraphDatabaseService pdb = NeoFromFile
+		// .writePNeoFromNeo(
+		// "var/gis/partitioned-romania-BAL2-GID-NAME-COORDS-ALL_RELS",
+		// db);
+
+		double addRatio = 0.10;
+		double delRatio = 0.10;
+		double localRatio = 0.40;
+		double globalRatio = 0.40;
+		long opCount = 100;
+		OperationFactory operationFactory = new OperationFactoryGIS(db,
+				addRatio, delRatio, localRatio, globalRatio, opCount);
+		// OperationFactory operationFactory = new LogOperationFactoryGIS(
+		// "var/gis/log-gis-romania-input.txt");
 
 		Simulator sim = new SimulatorGIS(db, "var/gis/log-gis-romania.txt",
 				operationFactory);
