@@ -10,8 +10,13 @@ import simulator.gis.astar.GeoCostEvaluator;
 
 public abstract class OperationGIS extends Operation {
 
+	protected static final String GIS_PATH_LENGTH_TAG = "pathlen";
+	protected static final String GIS_DISTANCE_TAG = "distance";
+
 	public OperationGIS(String[] args) {
 		super(args);
+		this.info.put(GIS_PATH_LENGTH_TAG, Long.toString(0));
+		this.info.put(GIS_DISTANCE_TAG, Long.toString(0));
 	}
 
 	@Override
@@ -21,8 +26,6 @@ public abstract class OperationGIS extends Operation {
 	public static double getMinDistanceToCityScore(double sourceLon,
 			double sourceLat) {
 
-		// ArrayList<ArrayList<Double>> citiesCoords = new
-		// ArrayList<ArrayList<Double>>();
 		ArrayList<Coordinates> citiesCoords = new ArrayList<Coordinates>();
 
 		// Romania [longitude=24.9804, latitude=45.946949]

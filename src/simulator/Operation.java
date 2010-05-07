@@ -2,21 +2,15 @@ package simulator;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import p_graph_service.PGraphDatabaseService;
 import p_graph_service.core.InstanceInfo;
 
 public abstract class Operation {
-	public static final int ID_TAG_INDX = 0;
-	public static final int TYPE_TAG_INDX = 1;
-	public static final int ARGS_TAG_INDX = 2;
-	public static final int HOP_TAG_INDX = 3;
-	public static final int INTERHOP_TAG_INDX = 4;
-	public static final int TRAFFIC_TAG_INDX = 5;
-	public static final int GIS_PATH_LENGTH_TAG_INDX = 6;
-	public static final int GIS_DISTANCE_TAG_INDX = 7;
-
 	protected static final String ID_TAG = "id";
 	protected static final String TYPE_TAG = "type";
 	protected static final String ARGS_TAG = "args";
@@ -26,24 +20,10 @@ public abstract class Operation {
 	protected static final String NODE_CHANGE = "n_change";
 	protected static final String REL_CHANGE = "rel_change";
 
-	protected static final String GIS_PATH_LENGTH_TAG = "pathlen";
-	protected static final String GIS_DISTANCE_TAG = "distance";
-
-	public static String[] getInfoHeader() {
-		String[] res = new String[8];
-		res[ID_TAG_INDX] = ID_TAG;
-		res[TYPE_TAG_INDX] = TYPE_TAG;
-		res[ARGS_TAG_INDX] = ARGS_TAG;
-		res[HOP_TAG_INDX] = HOP_TAG;
-		res[INTERHOP_TAG_INDX] = INTERHOP_TAG;
-		res[TRAFFIC_TAG_INDX] = TRAFFIC_TAG;
-		res[GIS_PATH_LENGTH_TAG_INDX] = GIS_PATH_LENGTH_TAG;
-		res[GIS_DISTANCE_TAG_INDX] = GIS_DISTANCE_TAG;
-		return res;
-	}
+	public static final int ARGS_TAG_INDX = 2;
 
 	protected final String[] args;
-	protected HashMap<String, String> info;
+	protected LinkedHashMap<String, String> info;
 
 	public String getType() {
 		return (String) info.get(TYPE_TAG);
@@ -54,26 +34,32 @@ public abstract class Operation {
 	}
 
 	public Operation(String[] args) {
-		this.info = new HashMap<String, String>();
-		for (String key : getInfoHeader()) {
-			info.put(key, "");
-		}
+		this.info = new LinkedHashMap<String, String>();
 		this.info.put(ID_TAG, args[0]);
-		this.info.put(TYPE_TAG, getClass().getName());
+		this.info.put(TYPE_TAG, args[1]);
 		this.info.put(ARGS_TAG, Arrays.toString(args));
 		this.info.put(HOP_TAG, Long.toString(0));
 		this.info.put(INTERHOP_TAG, Long.toString(0));
 		this.info.put(TRAFFIC_TAG, Long.toString(0));
-		this.info.put(GIS_PATH_LENGTH_TAG, Long.toString(0));
-		this.info.put(GIS_DISTANCE_TAG, Long.toString(0));
 
 		this.args = args;
 
-		if (!args[TYPE_TAG_INDX].equals(getType())) {
-			throw new Error("Wrong Type " + args[TYPE_TAG_INDX] + " called "
-					+ getType());
+		if (!this.info.get(TYPE_TAG).equals(getType())) {
+			throw new Error("Wrong Type " + this.info.get(TYPE_TAG)
+					+ " called " + getType());
+		}
+	}
+
+	public final String[] getInfoHeader() {
+		String[] res = new String[this.info.size()];
+
+		int i = 0;
+		for (String infoKey : this.info.keySet()) {
+			res[i] = infoKey;
+			i++;
 		}
 
+		return res;
 	}
 
 	public final boolean executeOn(GraphDatabaseService db) {
