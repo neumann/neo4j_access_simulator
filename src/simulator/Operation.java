@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import p_graph_service.PGraphDatabaseService;
+import p_graph_service.core.InstanceInfo;
 
 public abstract class Operation {
 	public static final int ID_TAG_INDX = 0;
@@ -75,58 +76,42 @@ public abstract class Operation {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public final boolean executeOn(GraphDatabaseService db) {
 
 		if (db instanceof PGraphDatabaseService) {
 			PGraphDatabaseService pdb = (PGraphDatabaseService) db;
+			
 			// take system snapshot
 			long[] ids = pdb.getInstancesIDs();
-			long[] nodes = new long[ids.length];
-			long[] relas = new long[ids.length];
-
-			// reset traffic
-			pdb.resetTrafficRecords();
+			InstanceInfo[] preSnapShot = new InstanceInfo[ids.length];
+			
 			for (int i = 0; i < ids.length; i++) {
-				nodes[i] = pdb.getNumNodesOn(ids[i]);
-				relas[i] = pdb.getNumRelationsOn(ids[i]);
+				pdb.resetLoggingOn(ids[i]);
+				preSnapShot[i] = pdb.getInstanceInfoFor(ids[i]);	
 			}
 
 			// execute operation
 			boolean res = onExecute(db);
 
-			long[] serverTraffic = new long[ids.length];
-			HashMap[] serverInterhops = new HashMap[ids.length];
-
-			// take mesurements
+			// calculate changes to what was before
+			InstanceInfo[] difference = new InstanceInfo[ids.length];
 			for (int i = 0; i < ids.length; i++) {
-				nodes[i] -= pdb.getNumNodesOn(ids[i]);
-				relas[i] -= pdb.getNumRelationsOn(ids[i]);
-				serverTraffic[i] = pdb.getTrafficOn(ids[i]);
-				serverInterhops[i] = pdb.getTrafficRecordFor(ids[i]);
+				difference[i] = preSnapShot[i].differenceTo(pdb.getInstanceInfoFor(ids[i]));	
 			}
-
-			// System.out.println("traffic " + Arrays.toString(serverTraffic));
-			// System.out.println("iterHop " +
-			// Arrays.toString(serverInterhops));
-
-			Long sumInterhops = (long) 0;
-			for (HashMap<Long, Long> partitionInterhops : serverInterhops) {
-				for (Long interhopsTo : partitionInterhops.values()) {
-					sumInterhops += interhopsTo;
-				}
+			
+			// calculate sums for plot
+			long sumInterHops =0;
+			long sumIntraHops =0;
+			long sumTraffic =0;
+			for(InstanceInfo df : difference){
+				sumInterHops += df.interHop;
+				sumIntraHops += df.intraHop;
+				sumTraffic += df.traffic;
 			}
-			sumInterhops = sumInterhops / 2;
-
-			info.put(INTERHOP_TAG, sumInterhops.toString());
-
-			Long sumTraffic = (long) 0;
-			for (long partitionTraffic : serverTraffic) {
-				sumTraffic += partitionTraffic;
-			}
-
-			info.put(TRAFFIC_TAG, sumTraffic.toString());
-
+			
+			info.put(INTERHOP_TAG, sumInterHops+"");
+			info.put(TRAFFIC_TAG, sumTraffic+"");
+			info.put(HOP_TAG, sumIntraHops+"");
 			return res;
 
 		}
