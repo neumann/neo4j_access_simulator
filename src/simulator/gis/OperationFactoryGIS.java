@@ -125,7 +125,14 @@ public class OperationFactoryGIS implements OperationFactory {
 
 			Node startNode = graphDb.getNodeById(startNodeId);
 
+			if (startNode == null)
+				throw new Exception(String.format("startNode[%d] == null",
+						startNodeId));
+
 			Node endNode = doRandomWalk(startNode, 1);
+
+			if (endNode == null)
+				throw new Exception("endNode == null");
 
 			double lonStart = (Double) startNode.getProperty(Consts.LONGITUDE);
 			double latStart = (Double) startNode.getProperty(Consts.LATITUDE);
@@ -162,6 +169,10 @@ public class OperationFactoryGIS implements OperationFactory {
 
 			Node startNode = graphDb.getNodeById(startNodeId);
 
+			if (startNode == null)
+				throw new Exception(String.format("startNode[%d] == null",
+						startNodeId));
+
 			// args
 			// -> 0 id
 			// -> 1 type
@@ -185,6 +196,10 @@ public class OperationFactoryGIS implements OperationFactory {
 
 				startNodeId = (Long) results[0];
 				startNode = graphDb.getNodeById(startNodeId);
+
+				if (startNode == null)
+					throw new Exception(String.format("startNode[%d] == null",
+							startNodeId));
 
 				// FIXME change walkLength to a random value, maybe between 1 &
 				// Network Diameter?
@@ -218,6 +233,18 @@ public class OperationFactoryGIS implements OperationFactory {
 						distanceDistributionState.sumValues, 1, RndType.unif);
 				endNodeId = (Long) results[0];
 			}
+
+			Node startNode = graphDb.getNodeById(startNodeId);
+
+			if (startNode == null)
+				throw new Exception(String.format("startNode[%d] == null",
+						startNodeId));
+
+			Node endNode = graphDb.getNodeById(endNodeId);
+
+			if (endNode == null)
+				throw new Exception(String.format("endNode[%d] == null",
+						endNodeId));
 
 			// args
 			// -> 0 id

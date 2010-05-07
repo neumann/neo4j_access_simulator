@@ -102,6 +102,20 @@ public abstract class Operation {
 			for (int i = 0; i < ids.length; i++) {
 				nodes[i] -= pdb.getNumNodesOn(ids[i]);
 				relas[i] -= pdb.getNumRelationsOn(ids[i]);
+<<<<<<< HEAD:src/simulator/Operation.java
+				traffic[i] = pdb.getTrafficOn(ids[i]);
+				hashMaps[i] = pdb.getTrafficRecordFor(ids[i]);
+			}			
+			
+//			System.out.println("traffic "+Arrays.toString(traffic));
+//			System.out.println("iterHop "+Arrays.toString(hashMaps));
+			
+			info.put(INTERHOP_TAG, hashMaps.toString());
+			info.put(TRAFFIC_TAG, hashMaps.toString());
+			
+			return res;	
+			
+=======
 				serverTraffic[i] = pdb.getTrafficOn(ids[i]);
 				serverInterhops[i] = pdb.getTrafficRecordFor(ids[i]);
 			}
@@ -129,6 +143,7 @@ public abstract class Operation {
 
 			return res;
 
+>>>>>>> b4c9236822af9335910eda6771b4c0ba8ca62177:src/simulator/Operation.java
 		}
 		return onExecute(db);
 	}

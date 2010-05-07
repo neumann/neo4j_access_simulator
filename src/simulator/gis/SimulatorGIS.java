@@ -32,18 +32,31 @@ public class SimulatorGIS extends Simulator {
 
 			Operation op = operationFactory.next();
 
-			System.out.printf("Operation[%d] Type[%s]\n", op.getId(), op
+			long startTime = System.currentTimeMillis();
+
+			System.out.printf("Operation[%d] Type[%s]...", op.getId(), op
 					.getType());
 
 			if (op.executeOn(getDB()) == false)
-				System.out.println("\tFAILED!");
+				System.out.printf("[!!FAILED!!]...");
 
 			logOperation(op);
+
+			System.out.printf("%s\n", getTimeStr(System.currentTimeMillis()
+					- startTime));
 		} else {
 			getDB().shutdown();
 			shutdown();
 		}
 
+	}
+
+	private static String getTimeStr(long msTotal) {
+		long ms = msTotal % 1000;
+		long s = (msTotal / 1000) % 60;
+		long m = (msTotal / 1000) / 60;
+
+		return String.format("%d(m):%d(s):%d(ms)%n", m, s, ms);
 	}
 
 }
