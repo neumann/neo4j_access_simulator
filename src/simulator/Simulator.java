@@ -12,12 +12,23 @@ public abstract class Simulator extends Thread {
 	private boolean toExit = false;
 	private boolean toHold = false;
 
+	private boolean hasLoggedInfoHeaderNames = false;
+
 	protected GraphDatabaseService getDB() {
 		return db;
 	}
 
 	protected void logOperation(Operation op) {
-		for (String str : Operation.getInfoHeader()) {
+		if (hasLoggedInfoHeaderNames == false) {
+			for (String tag : op.getInfoHeader()) {
+				log.print(tag);
+				log.print(logFileDelim);
+			}
+			log.println();
+			hasLoggedInfoHeaderNames = true;
+		}
+
+		for (String str : op.getInfoHeader()) {
 			log.print(op.info.get(str));
 			log.print(logFileDelim);
 		}
@@ -30,11 +41,6 @@ public abstract class Simulator extends Thread {
 		this.db = db;
 		try {
 			this.log = new PrintStream(logFile);
-			for (String tag : Operation.getInfoHeader()) {
-				log.print(tag);
-				log.print(logFileDelim);
-			}
-			log.println();
 		} catch (Exception e) {
 			System.out.println("Cannot create logfile");
 		}
@@ -87,4 +93,5 @@ public abstract class Simulator extends Thread {
 		log.flush();
 		log.close();
 	}
+
 }
