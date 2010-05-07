@@ -48,9 +48,9 @@ public class TreeOp_Factory implements OperationFactory {
 		}
 		
 		sample = Rnd.getSampleFromDB(db, TreeArgs.listLenght, numMax , STEP_SIZE, RndType.unif);
-		System.out.println(Arrays.toString(sample));
+//		System.out.println(Arrays.toString(sample));
 		sampleInv = Rnd.getInverseSampleFromDB(db, TreeArgs.listLenght, invNumMax, STEP_SIZE, RndType.unif);
-		System.out.println(Arrays.toString(sampleInv));
+//		System.out.println(Arrays.toString(sampleInv));
 	}
 
 	@Override

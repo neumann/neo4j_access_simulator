@@ -14,15 +14,15 @@ public class TreeInstSim extends Simulator {
 
 	@Override
 	public void initiate() {
-		System.out.println("start inst");
+//		System.out.println("start inst");
 		fac = new TreeOp_Factory(getDB());
-		System.out.println("done inst");
+//		System.out.println("done inst");
 	}
 
 	@Override
 	public void loop() {
 		if(fac.hasNext()){
-			System.out.println("next step");
+//			System.out.println("next step");
 			Operation op = fac.next();
 			op.executeOn(getDB());
 			logOperation(op);

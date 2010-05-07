@@ -32,9 +32,9 @@ public class ReadOnly_Factory implements OperationFactory {
 		} finally {
 			tx.finish();
 		}
-		System.out.println(nodeMap);
-		sample = Rnd.getSampleFromMap(nodeMap, max, numOperation, Rnd.RndType.unif);
-		System.out.println(Arrays.toString(sample));
+//		System.out.println(nodeMap);
+//		sample = Rnd.getSampleFromMap(nodeMap, max, numOperation, Rnd.RndType.unif);
+//		System.out.println(Arrays.toString(sample));
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class ReadOnly_Factory implements OperationFactory {
 
 	@Override
 	public Operation next() {
-		System.out.println(((Long)sample[count]).toString());
+//		System.out.println(((Long)sample[count]).toString());
 		
 		String[] args = {count+"", LogReadOp_CountFiles.class.getName(), ((Long)sample[count]).toString()};
 		count ++;

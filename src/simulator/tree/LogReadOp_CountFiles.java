@@ -41,7 +41,7 @@ public class LogReadOp_CountFiles extends Operation {
 				}
 			}
 			
-			System.out.println("Filecount: "+ fileCount + " FolderCount "+ folderCount);
+//			System.out.println("Filecount: "+ fileCount + " FolderCount "+ folderCount);
 			
 			res = true;
 			tx.success();

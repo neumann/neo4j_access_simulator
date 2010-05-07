@@ -9,10 +9,7 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 import p_graph_service.PGraphDatabaseService;
 import p_graph_service.core.PGraphDatabaseServiceImpl;
-
-import simulator.tree.ReadOnlySim;
 import simulator.tree.TreeInstSim;
-import simulator.tree.TreeOp_Factory;
 
 public class TreeTst {
 

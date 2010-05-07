@@ -107,8 +107,8 @@ public abstract class Operation {
 				hashMaps[i] = pdb.getTrafficRecordFor(ids[i]);
 			}			
 			
-			System.out.println("traffic "+Arrays.toString(traffic));
-			System.out.println("iterHop "+Arrays.toString(hashMaps));
+//			System.out.println("traffic "+Arrays.toString(traffic));
+//			System.out.println("iterHop "+Arrays.toString(hashMaps));
 			
 			info.put(INTERHOP_TAG, hashMaps.toString());
 			info.put(TRAFFIC_TAG, hashMaps.toString());

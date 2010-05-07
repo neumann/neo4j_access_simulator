@@ -20,13 +20,13 @@ public class LogWriteOp_AddFile extends Operation {
 			Node snode = db.getNodeById(Long.parseLong(args[2]));
 			if(snode.hasProperty(TreeArgs.name)){
 				String name = (String) snode.getProperty(TreeArgs.name);
-				System.out.println(name);
+//				System.out.println(name);
 				if(name.contains("Folder")){
 					int count = (Integer) snode.getProperty(TreeArgs.listLenght);
 					snode.setProperty(TreeArgs.listLenght, count++);
 					
 					Node nNode = db.createNode();
-					System.out.println("--------------------- "+ nNode.getId());
+//					System.out.println("--------------------- "+ nNode.getId());
 					nNode.setProperty(TreeArgs.name, "FileBy "+ args[0]+" "+ args[1]);
 					nNode.setProperty(TreeArgs.listLenght, new Integer(1));
 					nNode.setProperty(TreeArgs.size, new Long(0));
