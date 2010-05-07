@@ -45,7 +45,6 @@ public class SimulatorGIS extends Simulator {
 			System.out.printf("%s\n", getTimeStr(System.currentTimeMillis()
 					- startTime));
 		} else {
-			getDB().shutdown();
 			shutdown();
 		}
 

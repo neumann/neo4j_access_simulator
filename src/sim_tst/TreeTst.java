@@ -17,15 +17,16 @@ public class TreeTst {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		GraphDatabaseService db = new PGraphDatabaseServiceImpl("var/pDB",0);
-//		ReadOnlySim sim = new ReadOnlySim(db, "out.txt");
+		GraphDatabaseService db = new PGraphDatabaseServiceImpl("var/pDB", 0);
+		// ReadOnlySim sim = new ReadOnlySim(db, "out.txt");
 		TreeInstSim sim = new TreeInstSim(db, "instOut.txt");
-		
+
 		sim.startSIM();
-//		
-//		convertDB();
+		//		
+		// convertDB();
 
 	}
+
 	public static void convertDB() {
 		GraphDatabaseService db = new EmbeddedGraphDatabase("var/sampleDB");
 		Partitioner part = new PartitionerAsRandom((byte) 2);
@@ -35,7 +36,7 @@ public class TreeTst {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//db.shutdown();
+		// db.shutdown();
 
 		PGraphDatabaseService pDB = NeoFromFile.writePNeoFromNeo("var/pDB", db);
 		pDB.shutdown();
