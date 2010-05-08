@@ -39,13 +39,16 @@ public abstract class OperationGISShortestPath extends OperationGIS {
 			Iterable<Node> pathNodes = astar.doShortestPath(db, startNode,
 					endNode);
 
+			String pathStr = "";
 			Integer pathLen = 0;
 			if (pathNodes != null)
 				for (Node node : pathNodes) {
 					pathLen++;
+					pathStr = pathStr + "," + node.getId();
 				}
 
 			this.info.put(GIS_PATH_LENGTH_TAG, pathLen.toString());
+			this.info.put(GIS_PATH_TAG, pathStr);
 
 			Double distance = GeoCostEvaluator.distance((Double) startNode
 					.getProperty(Consts.LATITUDE), (Double) startNode

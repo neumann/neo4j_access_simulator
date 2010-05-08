@@ -22,21 +22,19 @@ public class GISTest {
 	 */
 	public static void main(String[] args) {
 
-		// GraphDatabaseService db = new EmbeddedGraphDatabase(
-		// "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS");
-
-		GraphDatabaseService db = new InfoGraphDatabaseService(
+		String graphType = "NORMAL";
+		GraphDatabaseService db = new EmbeddedGraphDatabase(
 				"var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS");
 
-		// GraphDatabaseService pdb = NeoFromFile
-		// .writePNeoFromNeo(
-		// "var/gis/partitioned-romania-BAL2-GID-NAME-COORDS-ALL_RELS",
-		// db);
+		// String graphType = "INFO";
+		// GraphDatabaseService db = new InfoGraphDatabaseService(
+		// "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS");
 
+		// String graphType = "PARTITIONED";
 		// String pdbDir =
 		// "/home/alex/workspace/neo4j_access_simulator/var/gis/";
 		// String pdbStr = "partitioned-romania-BAL2-GID-NAME-COORDS-ALL_RELS";
-		// PGraphDatabaseService pdb = new PGraphDatabaseServiceImpl(pdbDir
+		// PGraphDatabaseService db = new PGraphDatabaseServiceImpl(pdbDir
 		// + pdbStr, 0);
 
 		// double addRatio = 0.0;
@@ -50,7 +48,8 @@ public class GISTest {
 		String inputLog = "/home/alex/Dropbox/Neo_Thesis_Private/log-gis-romania.txt";
 		OperationFactory operationFactory = new LogOperationFactoryGIS(inputLog);
 
-		String outputLog = "var/gis/log-gis-romania.txt";
+		String outputLog = String.format("var/gis/log-gis-romania-%s.txt",
+				graphType);
 
 		Simulator sim = new SimulatorGIS(db, outputLog, operationFactory);
 		sim.startSIM();
@@ -59,6 +58,6 @@ public class GISTest {
 
 		db.shutdown();
 
-		System.out.println(InfoGraphDatabaseService.accessToString());
+		// System.out.println(InfoGraphDatabaseService.accessToString());
 	}
 }

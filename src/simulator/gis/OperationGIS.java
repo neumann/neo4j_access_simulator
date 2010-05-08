@@ -12,11 +12,13 @@ public abstract class OperationGIS extends Operation {
 
 	protected static final String GIS_PATH_LENGTH_TAG = "pathlen";
 	protected static final String GIS_DISTANCE_TAG = "distance";
+	protected static final String GIS_PATH_TAG = "path";
 
 	public OperationGIS(String[] args) {
 		super(args);
 		this.info.put(GIS_PATH_LENGTH_TAG, Long.toString(0));
 		this.info.put(GIS_DISTANCE_TAG, Long.toString(0));
+		this.info.put(GIS_PATH_TAG, new String());
 	}
 
 	@Override

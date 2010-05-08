@@ -42,6 +42,9 @@ public class AStarRouting {
 
 		Path path = sp.findSinglePath(startNode, endNode);
 
+		if (path == null)
+			return null;
+
 		return path.nodes();
 	}
 

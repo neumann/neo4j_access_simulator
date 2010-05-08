@@ -42,7 +42,7 @@ public class SimulatorGIS extends Simulator {
 
 			logOperation(op);
 
-			System.out.printf("%s\n", getTimeStr(System.currentTimeMillis()
+			System.out.printf("%s", getTimeStr(System.currentTimeMillis()
 					- startTime));
 		} else {
 			shutdown();
