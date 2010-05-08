@@ -1,5 +1,6 @@
 package sim_tst;
 
+import infoDB.InfoGraphDatabaseService;
 import graph_gen_utils.NeoFromFile;
 import graph_gen_utils.partitioner.Partitioner;
 import graph_gen_utils.partitioner.PartitionerAsRandom;
@@ -8,7 +9,6 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 import p_graph_service.PGraphDatabaseService;
-import p_graph_service.core.PGraphDatabaseServiceImpl;
 import simulator.tree.TreeInstSim;
 
 public class TreeTst {
@@ -17,13 +17,19 @@ public class TreeTst {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		GraphDatabaseService db = new PGraphDatabaseServiceImpl("var/pDB", 0);
-		// ReadOnlySim sim = new ReadOnlySim(db, "out.txt");
+		
+		
+//		GraphDatabaseService db = new PGraphDatabaseServiceImpl("var/pDB", 0);
+		
+		InfoGraphDatabaseService db = new InfoGraphDatabaseService("var/sampleDB");
+		
 		TreeInstSim sim = new TreeInstSim(db, "instOut.txt");
-
+//		ReadOnlySim sim = new ReadOnlySim(db, "out.txt");
+		
 		sim.startSIM();
-		//		
-		// convertDB();
+		System.out.println(InfoGraphDatabaseService.accessToString());
+				
+//		 convertDB();
 
 	}
 

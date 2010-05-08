@@ -1,7 +1,5 @@
 package simulator.tree;
 
-import java.util.Arrays;
-
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
@@ -17,8 +15,8 @@ public class TreeOp_Factory implements OperationFactory {
 	
 	private static final int STEP_SIZE = 100;
 	//private static final double ReadOp_Chance = 0.8;
-	private static final double DelOp_Chance = 0.1;
-	private static final double AddOp_Chance = 0.9;
+	private static final double DelOp_Chance = 1.0;
+	private static final double AddOp_Chance = 0.0;
 	
 	private long[] sampleInv;
 	private long[] sample;

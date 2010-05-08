@@ -7,6 +7,7 @@ import simulator.Simulator;
 
 public class TreeInstSim extends Simulator {
 	private TreeOp_Factory fac;
+	private int i = 10;
 	
 	public TreeInstSim(GraphDatabaseService db, String logFile) {
 		super(db, logFile);
@@ -21,7 +22,8 @@ public class TreeInstSim extends Simulator {
 
 	@Override
 	public void loop() {
-		if(fac.hasNext()){
+		if(fac.hasNext() && i>0){
+			i--;
 //			System.out.println("next step");
 			Operation op = fac.next();
 			op.executeOn(getDB());

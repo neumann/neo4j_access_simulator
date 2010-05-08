@@ -33,7 +33,7 @@ public class ReadOnly_Factory implements OperationFactory {
 			tx.finish();
 		}
 //		System.out.println(nodeMap);
-//		sample = Rnd.getSampleFromMap(nodeMap, max, numOperation, Rnd.RndType.unif);
+		sample = Rnd.getSampleFromMap(nodeMap, max, numOperation, Rnd.RndType.unif);
 //		System.out.println(Arrays.toString(sample));
 	}
 	
