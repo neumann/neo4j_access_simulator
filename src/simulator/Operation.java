@@ -1,9 +1,10 @@
 package simulator;
 
+import infoDB.InfoGraphDatabaseService;
+import infoDB.InstanceInfo.InfoKey;
+
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
@@ -100,6 +101,22 @@ public abstract class Operation {
 			info.put(HOP_TAG, sumIntraHops+"");
 			return res;
 
+		}
+		
+		if(db instanceof InfoGraphDatabaseService){
+			InfoGraphDatabaseService idb = (InfoGraphDatabaseService) db;
+			infoDB.InstanceInfo preInf = idb.getInstanceInfo().takeSnapshot();
+			
+			boolean res = onExecute(db);
+			
+			infoDB.InstanceInfo dif = preInf.differenceTo(idb.getInstanceInfo().takeSnapshot());
+			
+			info.put(INTERHOP_TAG, dif.getValue(InfoKey.InterHop)+"");
+			info.put(TRAFFIC_TAG, dif.getValue(InfoKey.Traffic)+"");
+			info.put(HOP_TAG, dif.getValue(InfoKey.IntraHop)+"");
+			
+			
+			return res;
 		}
 		return onExecute(db);
 	}

@@ -1,6 +1,6 @@
 package sim_tst;
 
-import infoDB.InfoGraphDatabaseService;
+import functionCallDB.FuncGraphDatabaseService;
 import graph_gen_utils.NeoFromFile;
 
 import org.neo4j.graphdb.GraphDatabaseService;
