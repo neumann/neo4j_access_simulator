@@ -67,14 +67,14 @@ public abstract class Operation {
 
 		if (db instanceof PGraphDatabaseService) {
 			PGraphDatabaseService pdb = (PGraphDatabaseService) db;
-			
+
 			// take system snapshot
 			long[] ids = pdb.getInstancesIDs();
 			InstanceInfo[] preSnapShot = new InstanceInfo[ids.length];
-			
+
 			for (int i = 0; i < ids.length; i++) {
 				pdb.resetLoggingOn(ids[i]);
-				preSnapShot[i] = pdb.getInstanceInfoFor(ids[i]);	
+				preSnapShot[i] = pdb.getInstanceInfoFor(ids[i]);
 			}
 
 			// execute operation
@@ -83,39 +83,40 @@ public abstract class Operation {
 			// calculate changes to what was before
 			InstanceInfo[] difference = new InstanceInfo[ids.length];
 			for (int i = 0; i < ids.length; i++) {
-				difference[i] = preSnapShot[i].differenceTo(pdb.getInstanceInfoFor(ids[i]));	
+				difference[i] = preSnapShot[i].differenceTo(pdb
+						.getInstanceInfoFor(ids[i]));
 			}
-			
+
 			// calculate sums for plot
-			long sumInterHops =0;
-			long sumIntraHops =0;
-			long sumTraffic =0;
-			for(InstanceInfo df : difference){
+			Long sumInterHops = 0l;
+			Long sumIntraHops = 0l;
+			Long sumTraffic = 0l;
+			for (InstanceInfo df : difference) {
 				sumInterHops += df.interHop;
 				sumIntraHops += df.intraHop;
 				sumTraffic += df.traffic;
 			}
-			
-			info.put(INTERHOP_TAG, sumInterHops+"");
-			info.put(TRAFFIC_TAG, sumTraffic+"");
-			info.put(HOP_TAG, sumIntraHops+"");
+
+			info.put(INTERHOP_TAG, sumInterHops.toString());
+			info.put(TRAFFIC_TAG, sumTraffic.toString());
+			info.put(HOP_TAG, sumIntraHops.toString());
 			return res;
 
 		}
-		
-		if(db instanceof InfoGraphDatabaseService){
+
+		if (db instanceof InfoGraphDatabaseService) {
 			InfoGraphDatabaseService idb = (InfoGraphDatabaseService) db;
 			infoDB.InstanceInfo preInf = idb.getInstanceInfo().takeSnapshot();
-			
+
 			boolean res = onExecute(db);
-			
-			infoDB.InstanceInfo dif = preInf.differenceTo(idb.getInstanceInfo().takeSnapshot());
-			
-			info.put(INTERHOP_TAG, dif.getValue(InfoKey.InterHop)+"");
-			info.put(TRAFFIC_TAG, dif.getValue(InfoKey.Traffic)+"");
-			info.put(HOP_TAG, dif.getValue(InfoKey.IntraHop)+"");
-			
-			
+
+			infoDB.InstanceInfo dif = preInf.differenceTo(idb.getInstanceInfo()
+					.takeSnapshot());
+
+			info.put(INTERHOP_TAG, dif.getValue(InfoKey.InterHop).toString());
+			info.put(TRAFFIC_TAG, dif.getValue(InfoKey.Traffic).toString());
+			info.put(HOP_TAG, dif.getValue(InfoKey.IntraHop).toString());
+
 			return res;
 		}
 		return onExecute(db);
