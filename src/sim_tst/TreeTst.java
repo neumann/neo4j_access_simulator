@@ -1,6 +1,6 @@
 package sim_tst;
 
-import infoDB.InfoGraphDatabaseService;
+import functionCallDB.FuncGraphDatabaseService;
 import graph_gen_utils.NeoFromFile;
 import graph_gen_utils.partitioner.Partitioner;
 import graph_gen_utils.partitioner.PartitionerAsRandom;
@@ -21,13 +21,13 @@ public class TreeTst {
 		
 //		GraphDatabaseService db = new PGraphDatabaseServiceImpl("var/pDB", 0);
 		
-		InfoGraphDatabaseService db = new InfoGraphDatabaseService("var/sampleDB");
+		FuncGraphDatabaseService db = new FuncGraphDatabaseService("var/sampleDB");
 		
 		TreeInstSim sim = new TreeInstSim(db, "instOut.txt");
 //		ReadOnlySim sim = new ReadOnlySim(db, "out.txt");
 		
 		sim.startSIM();
-		System.out.println(InfoGraphDatabaseService.accessToString());
+		System.out.println(FuncGraphDatabaseService.accessToString());
 				
 //		 convertDB();
 
