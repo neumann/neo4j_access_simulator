@@ -14,8 +14,8 @@ public abstract class Operation {
 	protected static final String TYPE_TAG = "type";
 	protected static final String ARGS_TAG = "args";
 	protected static final String HOP_TAG = "hop";
-	protected static final String INTERHOP_TAG = "interhop";
-	protected static final String TRAFFIC_TAG = "traffic";
+	protected static final String GLOBAL_TRAFFIC = "global_traffic";
+	protected static final String LOCAL_TRAFFIC = "local_traffic";
 	protected static final String NODE_CHANGE = "n_change";
 	protected static final String REL_CHANGE = "rel_change";
 
@@ -38,8 +38,8 @@ public abstract class Operation {
 		this.info.put(TYPE_TAG, args[1]);
 		this.info.put(ARGS_TAG, Arrays.toString(args));
 		this.info.put(HOP_TAG, Long.toString(0));
-		this.info.put(INTERHOP_TAG, Long.toString(0));
-		this.info.put(TRAFFIC_TAG, Long.toString(0));
+		this.info.put(GLOBAL_TRAFFIC, Long.toString(0));
+		this.info.put(LOCAL_TRAFFIC, Long.toString(0));
 
 		this.args = args;
 
@@ -87,17 +87,14 @@ public abstract class Operation {
 
 			// calculate sums for plot
 			Long sumInterHops = 0l;
-			Long sumIntraHops = 0l;
 			Long sumTraffic = 0l;
 			for (InstanceInfo df : difference) {
-				sumInterHops += df.getValue(InfoKey.InterHop);
-				sumIntraHops += df.getValue(InfoKey.IntraHop);
-				sumTraffic += df.getValue(InfoKey.Traffic);
+				sumInterHops += df.getValue(InfoKey.Glo_Traffic);
+				sumTraffic += df.getValue(InfoKey.Loc_Traffic);
 			}
 
-			info.put(INTERHOP_TAG, sumInterHops.toString());
-			info.put(TRAFFIC_TAG, sumTraffic.toString());
-			info.put(HOP_TAG, sumIntraHops.toString());
+			info.put(GLOBAL_TRAFFIC, sumInterHops.toString());
+			info.put(LOCAL_TRAFFIC, sumTraffic.toString());
 			return res;
 		}
 		return onExecute(db);
