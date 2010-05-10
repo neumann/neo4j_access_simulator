@@ -36,17 +36,16 @@ public class GISTest {
 		// GraphDatabaseService db = new EmbeddedGraphDatabase(
 		// "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS");
 
+		long startTime = System.currentTimeMillis();
+
+		System.out.printf("Loading DB...");
+
 		String graphType = "INFO";
 		GraphDatabaseService db = new PGraphDatabaseServiceSIM(
 				"var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS", 0);
 
-		// String graphType = "PARTITIONED";
-		// String pdbDir =
-		// "/home/alex/workspace/neo4j_access_simulator/var/gis/";
-		// String pdbStr =
-		// "partitioned-romania-BAL2-GID-NAME-COORDS-ALL_RELS";
-		// PGraphDatabaseService db = new PGraphDatabaseServiceImpl(pdbDir
-		// + pdbStr, 0);
+		System.out.printf("%s", getTimeStr(System.currentTimeMillis()
+				- startTime));
 
 		// double addRatio = 0.25;
 		// double delRatio = 0.25;
@@ -57,7 +56,7 @@ public class GISTest {
 		// addRatio, delRatio, localRatio, globalRatio, opCount);
 
 		String inputLogDir = "var/gis/";
-		String inputLogFile = "log-gis-romania-INPUT-READ-LOCAL-100.txt";
+		String inputLogFile = "log-gis-romania-INPUT-READ-GLOBAL-100.txt";
 
 		OperationFactory operationFactory = new LogOperationFactoryGIS(
 				inputLogDir + inputLogFile);
@@ -153,6 +152,14 @@ public class GISTest {
 		// info.put(HOP_TAG, dif.getValue(InfoKey.IntraHop).toString());
 
 		infoNeo.shutdown();
+	}
+
+	private static String getTimeStr(long msTotal) {
+		long ms = msTotal % 1000;
+		long s = (msTotal / 1000) % 60;
+		long m = (msTotal / 1000) / 60;
+
+		return String.format("%d(m):%d(s):%d(ms)%n", m, s, ms);
 	}
 
 }

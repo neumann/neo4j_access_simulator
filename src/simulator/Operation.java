@@ -13,7 +13,6 @@ public abstract class Operation {
 	protected static final String ID_TAG = "id";
 	protected static final String TYPE_TAG = "type";
 	protected static final String ARGS_TAG = "args";
-	protected static final String HOP_TAG = "hop";
 	protected static final String GLOBAL_TRAFFIC = "global_traffic";
 	protected static final String LOCAL_TRAFFIC = "local_traffic";
 	protected static final String NODE_CHANGE = "n_change";
@@ -37,7 +36,6 @@ public abstract class Operation {
 		this.info.put(ID_TAG, args[0]);
 		this.info.put(TYPE_TAG, args[1]);
 		this.info.put(ARGS_TAG, Arrays.toString(args));
-		this.info.put(HOP_TAG, Long.toString(0));
 		this.info.put(GLOBAL_TRAFFIC, Long.toString(0));
 		this.info.put(LOCAL_TRAFFIC, Long.toString(0));
 
