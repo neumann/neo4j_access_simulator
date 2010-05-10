@@ -70,7 +70,7 @@ public abstract class Operation {
 
 			for (int i = 0; i < ids.length; i++) {
 				pdb.resetLoggingOn(ids[i]);
-				preSnapShot[i] = pdb.getInstanceInfoFor(ids[i]);
+				preSnapShot[i] = (pdb.getInstanceInfoFor(ids[i])).takeSnapshot();
 			}
 
 			// execute operation
