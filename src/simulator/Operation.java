@@ -65,14 +65,14 @@ public abstract class Operation {
 
 		if (db instanceof PGraphDatabaseService) {
 			PGraphDatabaseService pdb = (PGraphDatabaseService) db;
-			
+
 			// take system snapshot
 			long[] ids = pdb.getInstancesIDs();
 			InstanceInfo[] preSnapShot = new InstanceInfo[ids.length];
-			
+
 			for (int i = 0; i < ids.length; i++) {
 				pdb.resetLoggingOn(ids[i]);
-				preSnapShot[i] = pdb.getInstanceInfoFor(ids[i]);	
+				preSnapShot[i] = pdb.getInstanceInfoFor(ids[i]);
 			}
 
 			// execute operation
@@ -81,22 +81,23 @@ public abstract class Operation {
 			// calculate changes to what was before
 			InstanceInfo[] difference = new InstanceInfo[ids.length];
 			for (int i = 0; i < ids.length; i++) {
-				difference[i] = preSnapShot[i].differenceTo(pdb.getInstanceInfoFor(ids[i]));	
+				difference[i] = preSnapShot[i].differenceTo(pdb
+						.getInstanceInfoFor(ids[i]));
 			}
-			
+
 			// calculate sums for plot
-			long sumInterHops =0;
-			long sumIntraHops =0;
-			long sumTraffic =0;
-			for(InstanceInfo df : difference){
+			Long sumInterHops = 0l;
+			Long sumIntraHops = 0l;
+			Long sumTraffic = 0l;
+			for (InstanceInfo df : difference) {
 				sumInterHops += df.getValue(InfoKey.InterHop);
 				sumIntraHops += df.getValue(InfoKey.IntraHop);
 				sumTraffic += df.getValue(InfoKey.Traffic);
 			}
-			
-			info.put(INTERHOP_TAG, sumInterHops+"");
-			info.put(TRAFFIC_TAG, sumTraffic+"");
-			info.put(HOP_TAG, sumIntraHops+"");
+
+			info.put(INTERHOP_TAG, sumInterHops.toString());
+			info.put(TRAFFIC_TAG, sumTraffic.toString());
+			info.put(HOP_TAG, sumIntraHops.toString());
 			return res;
 		}
 		return onExecute(db);
