@@ -3,10 +3,6 @@ package sim_tst;
 import graph_gen_utils.NeoFromFile;
 import graph_gen_utils.general.Consts;
 import graph_gen_utils.general.DirUtils;
-import infoDB.InfoGraphDatabaseService;
-import infoDB.InfoNode;
-import infoDB.InstanceInfo;
-import infoDB.InstanceInfo.InfoKey;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -15,7 +11,10 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 import p_graph_service.PGraphDatabaseService;
+import p_graph_service.core.InstanceInfo;
 import p_graph_service.core.PGraphDatabaseServiceImpl;
+import p_graph_service.sim.InfoNode;
+import p_graph_service.sim.PGraphDatabaseServiceSIM;
 
 import simulator.OperationFactory;
 import simulator.Simulator;
@@ -33,13 +32,13 @@ public class GISTest {
 
 		// testSmallGraph();
 
-		String graphType = "NORMAL";
-		GraphDatabaseService db = new EmbeddedGraphDatabase(
-				"var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS");
-
-		// String graphType = "INFO";
-		// GraphDatabaseService db = new InfoGraphDatabaseService(
+		// String graphType = "NORMAL";
+		// GraphDatabaseService db = new EmbeddedGraphDatabase(
 		// "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS");
+
+		String graphType = "INFO";
+		GraphDatabaseService db = new PGraphDatabaseServiceSIM(
+				"var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS", 0);
 
 		// String graphType = "PARTITIONED";
 		// String pdbDir =
@@ -49,23 +48,26 @@ public class GISTest {
 		// PGraphDatabaseService db = new PGraphDatabaseServiceImpl(pdbDir
 		// + pdbStr, 0);
 
-		double addRatio = 0.0;
-		double delRatio = 0.0;
-		double localRatio = 0.0;
-		double globalRatio = 0.25;
-		long opCount = 100;
-		OperationFactory operationFactory = new OperationFactoryGIS(db,
-				addRatio, delRatio, localRatio, globalRatio, opCount);
+		// double addRatio = 0.25;
+		// double delRatio = 0.25;
+		// double localRatio = 0.25;
+		// double globalRatio = 0.25;
+		// long opCount = 1000;
+		// OperationFactory operationFactory = new OperationFactoryGIS(db,
+		// addRatio, delRatio, localRatio, globalRatio, opCount);
 
-		// String inputLog =
-		// "/home/alex/Dropbox/Neo_Thesis_Private/log-gis-romania-READ-100.txt";
-		// OperationFactory operationFactory = new
-		// LogOperationFactoryGIS(inputLog);
+		String inputLogDir = "var/gis/";
+		String inputLogFile = "log-gis-romania-INPUT-READ-LOCAL-100.txt";
 
-		String outputLog = String.format("var/gis/log-gis-romania-%s.txt",
+		OperationFactory operationFactory = new LogOperationFactoryGIS(
+				inputLogDir + inputLogFile);
+
+		String outputLogDir = "var/gis/";
+		String outputLogFile = String.format("log-gis-romania-OUTPUT-%s.txt",
 				graphType);
 
-		Simulator sim = new SimulatorGIS(db, outputLog, operationFactory);
+		Simulator sim = new SimulatorGIS(db, outputLogDir + outputLogFile,
+				operationFactory);
 		sim.startSIM();
 
 		System.out.println("SLUT");
@@ -78,7 +80,8 @@ public class GISTest {
 	private static void testSmallGraph() {
 		String dbDir = "var/gis/test";
 		DirUtils.cleanDir(dbDir);
-		InfoGraphDatabaseService infoNeo = new InfoGraphDatabaseService(dbDir);
+		PGraphDatabaseServiceSIM infoNeo = new PGraphDatabaseServiceSIM(dbDir,
+				0);
 
 		InfoNode infoNode1 = null;
 		InfoNode infoNode2 = null;
@@ -117,8 +120,12 @@ public class GISTest {
 			tx.finish();
 		}
 
-		InstanceInfo preInf = infoNeo.getInstanceInfo().takeSnapshot();
-		System.out.printf("BEFORE = %s\n", preInf);
+		String beforeInfo = "";
+		for (long instanceId : infoNeo.getInstancesIDs()) {
+			beforeInfo = String.format("%s%s\n", beforeInfo, infoNeo
+					.getInstanceInfoFor(instanceId));
+		}
+		System.out.printf("BEFORE\n%s", beforeInfo);
 
 		tx = infoNeo.beginTx();
 		try {
@@ -134,11 +141,12 @@ public class GISTest {
 			tx.finish();
 		}
 
-		InstanceInfo postInf = infoNeo.getInstanceInfo().takeSnapshot();
-		System.out.printf("AFTER = %s\n", postInf);
-
-		InstanceInfo difInf = preInf.differenceTo(postInf);
-		System.out.printf("Diff = %s\n", difInf);
+		String afterInfo = "";
+		for (long instanceId : infoNeo.getInstancesIDs()) {
+			afterInfo = String.format("%s%s\n", afterInfo, infoNeo
+					.getInstanceInfoFor(instanceId));
+		}
+		System.out.printf("AFTER\n%s", afterInfo);
 
 		// info.put(INTERHOP_TAG, dif.getValue(InfoKey.InterHop).toString());
 		// info.put(TRAFFIC_TAG, dif.getValue(InfoKey.Traffic).toString());
