@@ -1,8 +1,5 @@
 package simulator;
 
-import infoDB.InfoGraphDatabaseService;
-import infoDB.InstanceInfo.InfoKey;
-
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
@@ -10,6 +7,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import p_graph_service.PGraphDatabaseService;
 import p_graph_service.core.InstanceInfo;
+import p_graph_service.core.InstanceInfo.InfoKey;
 
 public abstract class Operation {
 	protected static final String ID_TAG = "id";
@@ -91,31 +89,14 @@ public abstract class Operation {
 			long sumIntraHops =0;
 			long sumTraffic =0;
 			for(InstanceInfo df : difference){
-				sumInterHops += df.interHop;
-				sumIntraHops += df.intraHop;
-				sumTraffic += df.traffic;
+				sumInterHops += df.getValue(InfoKey.InterHop);
+				sumIntraHops += df.getValue(InfoKey.IntraHop);
+				sumTraffic += df.getValue(InfoKey.Traffic);
 			}
 			
 			info.put(INTERHOP_TAG, sumInterHops+"");
 			info.put(TRAFFIC_TAG, sumTraffic+"");
 			info.put(HOP_TAG, sumIntraHops+"");
-			return res;
-
-		}
-		
-		if(db instanceof InfoGraphDatabaseService){
-			InfoGraphDatabaseService idb = (InfoGraphDatabaseService) db;
-			infoDB.InstanceInfo preInf = idb.getInstanceInfo().takeSnapshot();
-			
-			boolean res = onExecute(db);
-			
-			infoDB.InstanceInfo dif = preInf.differenceTo(idb.getInstanceInfo().takeSnapshot());
-			
-			info.put(INTERHOP_TAG, dif.getValue(InfoKey.InterHop)+"");
-			info.put(TRAFFIC_TAG, dif.getValue(InfoKey.Traffic)+"");
-			info.put(HOP_TAG, dif.getValue(InfoKey.IntraHop)+"");
-			
-			
 			return res;
 		}
 		return onExecute(db);
