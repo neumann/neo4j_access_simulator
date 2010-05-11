@@ -1,6 +1,7 @@
 package simulator;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -76,23 +77,66 @@ public abstract class Operation {
 			// execute operation
 			boolean res = onExecute(db);
 
+			InstanceInfo[] postSnapShot = new InstanceInfo[ids.length];
+			for (int i = 0; i < ids.length; i++) {
+				postSnapShot[i] = (pdb.getInstanceInfoFor(ids[i])).takeSnapshot();
+			}
+			
 			// calculate changes to what was before
 			InstanceInfo[] difference = new InstanceInfo[ids.length];
 			for (int i = 0; i < ids.length; i++) {
-				difference[i] = preSnapShot[i].differenceTo(pdb
-						.getInstanceInfoFor(ids[i]));
+				difference[i] = preSnapShot[i].differenceTo(postSnapShot[i]);
+			}			
+			
+			// dynamic print of communication between charts
+			HashMap<String, Long> gloTrafMap = new HashMap<String, Long>();
+			for(int i=0; i<ids.length; i++){
+				for(Long k :difference[i].globalTrafficMap.keySet()){
+					String newK;
+					if(ids[i]<k){
+						newK = ids[i]+"_with_" + k;
+					} else {
+						newK = k+"_with_" + ids[i];
+					}
+					
+					if(gloTrafMap.containsKey(newK)){
+						gloTrafMap.put(newK, gloTrafMap.get(newK)+difference[i].globalTrafficMap.get(k));
+					}else{
+						gloTrafMap.put(newK, difference[i].globalTrafficMap.get(k));
+					}
+				}
 			}
-
-			// calculate sums for plot
+			for(String k : gloTrafMap.keySet()){
+				info.put("traffic_"+k, gloTrafMap.get(k).toString());
+			}
+			
+			// print numnodes for each chart
+			for(int i=0; i<ids.length; i++){
+				String dynKey = "Chart_"+ids[i]+"_";
+				info.put(dynKey+"numNodes", postSnapShot[i].getValue(InfoKey.NumNodes)+"");
+			}
+			
+			// print numrelas for each chart
+			for(int i=0; i<ids.length; i++){
+				String dynKey = "Chart_"+ids[i]+"_";
+				info.put(dynKey+"numRelas", postSnapShot[i].getValue(InfoKey.NumRelas)+"");
+			}
+			// print loc traffic for each chart
+			for(int i=0; i<ids.length; i++){
+				String dynKey = "Chart_"+ids[i]+"_";
+				info.put(dynKey+"traffic", difference[i].getValue(InfoKey.Loc_Traffic)+"");
+			}
+			
+			// calculate global traffic and local traffic for plot
 			Long sumInterHops = 0l;
 			Long sumTraffic = 0l;
 			for (InstanceInfo df : difference) {
 				sumInterHops += df.getValue(InfoKey.Glo_Traffic);
 				sumTraffic += df.getValue(InfoKey.Loc_Traffic);
 			}
-
 			info.put(GLOBAL_TRAFFIC, sumInterHops.toString());
 			info.put(LOCAL_TRAFFIC, sumTraffic.toString());
+			
 			return res;
 		}
 		return onExecute(db);

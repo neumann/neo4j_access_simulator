@@ -7,13 +7,15 @@ import simulator.Simulator;
 
 public class ReadOnlySim extends Simulator {
 	ReadOnly_Factory fac;
-	public ReadOnlySim(GraphDatabaseService db, String logFile) {
+	private int lenght;
+	public ReadOnlySim(GraphDatabaseService db, String logFile, int length) {
 		super(db, logFile);
+		this.lenght = length;
 	}
 
 	@Override
 	public void initiate() {
-		fac = new ReadOnly_Factory(10, getDB());
+		fac = new ReadOnly_Factory(lenght, getDB());
 	}
 
 	@Override
@@ -21,6 +23,7 @@ public class ReadOnlySim extends Simulator {
 		if(fac.hasNext()){
 			Operation op = fac.next();
 			op.executeOn(getDB());
+			System.out.println(op.getId());
 			logOperation(op);
 		}else{
 			getDB().shutdown();

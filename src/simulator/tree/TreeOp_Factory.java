@@ -4,6 +4,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
+import simulator.Evaluator;
 import simulator.Operation;
 import simulator.OperationFactory;
 import simulator.Rnd;
@@ -15,8 +16,9 @@ public class TreeOp_Factory implements OperationFactory {
 	
 	private static final int STEP_SIZE = 100;
 	//private static final double ReadOp_Chance = 0.8;
-	private static final double DelOp_Chance = 1.0;
-	private static final double AddOp_Chance = 0.0;
+	private final double DelOp_Chance;
+	private final double AddOp_Chance;
+	private int length;
 	
 	private long[] sampleInv;
 	private long[] sample;
@@ -26,8 +28,11 @@ public class TreeOp_Factory implements OperationFactory {
 	private final GraphDatabaseService db;
 	private long count = 0;
 	
-	public TreeOp_Factory(GraphDatabaseService db) {
+	public TreeOp_Factory(GraphDatabaseService db, int lenght, double delChance, double addChance) {
 		this.db = db;
+		this.length = lenght;
+		this.DelOp_Chance = delChance;
+		this.AddOp_Chance = addChance;
 		
 		// calculate max
 		Transaction tx = db.beginTx();
@@ -45,26 +50,29 @@ public class TreeOp_Factory implements OperationFactory {
 			tx.finish();
 		}
 		
-		sample = Rnd.getSampleFromDB(db, TreeArgs.listLenght, numMax , STEP_SIZE, RndType.unif);
+		sample = Rnd.getSampleFromDB(db, new lengthEvaluatorFolders(), numMax , STEP_SIZE, RndType.unif);
 //		System.out.println(Arrays.toString(sample));
-		sampleInv = Rnd.getInverseSampleFromDB(db, TreeArgs.listLenght, invNumMax, STEP_SIZE, RndType.unif);
+		sampleInv = Rnd.getSampleFromDB(db, new invLengthEvaluator(), invNumMax, STEP_SIZE, RndType.unif);
 //		System.out.println(Arrays.toString(sampleInv));
 	}
 
 	@Override
 	public boolean hasNext() {
-		return true;
+		if(count < length)return true;
+		return false;
 	}
 
 	@Override
 	public Operation next() {
+		if(!hasNext())return null;
+		
 		// update sample
 		if(samplePoint >= STEP_SIZE){
-			sample = Rnd.getSampleFromDB(db, TreeArgs.listLenght, numMax , STEP_SIZE, RndType.unif);
+			sample = Rnd.getSampleFromDB(db, new lengthEvaluatorFolders(), numMax , STEP_SIZE, RndType.unif);
 			samplePoint =0;
 		}
 		if(invSamplePoint >= STEP_SIZE){
-			sampleInv = Rnd.getInverseSampleFromDB(db, TreeArgs.listLenght, invNumMax, STEP_SIZE, RndType.unif);
+			sampleInv = Rnd.getSampleFromDB(db, new invLengthEvaluator(), invNumMax, STEP_SIZE, RndType.unif);
 			invSamplePoint = 0;
 		}
 	
@@ -88,7 +96,7 @@ public class TreeOp_Factory implements OperationFactory {
 				}
 				
 				if(invSamplePoint >= STEP_SIZE){
-					sampleInv = Rnd.getInverseSampleFromDB(db, TreeArgs.listLenght, invNumMax, STEP_SIZE, RndType.unif);
+					sampleInv = Rnd.getSampleFromDB(db, new invLengthEvaluator(), invNumMax, STEP_SIZE, RndType.unif);
 					invSamplePoint = 0;
 				}
 			}
@@ -125,7 +133,7 @@ public class TreeOp_Factory implements OperationFactory {
 				}
 				
 				if(samplePoint >= STEP_SIZE){
-					sample = Rnd.getInverseSampleFromDB(db, TreeArgs.listLenght, numMax, STEP_SIZE, RndType.unif);
+					sample = Rnd.getSampleFromDB(db, new lengthEvaluatorFolders(), numMax, STEP_SIZE, RndType.unif);
 					samplePoint = 0;
 				}
 			}
@@ -141,4 +149,25 @@ public class TreeOp_Factory implements OperationFactory {
 		// nothing to do here
 	}
 
+	private class invLengthEvaluator extends Evaluator{
+		@Override
+		public double evaluate(Node n) {
+			if(n.hasProperty(TreeArgs.listLenght)){
+				return ((double)1)/((Integer)n.getProperty(TreeArgs.listLenght));
+			}
+			return 0;
+		}
+	}
+	private class lengthEvaluatorFolders extends Evaluator{
+		@Override
+		public double evaluate(Node n) {
+			if(n.hasProperty(TreeArgs.listLenght) && n.hasProperty(TreeArgs.name)){
+				String name  = (String) n.getProperty(TreeArgs.name);
+				if(name.contains("older")){
+					return (Integer)n.getProperty(TreeArgs.listLenght);
+				}
+			}
+			return 0;
+		}
+	}
 }

@@ -1,0 +1,11 @@
+id;type;args;global_traffic;local_traffic;traffic_0_with_1;Chart_0_numNodes;Chart_1_numNodes;Chart_0_numRelas;Chart_1_numRelas;Chart_0_traffic;Chart_1_traffic;
+0;simulator.tree.LogReadOp_CountFiles;[0, simulator.tree.LogReadOp_CountFiles, 43391];3;21;3;30340;30126;54447;54054;16;3;;
+1;simulator.tree.LogReadOp_CountFiles;[1, simulator.tree.LogReadOp_CountFiles, 40484];4;21;4;30340;30126;54447;54054;15;4;;
+2;simulator.tree.LogReadOp_CountFiles;[2, simulator.tree.LogReadOp_CountFiles, 57746];1;21;1;30340;30126;54447;54054;18;1;;
+3;simulator.tree.LogReadOp_CountFiles;[3, simulator.tree.LogReadOp_CountFiles, 7766];0;5;0;30340;30126;54447;54054;0;3;;
+4;simulator.tree.LogReadOp_CountFiles;[4, simulator.tree.LogReadOp_CountFiles, 3632];0;5;0;30340;30126;54447;54054;3;0;;
+5;simulator.tree.LogReadOp_CountFiles;[5, simulator.tree.LogReadOp_CountFiles, 62021];0;5;0;30340;30126;54447;54054;3;0;;
+6;simulator.tree.LogReadOp_CountFiles;[6, simulator.tree.LogReadOp_CountFiles, 46649];498;3301;498;30340;30126;54447;54054;1744;1555;;
+7;simulator.tree.LogReadOp_CountFiles;[7, simulator.tree.LogReadOp_CountFiles, 10256];4;21;4;30340;30126;54447;54054;4;15;;
+8;simulator.tree.LogReadOp_CountFiles;[8, simulator.tree.LogReadOp_CountFiles, 19706];4;21;4;30340;30126;54447;54054;4;15;;
+9;simulator.tree.LogReadOp_CountFiles;[9, simulator.tree.LogReadOp_CountFiles, 23831];1;21;1;30340;30126;54447;54054;1;18;;

@@ -9,7 +9,10 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 import p_graph_service.PGraphDatabaseService;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
+import simulator.tree.ReadLogSim;
+import simulator.tree.ReadOnlySim;
 import simulator.tree.TreeInstSim;
+import simulator.tree.TreeLog_Factory;
 
 public class TreeTst {
 
@@ -21,10 +24,11 @@ public class TreeTst {
 		
 //		GraphDatabaseService db = new PGraphDatabaseServiceImpl("var/pDB", 0);
 		
-		PGraphDatabaseServiceSIM db = new PGraphDatabaseServiceSIM("var/sampleDB", 0);
+		PGraphDatabaseServiceSIM db = new PGraphDatabaseServiceSIM("var/randomInitSampleDB", 0);
 		
-		TreeInstSim sim = new TreeInstSim(db, "instOut.txt");
-//		ReadOnlySim sim = new ReadOnlySim(db, "out.txt");
+//		TreeInstSim sim = new TreeInstSim(db, "instOut.txt");
+//		ReadLogSim sim = new ReadLogSim(db, "instOut2.txt", "out.txt");
+		ReadOnlySim sim = new ReadOnlySim(db, "out.txt", 10);
 		
 		sim.startSIM();
 	
@@ -42,10 +46,13 @@ public class TreeTst {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// db.shutdown();
+		 db.shutdown();
+		 System.out.println("done");
 
-		PGraphDatabaseService pDB = NeoFromFile.writePNeoFromNeo("var/pDB", db);
-		pDB.shutdown();
+		 PGraphDatabaseServiceSIM sim = new PGraphDatabaseServiceSIM("var/sampleDB", 0);
+		 sim.shutdown();
+//		PGraphDatabaseService pDB = NeoFromFile.writePNeoFromNeo("var/pDB", db);
+//		pDB.shutdown();
 	}
 
 }

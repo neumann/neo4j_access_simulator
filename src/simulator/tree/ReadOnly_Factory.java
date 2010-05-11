@@ -1,6 +1,5 @@
 package simulator.tree;
 
-import java.util.Arrays;
 import java.util.TreeMap;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -22,10 +21,12 @@ public class ReadOnly_Factory implements OperationFactory {
 		Transaction tx = db.beginTx();
 		try {
 			for(Node n : db.getAllNodes()){			
-				if(n.hasProperty(TreeArgs.listLenght)){
-					int val = (Integer)n.getProperty(TreeArgs.listLenght);
-					max += val;
-					nodeMap.put(n.getId(), new Double(val));
+				if(n.hasProperty(TreeArgs.listLenght) && n.hasProperty("name")){
+					if(((String)n.getProperty("name")).contains("older")){
+						int val = (Integer)n.getProperty(TreeArgs.listLenght);
+						max += val;
+						nodeMap.put(n.getId(), new Double(val));
+					}
 				}
 			}
 			tx.success();
