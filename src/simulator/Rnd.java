@@ -4,35 +4,44 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
+import org.uncommons.maths.random.MersenneTwisterRNG;
+import org.uncommons.maths.random.ContinuousUniformGenerator;
+import org.uncommons.maths.random.ExponentialGenerator;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
 public class Rnd {
-	private static long defaultSeed = 666; 
+	// private static long defaultSeed = 666;
+	private static byte[] default_seed = new byte[] { 6, 6, 6 };
 	private static Random rnd = null;
+	private static ExponentialGenerator expoGen = null;
 
 	public static enum RndType {
 		expo, unif, norm
 	}
-	
+
 	private Rnd() {
 	}
 
-	public static void setSeed(long seed){
-		defaultSeed = seed;
+	public static void setSeed(byte[] seed) {
+		default_seed = seed;
 		rnd = null;
 	}
 
 	public static double nextDouble(RndType type) {
 		if (rnd == null) {
-			rnd = new Random(defaultSeed);
+			// Fast & good randomness
+			rnd = new MersenneTwisterRNG(default_seed);
+			expoGen = new ExponentialGenerator(Math.E, rnd);
 		}
-		
+
 		switch (type) {
 		case expo:
 			// cdf for exponential distribution 1 − e^(− λx)
-			return 1 - Math.exp(-rnd.nextDouble());
+			// return 1 - Math.exp(-rnd.nextDouble());
+			return expoGen.nextValue();
 		case unif:
 			return rnd.nextDouble();
 		case norm:
@@ -45,9 +54,10 @@ public class Rnd {
 	public static Object[] getSampleFromMap(Map<Object, Double> elements,
 			double sumOfElements, int sampleSize, RndType rndType) {
 		if (rnd == null) {
-			rnd = new Random(defaultSeed);
+			rnd = new MersenneTwisterRNG(default_seed);
+			expoGen = new ExponentialGenerator(Math.E, rnd);
 		}
-		
+
 		Object[] res = new Object[sampleSize];
 		double[] val = new double[sampleSize];
 		for (int i = 0; i < val.length; i++) {
@@ -73,14 +83,16 @@ public class Rnd {
 			}
 		}
 		return res;
-	}	
-	
-	public static long[] getSampleFromDB(GraphDatabaseService db,Evaluator eval,
-			double sumOfElements, int sampleSize, RndType rndType) {
+	}
+
+	public static long[] getSampleFromDB(GraphDatabaseService db,
+			Evaluator eval, double sumOfElements, int sampleSize,
+			RndType rndType) {
 		if (rnd == null) {
-			rnd = new Random(defaultSeed);
+			rnd = new MersenneTwisterRNG(default_seed);
+			expoGen = new ExponentialGenerator(Math.E, rnd);
 		}
-		
+
 		long[] res = new long[sampleSize];
 		double[] val = new double[sampleSize];
 		for (int i = 0; i < val.length; i++) {
@@ -111,16 +123,16 @@ public class Rnd {
 		} finally {
 			tx.finish();
 		}
-		
+
 		return res;
 	}
-	
-	
+
 	public static long nextLong(long start, long end, RndType type) {
 		if (rnd == null) {
-			rnd = new Random(defaultSeed);
+			rnd = new MersenneTwisterRNG(default_seed);
+			expoGen = new ExponentialGenerator(Math.E, rnd);
 		}
-		
+
 		double val = nextDouble(type);
 		return Math.round((val * (end - start)) + start);
 	}
