@@ -20,6 +20,9 @@ public class TreeLog_Factory extends LogOperationFactory {
 		else if(args[1].equals(LogWriteOp_DeleteItems.class.getName())){
 			return new LogWriteOp_DeleteItems(args);
 		}
+		else if(args[1].equals(LogReadOp_SearchFiles.class.getName())){
+			return new LogReadOp_SearchFiles(args);
+		}
 		throw new Error("Unsupported GIS Operation: " + args[1]);
 	}
 

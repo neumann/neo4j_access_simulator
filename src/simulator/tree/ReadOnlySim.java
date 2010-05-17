@@ -8,14 +8,16 @@ import simulator.Simulator;
 public class ReadOnlySim extends Simulator {
 	ReadOnly_Factory fac;
 	private int lenght;
-	public ReadOnlySim(GraphDatabaseService db, String logFile, int length) {
+	private double bal;
+	public ReadOnlySim(GraphDatabaseService db, String logFile, int length,  double balance) {
 		super(db, logFile);
+		this.bal = balance;
 		this.lenght = length;
 	}
 
 	@Override
 	public void initiate() {
-		fac = new ReadOnly_Factory(lenght, getDB());
+		fac = new ReadOnly_Factory(lenght, getDB(), bal);
 	}
 
 	@Override

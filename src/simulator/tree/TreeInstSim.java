@@ -8,21 +8,17 @@ import simulator.Simulator;
 public class TreeInstSim extends Simulator {
 	private TreeOp_Factory fac;
 	private int i;
-	private double addC;
-	private double remC;
 	
 	
-	public TreeInstSim(GraphDatabaseService db, String logFile, int lenght, double addC, double remC) {
+	public TreeInstSim(GraphDatabaseService db, String logFile, int lenght) {
 		super(db, logFile);
-		this.i = lenght;
-		this.addC = addC;
-		this.remC = remC;	
+		this.i = lenght;	
 	}
 
 	@Override
 	public void initiate() {
 //		System.out.println("start inst");
-		fac = new TreeOp_Factory(getDB(), i,remC,addC);
+		fac = new TreeOp_Factory(getDB(), i);
 //		System.out.println("done inst");
 	}
 
@@ -31,6 +27,7 @@ public class TreeInstSim extends Simulator {
 		if(fac.hasNext()){
 			Operation op = fac.next();
 			op.executeOn(getDB());
+			System.out.println(op.getId());
 			logOperation(op);
 		}else{
 			getDB().shutdown();
