@@ -23,7 +23,7 @@ public class SimulatorGIS extends Simulator {
 
 	@Override
 	public void initiate() {
-		Rnd.setSeed(1000);
+		Rnd.setSeed(new byte[] { 6, 6, 6 });
 	}
 
 	@Override
