@@ -20,52 +20,62 @@ public class LogWriteOp_DeleteItems extends Operation {
 	@Override
 	public boolean onExecute(GraphDatabaseService db) {
 		boolean res = false;
+		
 		Transaction tx = db.beginTx();
 		try {
 			Node snode = db.getNodeById(Long.parseLong(args[2]));
+
+			if (!snode.hasProperty(TreeArgs.name)){
+				return false;
+			}
 			
-			if(snode.hasProperty(TreeArgs.name)){
-				String name  = (String) snode.getProperty(TreeArgs.name);
-				
+				String name = (String) snode.getProperty(TreeArgs.name);
+
 				// fix parent values
-				// this code assumes that there is only one Parent, if there are more it might break
-				for(Relationship rs : snode.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.INCOMING)){
+				// this code assumes that there is only one Parent, if there are
+				// more it might break
+				for (Relationship rs : snode.getRelationships(
+						TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.INCOMING)) {
 					Node parent = rs.getStartNode();
-					if(name.contains("File")){
-						int count = (Integer) parent.getProperty(TreeArgs.listLenght);
-						parent.setProperty(TreeArgs.listLenght, count-1);
-					}else if(name.contains("Folder")){
-						Iterator<Relationship> outRel = parent.getRelationships(TreeArgs.TreeRelTypes.CHILD_FOLDER, Direction.OUTGOING).iterator();
+					if (name.contains("File")) {
+						int count = (Integer) parent
+								.getProperty(TreeArgs.listLenght);
+						parent.setProperty(TreeArgs.listLenght, count - 1);
+					} else if (name.contains("Folder")) {
+						Iterator<Relationship> outRel = parent
+								.getRelationships(
+										TreeArgs.TreeRelTypes.CHILD_FOLDER,
+										Direction.OUTGOING).iterator();
 						outRel.next();
-						if(!outRel.hasNext()){
+						if (!outRel.hasNext()) {
 							parent.removeProperty(TreeArgs.hasSub);
 						}
-					}	
+					}
 				}
-				
+
 				// delete subtree
 				LinkedList<Node> nodesToGo = new LinkedList<Node>();
 				nodesToGo.add(snode);
 				while (!nodesToGo.isEmpty()) {
-					Node n = nodesToGo.poll();
+					Node n = nodesToGo.remove();
 					// delete all incoming relationships
-					for(Relationship rs :  n.getRelationships(Direction.INCOMING)){
+					for (Relationship rs : n
+							.getRelationships(Direction.INCOMING)) {
 						rs.delete();
 					}
-					
-					for(Relationship rs : n.getRelationships(Direction.OUTGOING)){
-						if(TreeArgs.isEvent(rs)){
-							rs.delete();
-						}else{
+
+					for (Relationship rs : n
+							.getRelationships(Direction.OUTGOING)) {
+						if (!TreeArgs.isEvent(rs)) {
 							nodesToGo.add(rs.getEndNode());
 						}
+						rs.delete();
 					}
 					n.delete();
 				}
-			}
 			res = true;
 			tx.success();
-		} finally{
+		} finally {
 			tx.finish();
 		}
 		return res;
