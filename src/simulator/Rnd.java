@@ -1,11 +1,11 @@
 package simulator;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
 import org.uncommons.maths.random.MersenneTwisterRNG;
-import org.uncommons.maths.random.ContinuousUniformGenerator;
 import org.uncommons.maths.random.ExponentialGenerator;
 
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -14,9 +14,12 @@ import org.neo4j.graphdb.Transaction;
 
 public class Rnd {
 	// private static long defaultSeed = 666;
-	private static byte[] default_seed = new byte[] { 6, 6, 6 };
+	private static byte[] default_seed = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8,
+			9, 10, 11, 12, 13, 14, 15, 16 };
 	private static Random rnd = null;
 	private static ExponentialGenerator expoGen = null;
+	private static double lambda = Math.E;
+	private static HashMap<Double, ExponentialGenerator> expoGens = new HashMap<Double, ExponentialGenerator>();
 
 	public static enum RndType {
 		expo, unif, norm
@@ -30,17 +33,36 @@ public class Rnd {
 		rnd = null;
 	}
 
-	public static double nextDouble(RndType type) {
+	public static void setLambda(Double newLambda) {
 		if (rnd == null) {
 			// Fast & good randomness
 			rnd = new MersenneTwisterRNG(default_seed);
-			expoGen = new ExponentialGenerator(Math.E, rnd);
+		}
+		if (expoGens.containsKey(newLambda) == false)
+			expoGens.put(newLambda, new ExponentialGenerator(newLambda, rnd));
+	}
+
+	public static double nextDouble(RndType type) {
+		return nextDouble(type, lambda);
+	}
+
+	public static double nextDouble(RndType type, Double lambda) {
+		if (rnd == null) {
+			// Fast & good randomness
+			rnd = new MersenneTwisterRNG(default_seed);
 		}
 
 		switch (type) {
 		case expo:
 			// cdf for exponential distribution 1 − e^(− λx)
-			// return 1 - Math.exp(-rnd.nextDouble());
+			// return 1 - Math.exp(-lambda * rnd.nextDouble());
+
+			ExponentialGenerator expoGen = expoGens.get(lambda);
+			if (expoGen == null) {
+				expoGen = new ExponentialGenerator(lambda, rnd);
+				expoGens.put(lambda, expoGen);
+			}
+
 			return expoGen.nextValue();
 		case unif:
 			return rnd.nextDouble();
@@ -55,7 +77,6 @@ public class Rnd {
 			double sumOfElements, int sampleSize, RndType rndType) {
 		if (rnd == null) {
 			rnd = new MersenneTwisterRNG(default_seed);
-			expoGen = new ExponentialGenerator(Math.E, rnd);
 		}
 
 		Object[] res = new Object[sampleSize];
@@ -90,7 +111,6 @@ public class Rnd {
 			RndType rndType) {
 		if (rnd == null) {
 			rnd = new MersenneTwisterRNG(default_seed);
-			expoGen = new ExponentialGenerator(Math.E, rnd);
 		}
 
 		long[] res = new long[sampleSize];
@@ -130,10 +150,18 @@ public class Rnd {
 	public static long nextLong(long start, long end, RndType type) {
 		if (rnd == null) {
 			rnd = new MersenneTwisterRNG(default_seed);
-			expoGen = new ExponentialGenerator(Math.E, rnd);
 		}
 
 		double val = nextDouble(type);
+		return Math.round((val * (end - start)) + start);
+	}
+
+	public static long nextLongUnif(long start, long end) {
+		if (rnd == null) {
+			rnd = new MersenneTwisterRNG(default_seed);
+		}
+
+		double val = nextDouble(RndType.unif);
 		return Math.round((val * (end - start)) + start);
 	}
 
