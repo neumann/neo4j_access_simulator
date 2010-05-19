@@ -31,6 +31,8 @@ public class AStarRouting {
 	public Iterable<Node> doShortestPath(final GraphDatabaseService graphDb,
 			Node startNode, Node endNode) {
 
+		
+		
 		DefaultExpander relExpander = new DefaultExpander();
 		// relExpander.add( GISRelationshipTypes.FOOT_WAY, Direction.BOTH );
 		relExpander.add(GISRelationshipTypes.BICYCLE_WAY, Direction.BOTH);
