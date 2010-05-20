@@ -33,9 +33,10 @@ public class GISLoadOperations {
 
 		// ****************
 
-		logInputPath = "var/gis/logs-input/log-gis-romania-GLOBAL_500.txt";
-		logOutputPath = "var/gis/logs-output/log-gis-romania-GLOBAL_500_Results.txt";
-		dbDir = "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS";
+		// logInputPath = "var/gis/logs-input/log-gis-romania-GLOBAL_500.txt";
+		// logOutputPath =
+		// "var/gis/logs-output/log-gis-romania-GLOBAL_500_Results.txt";
+		// dbDir = "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS";
 
 		// ****************
 

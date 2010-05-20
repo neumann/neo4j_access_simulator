@@ -43,13 +43,14 @@ public class GISGenerateOperations {
 
 		// ****************
 
-		logOutputPath = "var/gis/logs-output/log-gis-romania-LOCAL_10000.txt";
-		dbDir = "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS/";
-		addRatio = 0d;
-		delRatio = 0d;
-		localRatio = 1d;
-		globalRatio = 0d;
-		opCount = 500l;
+		// logOutputPath =
+		// "var/gis/logs-output/log-gis-romania-LOCAL_10000.txt";
+		// dbDir = "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS/";
+		// addRatio = 0d;
+		// delRatio = 0d;
+		// localRatio = 1d;
+		// globalRatio = 0d;
+		// opCount = 500l;
 
 		// ****************
 
