@@ -1,23 +1,21 @@
-package simulator.tree;
+package simulator.twitter;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import simulator.Operation;
 import simulator.Simulator;
 
-public class ReadOnlySim extends Simulator {
-	ReadOnly_Factory fac;
-	private int lenght;
-	private double bal;
-	public ReadOnlySim(GraphDatabaseService db, String logFile, int length,  double balance) {
+public class ReadLog_Sim extends Simulator {
+	private TwitterLog_Factory fac;
+	private String inputLog;
+	public ReadLog_Sim(GraphDatabaseService db, String logFile, String inputLog) {
 		super(db, logFile);
-		this.bal = balance;
-		this.lenght = length;
+		this.inputLog = inputLog;
 	}
 
 	@Override
 	public void initiate() {
-		fac = new ReadOnly_Factory(lenght, getDB(), bal);
+		fac = new TwitterLog_Factory(inputLog);
 	}
 
 	@Override
@@ -25,7 +23,6 @@ public class ReadOnlySim extends Simulator {
 		if(fac.hasNext()){
 			Operation op = fac.next();
 			op.executeOn(getDB());
-			System.out.println(op.getId());
 			logOperation(op);
 		}else{
 			getDB().shutdown();

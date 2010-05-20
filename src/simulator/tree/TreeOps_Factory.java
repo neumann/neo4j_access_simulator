@@ -14,7 +14,7 @@ import simulator.OperationFactory;
 import simulator.Rnd;
 import simulator.Rnd.RndType;
 
-public class TreeOp_Factory implements OperationFactory {
+public class TreeOps_Factory implements OperationFactory {
 	private double invNumMax = 0;
 	private double numMax = 0;
 
@@ -35,7 +35,7 @@ public class TreeOp_Factory implements OperationFactory {
 	private final GraphDatabaseService db;
 	private long count = 0;
 
-	public TreeOp_Factory(GraphDatabaseService db, int lenght) {
+	public TreeOps_Factory(int lenght,GraphDatabaseService db ) {
 		this.db = db;
 		this.length = lenght;
 
@@ -103,10 +103,10 @@ public class TreeOp_Factory implements OperationFactory {
 				}
 			}
 			String[] args = { count + "",
-					LogWriteOp_DeleteItems.class.getName(), validNodeID + "" };
+					DeleteItems_WriteOp.class.getName(), validNodeID + "" };
 			invNumMax--;
 			count++;
-			return new LogWriteOp_DeleteItems(args);
+			return new DeleteItems_WriteOp(args);
 		}
 
 		if (choice < AddOp_Chance) {
@@ -136,11 +136,11 @@ public class TreeOp_Factory implements OperationFactory {
 				}
 			}
 
-			String[] args = { count + "", LogWriteOp_AddFile.class.getName(),
+			String[] args = { count + "", AddFile_WriteOp.class.getName(),
 					validNodeID + "" };
 			invNumMax++;
 			count++;
-			return new LogWriteOp_AddFile(args);
+			return new AddFile_WriteOp(args);
 		}
 
 		if (choice < ReadSearch_Chance) {
@@ -200,10 +200,10 @@ public class TreeOp_Factory implements OperationFactory {
 					samplePoint = 0;
 				}
 			}
-			String[] args = { count + "", LogReadOp_CountFiles.class.getName(),
+			String[] args = { count + "", CountFiles_ReadOp.class.getName(),
 					validNodeID + "" };
 			count++;
-			return new LogReadOp_CountFiles(args);
+			return new CountFiles_ReadOp(args);
 		}
 
 		return null;
@@ -248,14 +248,14 @@ public class TreeOp_Factory implements OperationFactory {
 			tx.finish();
 		}
 
-		String[] args = { count + "", LogReadOp_SearchFiles.class.getName(),
+		String[] args = { count + "", SearchFiles_ReadOp.class.getName(),
 				srtNID + "", endNID + "" };
 		
 		if (srtNID < 0 || endNID < 0) {
 			return null;
 		}
 
-		return new LogReadOp_SearchFiles(args);
+		return new SearchFiles_ReadOp(args);
 	}
 
 	@Override
@@ -266,9 +266,10 @@ public class TreeOp_Factory implements OperationFactory {
 	private class invLengthEvaluator extends Evaluator {
 		@Override
 		public double evaluate(Node n) {
-			if (n.hasProperty(TreeArgs.listLenght)) {
-				return ((double) 1)
-						/ ((Integer) n.getProperty(TreeArgs.listLenght));
+			if (n.hasProperty(TreeArgs.listLenght) && n.hasProperty("name")) {
+				if(((String)n.getProperty("name")).contains("ile")){
+					return ((double) 1);
+				}
 			}
 			return 0;
 		}

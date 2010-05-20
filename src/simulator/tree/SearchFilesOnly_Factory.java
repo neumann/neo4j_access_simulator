@@ -14,16 +14,12 @@ import simulator.OperationFactory;
 import simulator.Rnd;
 import simulator.Rnd.RndType;
 
-public class ReadOnly_Factory implements OperationFactory {
+public class SearchFilesOnly_Factory implements OperationFactory {
 	private Object[] sample;
 	private int count = 0;
 	private GraphDatabaseService db;
 
-	private final double ReadSearch_Chance;
-	private final double ReadOp_Chance = 1;
-
-	public ReadOnly_Factory(int numOperation, GraphDatabaseService db, double balance) {
-		this.ReadSearch_Chance = balance;
+	public SearchFilesOnly_Factory(int numOperation, GraphDatabaseService db) {
 		this.db = db;
 		TreeMap<Object, Double> nodeMap = new TreeMap<Object, Double>();
 		double max = 0;
@@ -59,20 +55,9 @@ public class ReadOnly_Factory implements OperationFactory {
 	public Operation next() {
 		// System.out.println(((Long)sample[count]).toString());
 
-		double choice = Rnd.nextDouble(RndType.unif);
-		if (choice < ReadSearch_Chance) {
-			Operation res = createSearchOp((Long) sample[count]);
-			count++;
-			return res;
-		}
-		if (choice < ReadOp_Chance) {
-			String[] args = { count + "", LogReadOp_CountFiles.class.getName(),
-					((Long) sample[count]).toString() };
-			count++;
-			return new LogReadOp_CountFiles(args);
-		}
-		return null;
-
+		Operation res = createSearchOp((Long) sample[count]);
+		count++;
+		return res;
 	}
 
 	@Override
@@ -88,7 +73,7 @@ public class ReadOnly_Factory implements OperationFactory {
 		Transaction tx = db.beginTx();
 		try {
 			Node sNode = db.getNodeById(id);
-			
+
 			Vector<Node> files = new Vector<Node>();
 			files.add(sNode);
 			for (Relationship rs : sNode.getRelationships(
@@ -96,10 +81,10 @@ public class ReadOnly_Factory implements OperationFactory {
 				Node n = rs.getEndNode();
 				files.add(n);
 			}
-			Node n = files.get((int) Rnd.nextLong(0, files.size() -1,
+			Node n = files.get((int) Rnd.nextLong(0, files.size() - 1,
 					RndType.unif));
 			endNID = n.getId();
-			
+
 			// walk to beginning
 			while (srtNID == -1) {
 				Relationship rs = n.getSingleRelationship(
@@ -110,20 +95,20 @@ public class ReadOnly_Factory implements OperationFactory {
 					n = rs.getStartNode();
 				}
 			}
-			
+
 			tx.success();
-		} finally{
+		} finally {
 			tx.finish();
 		}
 
-		String[] args = { count + "", LogReadOp_SearchFiles.class.getName(),
+		String[] args = { count + "", SearchFiles_ReadOp.class.getName(),
 				srtNID + "", endNID + "" };
-		
+
 		if (srtNID < 0 || endNID < 0) {
 			return null;
 		}
 
-		return new LogReadOp_SearchFiles(args);
+		return new SearchFiles_ReadOp(args);
 	}
 
 }

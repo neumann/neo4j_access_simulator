@@ -43,10 +43,10 @@ public class ReadOnly_Factory implements OperationFactory {
 	@Override
 	public Operation next() {
 		if(hasNext()){
-			String[] args = { count + "", LogReadOp_Search.class.getName(),
+			String[] args = { count + "", ReadOp_Search.class.getName(),
 					sample[count]+"" };
 			count++;
-			return new LogReadOp_Search(args);
+			return new ReadOp_Search(args);
 		}
 		
 		return null;
@@ -62,7 +62,7 @@ public class ReadOnly_Factory implements OperationFactory {
 		@Override
 		public double evaluate(Node n) {
 			double res = 0;
-			for(Relationship rs : n.getRelationships(Direction.OUTGOING)){
+			for(@SuppressWarnings("unused") Relationship rs : n.getRelationships(Direction.OUTGOING)){
 				res++;
 			}	
 			return res;

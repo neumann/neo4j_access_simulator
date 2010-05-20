@@ -10,9 +10,9 @@ import org.neo4j.graphdb.Transaction;
 
 import simulator.Operation;
 
-public class LogReadOp_Search extends Operation {
+public class ReadOp_Search extends Operation {
 
-	public LogReadOp_Search(String[] args) {
+	public ReadOp_Search(String[] args) {
 		super(args);
 	}
 
