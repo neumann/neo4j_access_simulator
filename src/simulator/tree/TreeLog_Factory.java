@@ -11,17 +11,17 @@ public class TreeLog_Factory extends LogOperationFactory {
 
 	@Override
 	public Operation createOperation(String[] args) {
-		if(args[1].equals(LogReadOp_CountFiles.class.getName())){
-			return new LogReadOp_CountFiles(args);
+		if(args[1].equals(CountFiles_ReadOp.class.getName())){
+			return new CountFiles_ReadOp(args);
 		}
-		else if(args[1].equals(LogWriteOp_AddFile.class.getName())){
-			return new LogWriteOp_AddFile(args);
+		else if(args[1].equals(AddFile_WriteOp.class.getName())){
+			return new AddFile_WriteOp(args);
 		}
-		else if(args[1].equals(LogWriteOp_DeleteItems.class.getName())){
-			return new LogWriteOp_DeleteItems(args);
+		else if(args[1].equals(DeleteItems_WriteOp.class.getName())){
+			return new DeleteItems_WriteOp(args);
 		}
-		else if(args[1].equals(LogReadOp_SearchFiles.class.getName())){
-			return new LogReadOp_SearchFiles(args);
+		else if(args[1].equals(SearchFiles_ReadOp.class.getName())){
+			return new SearchFiles_ReadOp(args);
 		}
 		throw new Error("Unsupported GIS Operation: " + args[1]);
 	}

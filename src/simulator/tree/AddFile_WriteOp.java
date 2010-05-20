@@ -1,14 +1,15 @@
 package simulator.tree;
 
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
 import simulator.Operation;
 
-public class LogWriteOp_AddFile extends Operation {
+public class AddFile_WriteOp extends Operation {
 
-	public LogWriteOp_AddFile(String[] args) {
+	public AddFile_WriteOp(String[] args) {
 		super(args);
 	}
 
@@ -20,8 +21,11 @@ public class LogWriteOp_AddFile extends Operation {
 			Node snode = db.getNodeById(Long.parseLong(args[2]));
 			if(snode.hasProperty(TreeArgs.name)){
 				String name = (String) snode.getProperty(TreeArgs.name);
-//				System.out.println(name);
-				if(name.contains("Folder")){
+				if(name.contains("ile")){
+					snode = snode.getSingleRelationship(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.INCOMING).getStartNode();
+					name = (String) snode.getProperty(TreeArgs.name);
+				}
+				if(name.contains("older")){
 					int count = (Integer) snode.getProperty(TreeArgs.listLenght);
 					snode.setProperty(TreeArgs.listLenght, count++);
 					

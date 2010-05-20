@@ -10,9 +10,9 @@ import org.neo4j.graphdb.Transaction;
 
 import simulator.Operation;
 
-public class LogReadOp_CountFiles extends Operation {
+public class CountFiles_ReadOp extends Operation {
 
-	public LogReadOp_CountFiles(String[] args) {
+	public CountFiles_ReadOp(String[] args) {
 		super(args);
 	}
 

@@ -10,10 +10,11 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 
 import simulator.Operation;
+import simulator.tree.TreeArgs.TreeRelTypes;
 
-public class LogWriteOp_DeleteItems extends Operation {
+public class DeleteItems_WriteOp extends Operation {
 
-	public LogWriteOp_DeleteItems(String[] args) {
+	public DeleteItems_WriteOp(String[] args) {
 		super(args);
 	}
 
@@ -50,25 +51,27 @@ public class LogWriteOp_DeleteItems extends Operation {
 						if (!outRel.hasNext()) {
 							parent.removeProperty(TreeArgs.hasSub);
 						}
+					} else {
+						throw new Error("can only delete Files or Folders");
 					}
 				}
+				
+//				// commit
+//				tx.success();
+//				tx.finish();
+//				tx = db.beginTx();
 
 				// delete subtree
 				LinkedList<Node> nodesToGo = new LinkedList<Node>();
 				nodesToGo.add(snode);
 				while (!nodesToGo.isEmpty()) {
 					Node n = nodesToGo.remove();
-					// delete all incoming relationships
 					for (Relationship rs : n
-							.getRelationships(Direction.INCOMING)) {
-						rs.delete();
+							.getRelationships(TreeRelTypes.CHILD_ITEM,Direction.OUTGOING)) {
+						nodesToGo.add(rs.getEndNode());
 					}
-
-					for (Relationship rs : n
-							.getRelationships(Direction.OUTGOING)) {
-						if (!TreeArgs.isEvent(rs)) {
-							nodesToGo.add(rs.getEndNode());
-						}
+					
+					for(Relationship rs : n.getRelationships()){
 						rs.delete();
 					}
 					n.delete();

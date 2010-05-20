@@ -5,21 +5,17 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import simulator.Operation;
 import simulator.Simulator;
 
-public class TreeInstSim extends Simulator {
-	private TreeOp_Factory fac;
-	private int i;
-	
-	
-	public TreeInstSim(GraphDatabaseService db, String logFile, int lenght) {
+public class TreeLog_Sim extends Simulator {
+	private TreeLog_Factory fac;
+	private String inputLog;
+	public TreeLog_Sim(GraphDatabaseService db, String logFile, String inputLog) {
 		super(db, logFile);
-		this.i = lenght;	
+		this.inputLog = inputLog;
 	}
 
 	@Override
 	public void initiate() {
-//		System.out.println("start inst");
-		fac = new TreeOp_Factory(getDB(), i);
-//		System.out.println("done inst");
+		fac = new TreeLog_Factory(inputLog);
 	}
 
 	@Override
@@ -27,7 +23,6 @@ public class TreeInstSim extends Simulator {
 		if(fac.hasNext()){
 			Operation op = fac.next();
 			op.executeOn(getDB());
-			System.out.println(op.getId());
 			logOperation(op);
 		}else{
 			getDB().shutdown();
