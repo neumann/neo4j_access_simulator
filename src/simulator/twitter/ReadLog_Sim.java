@@ -8,6 +8,7 @@ import simulator.Simulator;
 public class ReadLog_Sim extends Simulator {
 	private TwitterLog_Factory fac;
 	private String inputLog;
+
 	public ReadLog_Sim(GraphDatabaseService db, String logFile, String inputLog) {
 		super(db, logFile);
 		this.inputLog = inputLog;
@@ -20,11 +21,12 @@ public class ReadLog_Sim extends Simulator {
 
 	@Override
 	public void loop() {
-		if(fac.hasNext()){
+		if (fac.hasNext()) {
 			Operation op = fac.next();
 			op.executeOn(getDB());
+			System.out.println(op.getId());
 			logOperation(op);
-		}else{
+		} else {
 			getDB().shutdown();
 			shutdown();
 		}

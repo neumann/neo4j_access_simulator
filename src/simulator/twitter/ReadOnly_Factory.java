@@ -20,19 +20,20 @@ public class ReadOnly_Factory implements OperationFactory {
 
 	public ReadOnly_Factory(int numOperation, GraphDatabaseService db) {
 		this.max = 0;
-		
-		if(!(db instanceof PGraphDatabaseService)){
-			throw new Error("ReadOnly Factory only works for PGraphDatabaseService implementations");
+
+		if (!(db instanceof PGraphDatabaseService)) {
+			throw new Error(
+					"ReadOnly Factory only works for PGraphDatabaseService implementations");
 		}
-		
-		PGraphDatabaseService pdb = (PGraphDatabaseService)db;
-		for(long id : pdb.getInstancesIDs()){
+
+		PGraphDatabaseService pdb = (PGraphDatabaseService) db;
+		for (long id : pdb.getInstancesIDs()) {
 			max += pdb.getInstanceInfoFor(id).getValue(InfoKey.NumRelas);
 		}
-		
-		sample = Rnd.getSampleFromDB(pdb, new OutEdge(), max, numOperation, RndType.unif);
-		
-		
+
+		sample = Rnd.getSampleFromDB(pdb, new OutEdge(), max, numOperation,
+				RndType.unif);
+
 	}
 
 	@Override
@@ -42,13 +43,13 @@ public class ReadOnly_Factory implements OperationFactory {
 
 	@Override
 	public Operation next() {
-		if(hasNext()){
+		if (hasNext()) {
 			String[] args = { count + "", ReadOp_Search.class.getName(),
-					sample[count]+"" };
+					sample[count] + "" };
 			count++;
 			return new ReadOp_Search(args);
 		}
-		
+
 		return null;
 	}
 
@@ -56,17 +57,18 @@ public class ReadOnly_Factory implements OperationFactory {
 	public void shutdown() {
 		// nothing to do here
 	}
-	
-	private class OutEdge extends Evaluator{
+
+	private class OutEdge extends Evaluator {
 
 		@Override
 		public double evaluate(Node n) {
 			double res = 0;
-			for(@SuppressWarnings("unused") Relationship rs : n.getRelationships(Direction.OUTGOING)){
+			for (@SuppressWarnings("unused")
+			Relationship rs : n.getRelationships(Direction.OUTGOING)) {
 				res++;
-			}	
+			}
 			return res;
 		}
-		
+
 	}
 }
