@@ -20,10 +20,7 @@ public class TreeOps_Factory implements OperationFactory {
 
 	private static final int STEP_SIZE = 100;
 
-	private final double DelOp_Chance = 0.5;
-	private final double AddOp_Chance = 1;
-	private final double ReadSearch_Chance = 0;
-	private final double ReadOp_Chance = 0;
+	private final Distribution dis;
 	private int length;
 
 	private long[] sampleInv;
@@ -35,11 +32,10 @@ public class TreeOps_Factory implements OperationFactory {
 	private final GraphDatabaseService db;
 	private long count = 0;
 
-	public TreeOps_Factory(int lenght,GraphDatabaseService db ) {
+	public TreeOps_Factory(int lenght,GraphDatabaseService db, Distribution dis ) {
 		this.db = db;
 		this.length = lenght;
-
-		System.out.println("loading");
+		this.dis = dis;
 		
 		// calculate max
 		Transaction tx = db.beginTx();
@@ -78,7 +74,7 @@ public class TreeOps_Factory implements OperationFactory {
 			return null;
 
 		double choice = Rnd.nextDouble(RndType.unif);
-		if (choice < DelOp_Chance) {
+		if (choice < dis.delOp) {
 			// sample still valid?
 			long validNodeID = -1;
 			Node validNode = null;
@@ -109,7 +105,7 @@ public class TreeOps_Factory implements OperationFactory {
 			return new DeleteItems_WriteOp(args);
 		}
 
-		if (choice < AddOp_Chance) {
+		if (choice < dis.addOp) {
 			// sample still valid?
 			long validNodeID = -1;
 			Node validNode = null;
@@ -143,7 +139,7 @@ public class TreeOps_Factory implements OperationFactory {
 			return new AddFile_WriteOp(args);
 		}
 
-		if (choice < ReadSearch_Chance) {
+		if (choice < dis.searchOp) {
 			// sample still valid?
 			long validNodeID = -1;
 			Node validNode = null;
@@ -175,7 +171,7 @@ public class TreeOps_Factory implements OperationFactory {
 			
 		}
 
-		if (choice < ReadOp_Chance) {
+		if (choice < dis.countOp) {
 			// sample still valid?
 			long validNodeID = -1;
 			Node validNode = null;

@@ -19,27 +19,35 @@ public class AddFile_WriteOp extends Operation {
 		Transaction tx = db.beginTx();
 		try {
 			Node snode = db.getNodeById(Long.parseLong(args[2]));
-			if(snode.hasProperty(TreeArgs.name)){
+			if (snode.hasProperty(TreeArgs.name)) {
 				String name = (String) snode.getProperty(TreeArgs.name);
-				if(name.contains("ile")){
-					snode = snode.getSingleRelationship(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.INCOMING).getStartNode();
+				if (name.contains("File")) {
+					snode = snode.getSingleRelationship(
+							TreeArgs.TreeRelTypes.CHILD_ITEM,
+							Direction.INCOMING).getStartNode();
 					name = (String) snode.getProperty(TreeArgs.name);
 				}
-				if(name.contains("older")){
-					int count = (Integer) snode.getProperty(TreeArgs.listLenght);
+				if (name.contains("Folder")) {
+					int count = (Integer) snode
+							.getProperty(TreeArgs.listLenght);
 					snode.setProperty(TreeArgs.listLenght, count++);
-					
+
 					Node nNode = db.createNode();
-//					System.out.println("--------------------- "+ nNode.getId());
-					nNode.setProperty(TreeArgs.name, "FileBy "+ args[0]+" "+ args[1]);
+					// System.out.println("--------------------- "+
+					// nNode.getId());
+					nNode.setProperty(TreeArgs.name, "FileBy " + args[0] + " "
+							+ args[1]);
 					nNode.setProperty(TreeArgs.listLenght, new Integer(1));
 					nNode.setProperty(TreeArgs.size, new Long(0));
-					snode.createRelationshipTo(nNode, TreeArgs.TreeRelTypes.CHILD_ITEM);
+					snode.createRelationshipTo(nNode,
+							TreeArgs.TreeRelTypes.CHILD_ITEM);
 				}
 			}
 			res = true;
 			tx.success();
-		} finally{
+		} catch (Exception e) {
+			// something went wrong return false
+		} finally {
 			tx.finish();
 		}
 		return res;

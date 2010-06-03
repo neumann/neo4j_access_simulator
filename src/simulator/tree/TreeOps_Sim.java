@@ -10,6 +10,7 @@ public class TreeOps_Sim extends Simulator {
 	private OperationFactory fac;
 	private int i;
 	private simType type;
+	private Distribution dis = null;
 	
 	public enum simType {
 		SEARCH, COUNT, MIX
@@ -21,12 +22,24 @@ public class TreeOps_Sim extends Simulator {
 		this.i = lenght;
 		this.type = t;
 	}
+	
+	public TreeOps_Sim(GraphDatabaseService db, String logFile, int lenght, simType t,Distribution dis) {
+		super(db, logFile);
+		this.i = lenght;
+		this.type = t;
+		this.dis = dis;
+	}
+	
+	
 
 	@Override
 	public void initiate() {
 		switch (type) {
 		case MIX:
-			fac = new TreeOps_Factory(i, getDB());
+			if(dis == null){
+				dis = new Distribution(0,0,0.5,0.5);
+			}
+			fac = new TreeOps_Factory(i, getDB(), dis);
 			return;
 		case COUNT:
 			fac = new SearchFilesOnly_Factory( i, getDB());
@@ -46,7 +59,7 @@ public class TreeOps_Sim extends Simulator {
 		if(fac.hasNext()){
 			Operation op = fac.next();
 			op.executeOn(getDB());
-			System.out.println(op.getId());
+			//System.out.println(op.getId());
 			logOperation(op);
 		}else{
 			getDB().shutdown();
