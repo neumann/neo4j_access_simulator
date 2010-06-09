@@ -5,7 +5,9 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
 
 import simulator.OperationFactory;
+import simulator.Rnd;
 import simulator.Simulator;
+import simulator.Rnd.RndType;
 import simulator.gis.LogOperationFactoryGIS;
 import simulator.gis.SimulatorGIS;
 
