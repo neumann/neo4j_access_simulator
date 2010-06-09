@@ -145,13 +145,13 @@ public class DegreeEvaluator {
 				
 				if(inDeg < minInDegree){
 					minInDegree = inDeg;
-				}else if(deg > maxInDegree){
+				}else if(inDeg > maxInDegree){
 					maxInDegree = inDeg;
 				}
 			
 				if(outDeg < minOutDegree){
 					minOutDegree = outDeg;
-				}else if(deg > maxOutDegree){
+				}else if(outDeg > maxOutDegree){
 					maxOutDegree = outDeg;
 				}
 			}	
