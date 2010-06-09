@@ -146,13 +146,21 @@ public class DegreeEvaluator {
 
 				if (inDeg < minInDegree) {
 					minInDegree = inDeg;
+<<<<<<< HEAD
 				} else if (deg > maxInDegree) {
+=======
+				}else if(inDeg > maxInDegree){
+>>>>>>> a20d39afd2c7c15dc8d3d1d646a04162d0575250
 					maxInDegree = inDeg;
 				}
 
 				if (outDeg < minOutDegree) {
 					minOutDegree = outDeg;
+<<<<<<< HEAD
 				} else if (deg > maxOutDegree) {
+=======
+				}else if(outDeg > maxOutDegree){
+>>>>>>> a20d39afd2c7c15dc8d3d1d646a04162d0575250
 					maxOutDegree = outDeg;
 				}
 			}
