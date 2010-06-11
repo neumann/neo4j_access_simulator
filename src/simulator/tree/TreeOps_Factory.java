@@ -262,8 +262,8 @@ public class TreeOps_Factory implements OperationFactory {
 	private class invLengthEvaluator extends Evaluator {
 		@Override
 		public double evaluate(Node n) {
-			if (n.hasProperty(TreeArgs.listLenght) && n.hasProperty("name")) {
-				if(((String)n.getProperty("name")).contains("ile")){
+			if (n.hasProperty(TreeArgs.name)) {
+				if(((String)n.getProperty(TreeArgs.name)).contains("File")){
 					return ((double) 1);
 				}
 			}
@@ -277,7 +277,7 @@ public class TreeOps_Factory implements OperationFactory {
 			if (n.hasProperty(TreeArgs.listLenght)
 					&& n.hasProperty(TreeArgs.name)) {
 				String name = (String) n.getProperty(TreeArgs.name);
-				if (name.contains("older")) {
+				if (name.contains("Folder")) {
 					return (Integer) n.getProperty(TreeArgs.listLenght);
 				}
 			}

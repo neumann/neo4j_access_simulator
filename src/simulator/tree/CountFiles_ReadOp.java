@@ -6,7 +6,6 @@ import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.Transaction;
 
 import simulator.Operation;
 
@@ -17,11 +16,8 @@ public class CountFiles_ReadOp extends Operation {
 	}
 
 	@Override
-	public boolean onExecute(GraphDatabaseService db) {
-		boolean res = false;
-		Transaction tx = db.beginTx();
+	public boolean onExecute(GraphDatabaseService db) {		
 		try {
-			
 			long fileCount = 0;
 			long folderCount = 1;
 			LinkedList<Node> nodesToGo = new LinkedList<Node>();
@@ -41,14 +37,11 @@ public class CountFiles_ReadOp extends Operation {
 				}
 			}
 			
-//			System.out.println("Filecount: "+ fileCount + " FolderCount "+ folderCount);
-			
-			res = true;
-			tx.success();
-		} finally{
-			tx.finish();
+			return true;
+		}catch (Exception e) {
+			//do nothing
 		}
-		return res;
+		return false;
 	}
 
 }
