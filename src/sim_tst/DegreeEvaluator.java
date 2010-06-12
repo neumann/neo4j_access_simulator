@@ -1,5 +1,8 @@
 package sim_tst;
 
+import graph_gen_utils.NeoFromFile;
+import graph_gen_utils.memory_graph.MemGraph;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -15,20 +18,23 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 public class DegreeEvaluator {
 
 	public static void main(String[] args) {
-		String dbDir = "/home/alex/workspace/graph_cluster_utils/sample dbs/simulated - gis romania/romania-gis-RAND4-GID-NAME-COORDS-BICYCLE";
-		GraphDatabaseService db = new EmbeddedGraphDatabase(dbDir);
-		DegreeEvaluator ev = new DegreeEvaluator(db);
-		ev.calcDegree(true);
+		GraphDatabaseService db = null;
 		try {
+			String outFolder = args[0];
+			String dbDir = args[1];
 
-			File f = new File("/home/alex/Desktop/deg");
+			db = new EmbeddedGraphDatabase(dbDir);
+			MemGraph memDb = NeoFromFile.readMemGraph(db);
+			DegreeEvaluator ev = new DegreeEvaluator(memDb);
+			// ev.calcDegree(true);
+			ev.calcDegreeSTD(true);
+			File f = new File(outFolder);
 			ev.toFile(f);
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.shutdown();
 		}
-
-		db.shutdown();
-
 	}
 
 	private GraphDatabaseService db;
@@ -195,7 +201,7 @@ public class DegreeEvaluator {
 	}
 
 	public void toFile(File f) throws FileNotFoundException {
-		PrintStream ps = new PrintStream(f);
+		PrintStream ps = new PrintStream(f + "/summary.txt");
 		ps.println("minInDegree = " + minInDegree);
 		ps.println("maxInDegree = " + maxInDegree);
 		ps.println("avgInDegree = " + avgInDegree);
@@ -219,20 +225,36 @@ public class DegreeEvaluator {
 		ps.println();
 		ps.close();
 
-		File inHistFile = new File(f.getAbsoluteFile() + "inDegHist");
-		ps = new PrintStream(inHistFile);
+		File inDegHistFile = new File(f.getAbsoluteFile() + "/histInDeg.txt");
+		ps = new PrintStream(inDegHistFile);
 		printHist(inDegHist, ps);
 		ps.close();
 
-		File outHistFile = new File(f.getAbsoluteFile() + "outDegHist");
-		ps = new PrintStream(outHistFile);
+		File outDegHistFile = new File(f.getAbsoluteFile() + "/histOutDeg.txt");
+		ps = new PrintStream(outDegHistFile);
 		printHist(outDegHist, ps);
 		ps.close();
 
-		File histFile = new File(f.getAbsoluteFile() + "degHist");
-		ps = new PrintStream(histFile);
+		File degHistFile = new File(f.getAbsoluteFile() + "/histDeg.txt");
+		ps = new PrintStream(degHistFile);
 		printHist(degHist, ps);
 		ps.close();
+
+		File inDegRawFile = new File(f.getAbsoluteFile() + "/rawInDeg.txt");
+		ps = new PrintStream(inDegRawFile);
+		printRaw(inDegHist, ps);
+		ps.close();
+
+		File outDegRawFile = new File(f.getAbsoluteFile() + "/rawOutDeg.txt");
+		ps = new PrintStream(outDegRawFile);
+		printRaw(outDegHist, ps);
+		ps.close();
+
+		File degRawFile = new File(f.getAbsoluteFile() + "/rawDeg.txt");
+		ps = new PrintStream(degRawFile);
+		printRaw(degHist, ps);
+		ps.close();
+
 	}
 
 	private void printHist(HashMap<Integer, Long> hist, PrintStream ps) {
@@ -245,6 +267,15 @@ public class DegreeEvaluator {
 			}
 			ps.println(hist.get(k));
 			cur++;
+		}
+	}
+
+	private void printRaw(HashMap<Integer, Long> hist, PrintStream ps) {
+		TreeSet<Integer> keys = new TreeSet<Integer>(hist.keySet());
+		for (int k : keys) {
+			for (int i = 0; i < hist.get(k); i++) {
+				ps.println(k);
+			}
 		}
 	}
 }
