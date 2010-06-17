@@ -164,7 +164,7 @@ public class DegreeEvaluator {
 		avgInDegree = inDegSum / (double) nodeCount;
 		avgOutDegree = outDegSum / (double) nodeCount;
 		avgDegree = degSum / (double) nodeCount;
-
+	
 		for (Integer k : degHist.keySet()) {
 			stdDegree += Math.pow((k - avgDegree), 2) * degHist.get(k);
 		}
@@ -196,10 +196,14 @@ public class DegreeEvaluator {
 		ps.println("avgOutDegree = " + avgOutDegree);
 		ps.println("stdOutDegree = " + stdOutDegree);
 		ps.println();
+		ps.println(outDegHist);
+		ps.println();
 		ps.println("minDegree = " + minDegree);
 		ps.println("maxDegree = " + maxDegree);
 		ps.println("avgDegree = " + avgDegree);
 		ps.println("stdDegree = " + stdDegree);
+		ps.println();
+		ps.println(degHist);
 		ps.println();
 		ps.close();
 
@@ -217,6 +221,22 @@ public class DegreeEvaluator {
 		ps = new PrintStream(outHistFile);
 		printHist(outDegHist, ps, max);
 		ps.close();
+
+		File inDegRawFile = new File(f.getAbsoluteFile() + "/rawInDeg.txt");
+		ps = new PrintStream(inDegRawFile);
+		printRaw(inDegHist, ps);
+		ps.close();
+
+		File outDegRawFile = new File(f.getAbsoluteFile() + "/rawOutDeg.txt");
+		ps = new PrintStream(outDegRawFile);
+		printRaw(outDegHist, ps);
+		ps.close();
+
+		File degRawFile = new File(f.getAbsoluteFile() + "/rawDeg.txt");
+		ps = new PrintStream(degRawFile);
+		printRaw(degHist, ps);
+		ps.close();
+
 	}
 
 
@@ -236,5 +256,14 @@ public class DegreeEvaluator {
 			max--;
 		}
 		return cur;
+	}
+	
+	private void printRaw(HashMap<Integer, Long> hist, PrintStream ps) {
+		TreeSet<Integer> keys = new TreeSet<Integer>(hist.keySet());
+		for (int k : keys) {
+			for (int i = 0; i < hist.get(k); i++) {
+				ps.println(k);
+			}
+		}
 	}
 }
