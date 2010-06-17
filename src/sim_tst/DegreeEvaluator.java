@@ -15,27 +15,27 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
-import simulator.tree.TreeArgs;
-
 public class DegreeEvaluator {
 
 	public static void main(String[] args) {
-		GraphDatabaseService db = new EmbeddedGraphDatabase("var/db");
-		MemGraph memDb = NeoFromFile.readMemGraph(db);
-		DegreeEvaluator ev = new DegreeEvaluator(memDb);
-		ev.calcDegree();
+		GraphDatabaseService db = null;
 		try {
+			String outFolder = args[0];
+			String dbDir = args[1];
 
-			File f = new File("res");
+			db = new EmbeddedGraphDatabase(dbDir);
+			MemGraph memDb = NeoFromFile.readMemGraph(db);
+			DegreeEvaluator ev = new DegreeEvaluator(memDb);
+			ev.calcDegree();
+			File f = new File(outFolder);
 			ev.toFile(f);
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			db.shutdown();
 		}
-
-		db.shutdown();
-
 	}
-
+	
 	private GraphDatabaseService db;
 
 	private HashMap<Integer, Long> inDegHist = new HashMap<Integer, Long>();
@@ -48,9 +48,9 @@ public class DegreeEvaluator {
 	private double outDegSum = 0;
 	private double degSum = 0;
 
-	int minInDegree = -1;
-	int minOutDegree = -1;
-	int minDegree = -1;
+	int minInDegree = Integer.MAX_VALUE;
+	int minOutDegree = Integer.MAX_VALUE;
+	int minDegree = Integer.MAX_VALUE;
 
 	int maxInDegree = -1;
 	int maxOutDegree = -1;
@@ -67,9 +67,8 @@ public class DegreeEvaluator {
 	public DegreeEvaluator(GraphDatabaseService db) {
 		this.db = db;
 	}
-
+	
 	public void calcDegree() {
-
 		// initiate
 		nodeCount = 0;
 		relCount = 0;
@@ -91,16 +90,15 @@ public class DegreeEvaluator {
 
 		// calculate degree
 		for (Node n : db.getAllNodes()) {
-
 			nodeCount++;
 			int deg = 0;
 			int inDeg = 0;
 			int outDeg = 0;
-			for (Relationship rs : n.getRelationships(Direction.OUTGOING)) {
+			for (@SuppressWarnings("unused") Relationship rs : n.getRelationships(Direction.OUTGOING)) {
 				outDeg++;
 				relCount++;
 			}
-			for (Relationship rs : n.getRelationships(Direction.INCOMING)) {
+			for (@SuppressWarnings("unused") Relationship rs : n.getRelationships(Direction.INCOMING)) {
 				inDeg++;
 			}
 			deg = inDeg + outDeg;
@@ -128,7 +126,7 @@ public class DegreeEvaluator {
 				val++;
 			}
 			degHist.put(deg, val);
-
+		
 			inDegSum += inDeg;
 			outDegSum += outDeg;
 			degSum += deg;
@@ -176,15 +174,6 @@ public class DegreeEvaluator {
 		for (Integer k : outDegHist.keySet()) {
 			stdOutDegree += Math.pow((k - avgOutDegree), 2) * outDegHist.get(k);
 		}
-
-		stdDegree = stdDegree / (nodeCount - 1);
-		stdInDegree = stdInDegree / (nodeCount - 1);
-		stdOutDegree = stdOutDegree / (nodeCount - 1);
-
-		stdDegree = Math.sqrt(stdDegree);
-		stdInDegree = Math.sqrt(stdInDegree);
-		stdOutDegree = Math.sqrt(stdOutDegree);
-
 	}
 
 	public void toFile(File f) throws FileNotFoundException {
@@ -194,11 +183,13 @@ public class DegreeEvaluator {
 		ps.println("relCount = " + relCount);
 		ps.println("rel/node = " + relRate);
 		ps.println();
-		ps.println();
+		ps = new PrintStream(f);
 		ps.println("minInDegree = " + minInDegree);
 		ps.println("maxInDegree = " + maxInDegree);
 		ps.println("avgInDegree = " + avgInDegree);
 		ps.println("stdInDegree = " + stdInDegree);
+		ps.println();
+		ps.println(inDegHist);
 		ps.println();
 		ps.println("minOutDegree = " + minOutDegree);
 		ps.println("maxOutDegree = " + maxOutDegree);
@@ -226,10 +217,10 @@ public class DegreeEvaluator {
 		ps = new PrintStream(outHistFile);
 		printHist(outDegHist, ps, max);
 		ps.close();
-
 	}
 
-	private int printHist(HashMap<Integer, Long> hist, PrintStream ps, int max) {
+
+	private int printHist(HashMap<Integer, Long> hist, PrintStream ps, int max){
 		TreeSet<Integer> keys = new TreeSet<Integer>(hist.keySet());
 		int cur = 0;
 		for (int k : keys) {
