@@ -20,9 +20,13 @@ public class DegreeEvaluator {
 	public static void main(String[] args) {
 		GraphDatabaseService db = null;
 		try {
-			String outFolder = args[0];
-			String dbDir = args[1];
+//			String outFolder = args[0];
+//			String dbDir = args[1];
 
+			String outFolder = "var";
+			String dbDir = "var/db";
+
+			
 			db = new EmbeddedGraphDatabase(dbDir);
 			MemGraph memDb = NeoFromFile.readMemGraph(db);
 			DegreeEvaluator ev = new DegreeEvaluator(memDb);
@@ -178,12 +182,11 @@ public class DegreeEvaluator {
 
 	public void toFile(File f) throws FileNotFoundException {
 		double relRate = relCount / (double) nodeCount;
-		PrintStream ps = new PrintStream(f);
+		PrintStream ps = new PrintStream(f+"/degInfo");
 		ps.println("nodeCount = " + nodeCount);
 		ps.println("relCount = " + relCount);
 		ps.println("rel/node = " + relRate);
 		ps.println();
-		ps = new PrintStream(f);
 		ps.println("minInDegree = " + minInDegree);
 		ps.println("maxInDegree = " + maxInDegree);
 		ps.println("avgInDegree = " + avgInDegree);
@@ -207,32 +210,32 @@ public class DegreeEvaluator {
 		ps.println();
 		ps.close();
 
-		File histFile = new File(f.getAbsoluteFile() + "degHist");
+		File histFile = new File(f.getAbsoluteFile() + "/degHist");
 		ps = new PrintStream(histFile);
 		int max = printHist(degHist, ps, 0);
 		ps.close();
 
-		File inHistFile = new File(f.getAbsoluteFile() + "inDegHist");
+		File inHistFile = new File(f.getAbsoluteFile() + "/inDegHist");
 		ps = new PrintStream(inHistFile);
 		printHist(inDegHist, ps, max);
 		ps.close();
 
-		File outHistFile = new File(f.getAbsoluteFile() + "outDegHist");
+		File outHistFile = new File(f.getAbsoluteFile() + "/outDegHist");
 		ps = new PrintStream(outHistFile);
 		printHist(outDegHist, ps, max);
 		ps.close();
 
-		File inDegRawFile = new File(f.getAbsoluteFile() + "/rawInDeg.txt");
+		File inDegRawFile = new File(f.getAbsoluteFile() + "/rawInDeg");
 		ps = new PrintStream(inDegRawFile);
 		printRaw(inDegHist, ps);
 		ps.close();
 
-		File outDegRawFile = new File(f.getAbsoluteFile() + "/rawOutDeg.txt");
+		File outDegRawFile = new File(f.getAbsoluteFile() + "/rawOutDeg");
 		ps = new PrintStream(outDegRawFile);
 		printRaw(outDegHist, ps);
 		ps.close();
 
-		File degRawFile = new File(f.getAbsoluteFile() + "/rawDeg.txt");
+		File degRawFile = new File(f.getAbsoluteFile() + "/rawDeg");
 		ps = new PrintStream(degRawFile);
 		printRaw(degHist, ps);
 		ps.close();
