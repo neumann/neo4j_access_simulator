@@ -1,5 +1,7 @@
 package sim_tst;
 
+import java.util.Date;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 
 import p_graph_service.PGraphDatabaseService;
@@ -14,12 +16,13 @@ public class TwitterTst {
 	public static void main(String[] args) {
 		PGraphDatabaseService db;
 		Simulator sim;
-			
-		db = new PGraphDatabaseServiceSIM("path", 0);
+	
+		db = new PGraphDatabaseServiceSIM("var/bla", 0);
 		
-//		sim = new ReadOnly_Sim(db, "logFileOut", 10000);
-		sim = new TwitterLog_Sim(db, "logFileOut", "logFileIn");
+//		sim = new TwitterLog_Sim(db, "/home/martin/MasterThesis/Experiments/Twitter/logFileOut_didic2", "/home/martin/MasterThesis/Experiments/Twitter/logFileOut_s");
+//		sim = new TwitterLog_Sim(db, "logFileOut", "logFileIn");
 		
-		sim.startSIM();
+//		sim.startSIM();
+		db.shutdown();
 	}
 }

@@ -13,10 +13,10 @@ import p_graph_service.core.DBInstanceContainer;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
 import simulator.Simulator;
 import simulator.tree.TreeLog_Sim;
-import simulator.tree.TreeHardColor;
 import simulator.tree.TreeOps_Sim;
 import simulator.tree.TreeLog_Factory;
 import simulator.tree.TreeOps_Sim.simType;
+import simulator.tree.hardColor.TreeHardColor;
 
 public class ReadOps_onTree {
 
