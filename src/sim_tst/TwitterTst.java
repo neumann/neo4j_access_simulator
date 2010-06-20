@@ -16,13 +16,15 @@ public class TwitterTst {
 	public static void main(String[] args) {
 		PGraphDatabaseService db;
 		Simulator sim;
-	
-		db = new PGraphDatabaseServiceSIM("var/bla", 0);
-		
-//		sim = new TwitterLog_Sim(db, "/home/martin/MasterThesis/Experiments/Twitter/logFileOut_didic2", "/home/martin/MasterThesis/Experiments/Twitter/logFileOut_s");
-//		sim = new TwitterLog_Sim(db, "logFileOut", "logFileIn");
-		
-//		sim.startSIM();
+
+		db = new PGraphDatabaseServiceSIM("/home/alex/Desktop/sampleDB_742N_1327R/", 0);
+
+		// sim = new TwitterLog_Sim(db,
+		// "/home/martin/MasterThesis/Experiments/Twitter/logFileOut_didic2",
+		// "/home/martin/MasterThesis/Experiments/Twitter/logFileOut_s");
+		// sim = new TwitterLog_Sim(db, "logFileOut", "logFileIn");
+
+		// sim.startSIM();
 		db.shutdown();
 	}
 }

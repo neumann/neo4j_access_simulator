@@ -33,7 +33,7 @@ public abstract class OperationGIS extends Operation {
 		// Romania [longitude=24.9804, latitude=45.946949]
 
 		// Bucharest [longitude=26.102965, latitude=44.434295]
-		citiesCoords.add(new Coordinates(45.946949, 24.9804));
+		citiesCoords.add(new Coordinates(44.434295, 26.102965));
 
 		// Iasi [longitude=27.590505, latitude=47.160365]
 		citiesCoords.add(new Coordinates(47.160365, 27.590505));
