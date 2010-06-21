@@ -1,4 +1,4 @@
-package sim_tst;
+package simulator.tree.hardColor;
 
 import java.util.HashSet;
 import java.util.Iterator;

@@ -17,12 +17,11 @@ public class TwitterTst {
 		PGraphDatabaseService db;
 		Simulator sim;
 	
-		db = new PGraphDatabaseServiceSIM("var/bla", 0);
+		db = new PGraphDatabaseServiceSIM("/home/martin/MasterThesis/Experiments/Twitter/twitter-256th-V[611643]E[852461]-rand2s", 0);
 		
-//		sim = new TwitterLog_Sim(db, "/home/martin/MasterThesis/Experiments/Twitter/logFileOut_didic2", "/home/martin/MasterThesis/Experiments/Twitter/logFileOut_s");
-//		sim = new TwitterLog_Sim(db, "logFileOut", "logFileIn");
+		sim = new TwitterLog_Sim(db, "/home/martin/MasterThesis/Experiments/Twitter/logFileOut_rand2", "/home/martin/MasterThesis/Experiments/Twitter/logFileOut_s");
 		
-//		sim.startSIM();
+		sim.startSIM();
 		db.shutdown();
 	}
 }
