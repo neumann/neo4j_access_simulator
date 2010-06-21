@@ -1,4 +1,4 @@
-package simulator.tree.hardColor;
+package simulator.tree.tools;
 
 import java.util.LinkedList;
 
@@ -27,39 +27,45 @@ public class TreeHardColorBalanced {
 		String graphDir = file;
 		
 		LinkedList<Node> nodesToGo = new LinkedList<Node>();
+		LinkedList<Node> rootFolder = new LinkedList<Node>();
 		GraphDatabaseService graphDB = new EmbeddedGraphDatabase(graphDir);
 		
 		//go to folder level
-		Node curN = graphDB.getReferenceNode();
-		while(!curN.hasProperty(TreeArgs.hasSub)){ 
-			for (Relationship rs: curN.getRelationships(Direction.OUTGOING)) {
+		rootFolder.add(graphDB.getReferenceNode());
+		while(!rootFolder.peek().hasProperty(TreeArgs.hasSub)){ 
+			Node n = rootFolder.removeFirst();
+			for (Relationship rs: n.getRelationships(Direction.OUTGOING)) {
+				rootFolder.addLast(rs.getEndNode());
+			}
+		}
+		for(Node n : rootFolder){
+			for (Relationship rs: n.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM,Direction.OUTGOING)) {
 				nodesToGo.addLast(rs.getEndNode());
 			}
-			curN = nodesToGo.poll();
 		}
+		
 				
 		Transaction tx = graphDB.beginTx();
+		int lenght = Math.round(nodesToGo.size()/(float)partitions);
 		try {
-			int length = Math.round(nodesToGo.size()/(float)partitions);
-			Byte col = 0;
-			int count =0;
-			for (Node n2g : nodesToGo) {		
-				n2g.setProperty("_color", col);
-				count ++;
-				if(count >= length){
-					System.out.println(count + " with color "+ col);
-					count  = 0;
-					col++;
+			Byte col = -1;
+			int j =0;
+			for(int i = 0 ; i < partitions; i++){
+				col++;
+				j = i*lenght;
+				while( j < (i+1)*lenght && j< nodesToGo.size()){
+					nodesToGo.get(j).setProperty("_color", col);
+					j++;
 				}
+			}
+			while (j<nodesToGo.size()) {
+				nodesToGo.get(j).setProperty("_color", col);
+				j++;
 			}
 			tx.success();
 		} finally {
 			tx.finish();
 		}	
-		
-		graphDB.shutdown();
-		System.exit(0);
-		
 		
 		// color the rest of the tree according to its parents
 		Transaction ty = graphDB.beginTx();

@@ -16,7 +16,7 @@ import simulator.tree.TreeLog_Sim;
 import simulator.tree.TreeOps_Sim;
 import simulator.tree.TreeLog_Factory;
 import simulator.tree.TreeOps_Sim.simType;
-import simulator.tree.hardColor.TreeHardColor;
+import simulator.tree.tools.TreeHardColor;
 
 public class ReadOps_onTree {
 
@@ -27,11 +27,11 @@ public class ReadOps_onTree {
 		GraphDatabaseService db;	
 		Simulator sim;
 		
-		db = new PGraphDatabaseServiceSIM("var/fstree-nHard2_700kNodes_1300Relas",0);
+		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
 		sim = new TreeOps_Sim(db,"readSearchLog", 10000, simType.SEARCH);
 		sim.startSIM();
 		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic2_700kNodes_1300Relas",0);
+		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
 		sim = new TreeOps_Sim(db,"readCountLog", 10000, simType.COUNT);
 		sim.startSIM();
 		

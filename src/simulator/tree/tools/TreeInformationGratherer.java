@@ -1,4 +1,4 @@
-package simulator.tree.hardColor;
+package simulator.tree.tools;
 
 import java.util.HashSet;
 import java.util.Iterator;
