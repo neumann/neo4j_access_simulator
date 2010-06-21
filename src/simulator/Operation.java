@@ -19,6 +19,13 @@ public abstract class Operation {
 	protected static final String NODE_CHANGE = "n_change";
 	protected static final String REL_CHANGE = "rel_change";
 
+	protected static final String TRAF_0_WITH_1 = "traffic_0_with_1";
+	protected static final String TRAF_0_WITH_2 = "traffic_0_with_2";
+	protected static final String TRAF_0_WITH_3 = "traffic_0_with_3";
+	protected static final String TRAF_1_WITH_2 = "traffic_1_with_2";
+	protected static final String TRAF_1_WITH_3 = "traffic_1_with_3";
+	protected static final String TRAF_2_WITH_3 = "traffic_2_with_3";
+
 	public static final int ARGS_TAG_INDX = 2;
 
 	protected final String[] args;
@@ -39,6 +46,13 @@ public abstract class Operation {
 		this.info.put(ARGS_TAG, Arrays.toString(args));
 		this.info.put(GLOBAL_TRAFFIC, Long.toString(0));
 		this.info.put(LOCAL_TRAFFIC, Long.toString(0));
+
+		this.info.put(TRAF_0_WITH_1, Long.toString(0));
+		this.info.put(TRAF_0_WITH_2, Long.toString(0));
+		this.info.put(TRAF_0_WITH_3, Long.toString(0));
+		this.info.put(TRAF_1_WITH_2, Long.toString(0));
+		this.info.put(TRAF_1_WITH_3, Long.toString(0));
+		this.info.put(TRAF_2_WITH_3, Long.toString(0));
 
 		this.args = args;
 
@@ -70,8 +84,9 @@ public abstract class Operation {
 			InstanceInfo[] preSnapShot = new InstanceInfo[ids.length];
 
 			for (int i = 0; i < ids.length; i++) {
-//				pdb.resetLoggingOn(ids[i]);
-				preSnapShot[i] = (pdb.getInstanceInfoFor(ids[i])).takeSnapshot();
+				// pdb.resetLoggingOn(ids[i]);
+				preSnapShot[i] = (pdb.getInstanceInfoFor(ids[i]))
+						.takeSnapshot();
 			}
 
 			// execute operation
@@ -79,54 +94,63 @@ public abstract class Operation {
 
 			InstanceInfo[] postSnapShot = new InstanceInfo[ids.length];
 			for (int i = 0; i < ids.length; i++) {
-				postSnapShot[i] = (pdb.getInstanceInfoFor(ids[i])).takeSnapshot();
+				postSnapShot[i] = (pdb.getInstanceInfoFor(ids[i]))
+						.takeSnapshot();
 			}
-			
+
 			// calculate changes to what was before
 			InstanceInfo[] difference = new InstanceInfo[ids.length];
 			for (int i = 0; i < ids.length; i++) {
 				difference[i] = preSnapShot[i].differenceTo(postSnapShot[i]);
-			}			
-			
+			}
+
 			// dynamic print of communication between charts
 			HashMap<String, Long> gloTrafMap = new HashMap<String, Long>();
-			for(int i=0; i<ids.length; i++){
-				for(Long k :difference[i].globalTrafficMap.keySet()){
+			for (int i = 0; i < ids.length; i++) {
+				for (Long k : difference[i].globalTrafficMap.keySet()) {
 					String newK;
-					if(ids[i]<k){
-						newK = ids[i]+"_with_" + k;
+					if (ids[i] < k) {
+						newK = ids[i] + "_with_" + k;
 					} else {
-						newK = k+"_with_" + ids[i];
+						newK = k + "_with_" + ids[i];
 					}
-					
-					if(gloTrafMap.containsKey(newK)){
-						gloTrafMap.put(newK, gloTrafMap.get(newK)+difference[i].globalTrafficMap.get(k));
-					}else{
-						gloTrafMap.put(newK, difference[i].globalTrafficMap.get(k));
+
+					if (gloTrafMap.containsKey(newK)) {
+						gloTrafMap.put(newK, gloTrafMap.get(newK)
+								+ difference[i].globalTrafficMap.get(k));
+					} else {
+						gloTrafMap.put(newK, difference[i].globalTrafficMap
+								.get(k));
 					}
 				}
 			}
-			for(String k : gloTrafMap.keySet()){
-				info.put("traffic_"+k, gloTrafMap.get(k).toString());
+			for (String k : gloTrafMap.keySet()) {
+				info.put("traffic_" + k, gloTrafMap.get(k).toString());
 			}
-			
+
 			// print numnodes for each chart
-			for(int i=0; i<ids.length; i++){
-				String dynKey = "Chart_"+ids[i]+"_";
-				info.put(dynKey+"numNodes", postSnapShot[i].getValue(InfoKey.NumNodes)+"");
+			for (int i = 0; i < ids.length; i++) {
+				String dynKey = "Chart_" + ids[i] + "_";
+				info.put(dynKey + "numNodes", postSnapShot[i]
+						.getValue(InfoKey.NumNodes)
+						+ "");
 			}
-			
+
 			// print numrelas for each chart
-			for(int i=0; i<ids.length; i++){
-				String dynKey = "Chart_"+ids[i]+"_";
-				info.put(dynKey+"numRelas", postSnapShot[i].getValue(InfoKey.NumRelas)+"");
+			for (int i = 0; i < ids.length; i++) {
+				String dynKey = "Chart_" + ids[i] + "_";
+				info.put(dynKey + "numRelas", postSnapShot[i]
+						.getValue(InfoKey.NumRelas)
+						+ "");
 			}
 			// print loc traffic for each chart
-			for(int i=0; i<ids.length; i++){
-				String dynKey = "Chart_"+ids[i]+"_";
-				info.put(dynKey+"traffic", difference[i].getValue(InfoKey.Loc_Traffic)+"");
+			for (int i = 0; i < ids.length; i++) {
+				String dynKey = "Chart_" + ids[i] + "_";
+				info.put(dynKey + "traffic", difference[i]
+						.getValue(InfoKey.Loc_Traffic)
+						+ "");
 			}
-			
+
 			// calculate global traffic and local traffic for plot
 			Long sumInterHops = 0l;
 			Long sumTraffic = 0l;
@@ -136,7 +160,7 @@ public abstract class Operation {
 			}
 			info.put(GLOBAL_TRAFFIC, sumInterHops.toString());
 			info.put(LOCAL_TRAFFIC, sumTraffic.toString());
-			
+
 			return res;
 		}
 		return onExecute(db);
