@@ -27,97 +27,24 @@ public class ReadOps_onTree {
 		GraphDatabaseService db;	
 		Simulator sim;
 		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_trffAdd0.01",0);
-		sim = new TreeLog_Sim(db, "001Churn_search_trff","001Churn_search");
+		db = new PGraphDatabaseServiceSIM("var/fstree-nHard2_700kNodes_1300Relas",0);
+		sim = new TreeOps_Sim(db,"readSearchLog", 10000, simType.SEARCH);
 		sim.startSIM();
 		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_trffAdd0.01",0);
-		sim = new TreeLog_Sim(db, "001Churn_count_trff","001Churn_count");
-		sim.startSIM();
-
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_trffAdd0.02",0);
-		sim = new TreeLog_Sim(db, "002Churn_search_trff","002Churn_search");
-		sim.startSIM();
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_trffAdd0.02",0);
-		sim = new TreeLog_Sim(db, "002Churn_count_trff","002Churn_count");
-		sim.startSIM();
-	
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_trffAdd0.05",0);
-		sim = new TreeLog_Sim(db, "005Churn_search_trff","005Churn_search");
-		sim.startSIM();
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_trffAdd0.05",0);
-		sim = new TreeLog_Sim(db, "005Churn_count_trff","005Churn_count");
-		sim.startSIM();
-		
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_trffAdd0.1",0);
-		sim = new TreeLog_Sim(db, "01Churn_search_trff","01Churn_search");
-		sim.startSIM();
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_trffAdd0.1",0);
-		sim = new TreeLog_Sim(db, "01Churn_count_trff","01Churn_count");
-		sim.startSIM();
-		
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_trffAdd0.25",0);
-		sim = new TreeLog_Sim(db, "025Churn_search_trff","025Churn_search");
-		sim.startSIM();
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_trffAdd0.25",0);
-		sim = new TreeLog_Sim(db, "025Churn_count_trff","025Churn_count");
+		db = new PGraphDatabaseServiceSIM("var/fstree-didic2_700kNodes_1300Relas",0);
+		sim = new TreeOps_Sim(db,"readCountLog", 10000, simType.COUNT);
 		sim.startSIM();
 		
 		
 		
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_minAdd0.01",0);
-		sim = new TreeLog_Sim(db, "001Churn_search_min","001Churn_search");
-		sim.startSIM();
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_minAdd0.01",0);
-		sim = new TreeLog_Sim(db, "001Churn_count_min","001Churn_count");
-		sim.startSIM();
-
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_minAdd0.02",0);
-		sim = new TreeLog_Sim(db, "002Churn_search_min","002Churn_search");
-		sim.startSIM();
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_minAdd0.02",0);
-		sim = new TreeLog_Sim(db, "002Churn_count_min","002Churn_count");
-		sim.startSIM();
-	
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_minAdd0.05",0);
-		sim = new TreeLog_Sim(db, "005Churn_search_min","005Churn_search");
-		sim.startSIM();
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_minAdd0.05",0);
-		sim = new TreeLog_Sim(db, "005Churn_count_min","005Churn_count");
-		sim.startSIM();
-		
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_minAdd0.1",0);
-		sim = new TreeLog_Sim(db, "01Churn_search_min","01Churn_search");
-		sim.startSIM();
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_minAdd0.1",0);
-		sim = new TreeLog_Sim(db, "01Churn_count_min","01Churn_count");
-		sim.startSIM();
-		
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_minAdd0.25",0);
-		sim = new TreeLog_Sim(db, "025Churn_search_min","025Churn_search");
-		sim.startSIM();
-		
-		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas_minAdd0.25",0);
-		sim = new TreeLog_Sim(db, "025Churn_count_min","025Churn_count");
-		sim.startSIM();		
-		
+//		db = new PGraphDatabaseServiceSIM("var/fstree-nHard2_700kNodes_1300Relas",0);
+//		sim = new TreeLog_Sim(db,"readSearchLog_nHard2", "readSearchLog");
+//		sim.startSIM();
+//		
+//		db = new PGraphDatabaseServiceSIM("var/fstree-didic2_700kNodes_1300Relas",0);
+//		sim = new TreeLog_Sim(db,"readCountLog_nHard2", "readCountLog");
+//		sim.startSIM();
+					
 		// run the other experiments
 //		WriteOps_onTree.runWriteOps();
 //		 convertDB();
