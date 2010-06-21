@@ -146,22 +146,42 @@ public class OperationFactoryGIS implements OperationFactory {
 		switch (opTypeIndx) {
 
 		case ADD_RATIO_INDX: {
-			Object[] results = Rnd.getSampleFromMap(
-					distanceDistributionState.values,
-					distanceDistributionState.sumValues, 1, RndType.unif);
 
-			long startNodeId = (Long) results[0];
+			long startNodeId = -1;
+			Node startNode = null;
+			Node endNode = null;
 
-			Node startNode = graphDb.getNodeById(startNodeId);
+			while (endNode == null) {
+				Object[] results = Rnd.getSampleFromMap(
+						distanceDistributionState.values,
+						distanceDistributionState.sumValues, 1, RndType.unif);
 
-			if (startNode == null)
-				throw new Exception(String.format("startNode[%d] == null",
-						startNodeId));
+				startNodeId = (Long) results[0];
+				startNode = graphDb.getNodeById(startNodeId);
 
-			Node endNode = doRandomWalk(startNode, 1);
+				if (startNode == null)
+					throw new Exception(String.format("startNode[%d] == null",
+							startNodeId));
 
-			if (endNode == null)
-				throw new Exception("endNode == null");
+				endNode = doRandomWalk(startNode, 1);
+			}
+
+			// Object[] results = Rnd.getSampleFromMap(
+			// distanceDistributionState.values,
+			// distanceDistributionState.sumValues, 1, RndType.unif);
+			//
+			// long startNodeId = (Long) results[0];
+			//
+			// Node startNode = graphDb.getNodeById(startNodeId);
+			//
+			// if (startNode == null)
+			// throw new Exception(String.format("startNode[%d] == null",
+			// startNodeId));
+			//
+			// Node endNode = doRandomWalk(startNode, 1);
+			//
+			// if (endNode == null)
+			// throw new Exception("endNode == null");
 
 			double lonStart = (Double) startNode.getProperty(Consts.LONGITUDE);
 			double latStart = (Double) startNode.getProperty(Consts.LATITUDE);
