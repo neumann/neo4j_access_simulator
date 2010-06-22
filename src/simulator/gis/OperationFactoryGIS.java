@@ -56,6 +56,7 @@ public class OperationFactoryGIS implements OperationFactory {
 	private final int DELETE_RATIO_INDX = 1;
 	private final int SHORT_SEARCH_RATIO_INDX = 2;
 	private final int LONG_SEARCH_RATIO_INDX = 3;
+	private final int SHUFFLE_RATIO_INDX = 4;
 	private HashMap<Integer, Double> opRatios = new HashMap<Integer, Double>();
 	private double sumRatios = 0.0;
 
@@ -82,7 +83,7 @@ public class OperationFactoryGIS implements OperationFactory {
 
 	public OperationFactoryGIS(GraphDatabaseService graphDb, double addRatio,
 			double deleteRatio, double shortSearchRatio,
-			double longSearchRatio, long opCount) {
+			double longSearchRatio, double shuffleRatio, long opCount) {
 
 		this.graphDb = graphDb;
 
@@ -97,9 +98,14 @@ public class OperationFactoryGIS implements OperationFactory {
 		this.opRatios.put(DELETE_RATIO_INDX, deleteRatio);
 		this.opRatios.put(SHORT_SEARCH_RATIO_INDX, shortSearchRatio);
 		this.opRatios.put(LONG_SEARCH_RATIO_INDX, longSearchRatio);
+		this.opRatios.put(SHUFFLE_RATIO_INDX, shuffleRatio);
 
-		this.sumRatios = addRatio + deleteRatio + shortSearchRatio
-				+ longSearchRatio;
+		// this.sumRatios = addRatio + deleteRatio + shortSearchRatio
+		// + longSearchRatio;
+		this.sumRatios = 0;
+		for (Double opRatio : this.opRatios.values()) {
+			sumRatios += opRatio;
+		}
 
 		this.opCount = opCount;
 	}
@@ -304,6 +310,30 @@ public class OperationFactoryGIS implements OperationFactory {
 					Long.toString(startNodeId), Long.toString(endNodeId) };
 
 			return new OperationGISShortestPathLong(args);
+		}
+
+		case SHUFFLE_RATIO_INDX: {
+			Object[] results = Rnd.getSampleFromMap(
+					distanceDistributionState.values,
+					distanceDistributionState.sumValues, 1, RndType.unif);
+
+			long shuffleNodeId = (Long) results[0];
+
+			Node shuffleNode = graphDb.getNodeById(shuffleNodeId);
+
+			if (shuffleNode == null)
+				throw new Exception(String.format("shuffleNode[%d] == null",
+						shuffleNodeId));
+
+			// args
+			// -> 0 id
+			// -> 1 type
+			// -> 2 startId
+			String[] args = new String[] { opId.toString(),
+					OperationGISShuffleNode.class.getName(),
+					Long.toString(shuffleNode.getId()) };
+
+			return new OperationGISShuffleNode(args);
 		}
 
 		}

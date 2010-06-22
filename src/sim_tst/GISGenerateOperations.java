@@ -18,13 +18,14 @@ public class GISGenerateOperations {
 
 		// Params: LogOutputPath DBDirectory AddRatio DelRatio ShortRatio
 		// LongRatio OpCount
-		// E.g. logs-output/log-gis-romania-SHORT_10000.txt var/ 0 0 1 0 10000
+		// E.g. logs-output/log-gis-romania-SHORT_10000.txt var/ 0 0 1 0 0 10000
 
 		if (args[0].equals("help")) {
 			System.out.println("Params - " + "LogOutputPath:Str "
 					+ "DBDirectory:Str " + "AddRatio:Double "
-					+ "DelRatio:Double " + "ShortRatio:Double"
-					+ "LongRatio:Double" + "OpCount:Int");
+					+ "DelRatio:Double " + "ShortRatio:Double "
+					+ "LongRatio:Double " + "ShuffleRatio:Double "
+					+ "OpCount:Int");
 		}
 
 		String logOutputPath = args[0];
@@ -39,7 +40,9 @@ public class GISGenerateOperations {
 
 		Double longRatio = Double.parseDouble(args[5]);
 
-		Long opCount = Long.parseLong(args[6]);
+		Double shuffleRatio = Double.parseDouble(args[6]);
+
+		Long opCount = Long.parseLong(args[7]);
 
 		// ****************
 
@@ -64,7 +67,8 @@ public class GISGenerateOperations {
 				- startTime));
 
 		OperationFactory operationFactory = new OperationFactoryGIS(db,
-				addRatio, delRatio, shortRatio, longRatio, opCount);
+				addRatio, delRatio, shortRatio, longRatio, shuffleRatio,
+				opCount);
 
 		Simulator sim = new SimulatorGIS(db, logOutputPath, operationFactory);
 		sim.startSIM();
