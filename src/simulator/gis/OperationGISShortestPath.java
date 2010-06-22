@@ -47,7 +47,7 @@ public abstract class OperationGISShortestPath extends OperationGIS {
 					pathStr = pathStr + "," + node.getId();
 				}
 
-			this.info.put(GIS_PATH_LENGTH_TAG, pathLen.toString());
+			// this.info.put(GIS_PATH_LENGTH_TAG, pathLen.toString());
 			// this.info.put(GIS_PATH_TAG, pathStr);
 
 			Double distance = GeoCostEvaluator.distance((Double) startNode
