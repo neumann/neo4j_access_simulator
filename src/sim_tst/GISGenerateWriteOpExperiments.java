@@ -60,15 +60,15 @@ public class GISGenerateWriteOpExperiments {
 			db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
 					new RandomPlacement());
 
-			double ratioGlobal = 0.80 * 0.05; // 5% of all Read Ops are Global
-			double ratioLocal = 0.80 * 0.95; // 95% of all Read Ops are Global
+			double ratioLong = 0.80 * 0.05; // 5% of all Read Ops are Long
+			double ratioShort = 0.80 * 0.95; // 95% of all Read Ops are Long
 			double ratioAdd = 0.10;
 			double ratioDel = 0.10;
 			int opCount = (int) Math.round(nodesInGraph * changes[i]
 					* readRatio);
 
 			operationFactory = new OperationFactoryGIS(db, ratioAdd, ratioDel,
-					ratioLocal, ratioGlobal, opCount);
+					ratioShort, ratioLong, opCount);
 
 			String logOutputPath = inputLogsDir.getAbsolutePath()
 					+ "/read_write_op_" + i;

@@ -19,8 +19,8 @@ public class GISLoadOperations {
 	public static void main(String[] args) {
 
 		// Params: LogInputPath LogOutputPath DBDirectory
-		// E.g. logs-input/log-gis-romania-GLOBAL_500.txt
-		// logs-output/log-gis-romania-GLOBAL_500_Results.txt var/
+		// E.g. logs-input/log-gis-romania-LONG_500.txt
+		// logs-output/log-gis-romania-LONG_500_Results.txt var/
 
 		if (args[0].equals("help")) {
 			System.out.println("Params - " + "LogInputPath:Str "
@@ -35,9 +35,9 @@ public class GISLoadOperations {
 
 		// ****************
 
-		// logInputPath = "var/gis/logs-input/log-gis-romania-GLOBAL_500.txt";
+		// logInputPath = "var/gis/logs-input/log-gis-romania-LONG_500.txt";
 		// logOutputPath =
-		// "var/gis/logs-output/log-gis-romania-GLOBAL_500_Results.txt";
+		// "var/gis/logs-output/log-gis-romania-LONG_500_Results.txt";
 		// dbDir = "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS";
 
 		// ****************

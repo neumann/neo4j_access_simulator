@@ -24,12 +24,12 @@ public class LogOperationFactoryGIS extends LogOperationFactory {
 			return new OperationGISDeleteNode(args);
 		}
 
-		if (args[1].equals(OperationGISShortestPathLocal.class.getName())) {
-			return new OperationGISShortestPathLocal(args);
+		if (args[1].equals(OperationGISShortestPathShort.class.getName())) {
+			return new OperationGISShortestPathShort(args);
 		}
 
-		if (args[1].equals(OperationGISShortestPathGlobal.class.getName())) {
-			return new OperationGISShortestPathGlobal(args);
+		if (args[1].equals(OperationGISShortestPathLong.class.getName())) {
+			return new OperationGISShortestPathLong(args);
 		}
 
 		throw new Error("Unsupported GIS Operation: " + args[1]);

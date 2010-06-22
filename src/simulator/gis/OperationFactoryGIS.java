@@ -54,8 +54,8 @@ public class OperationFactoryGIS implements OperationFactory {
 
 	private final int ADD_RATIO_INDX = 0;
 	private final int DELETE_RATIO_INDX = 1;
-	private final int LOCAL_SEARCH_RATIO_INDX = 2;
-	private final int GLOBAL_SEARCH_RATIO_INDX = 3;
+	private final int SHORT_SEARCH_RATIO_INDX = 2;
+	private final int LONG_SEARCH_RATIO_INDX = 3;
 	private HashMap<Integer, Double> opRatios = new HashMap<Integer, Double>();
 	private double sumRatios = 0.0;
 
@@ -81,8 +81,8 @@ public class OperationFactoryGIS implements OperationFactory {
 	private final static int averagePathLength = 11;
 
 	public OperationFactoryGIS(GraphDatabaseService graphDb, double addRatio,
-			double deleteRatio, double localSearchRatio,
-			double globalSearchRatio, long opCount) {
+			double deleteRatio, double shortSearchRatio,
+			double longSearchRatio, long opCount) {
 
 		this.graphDb = graphDb;
 
@@ -95,11 +95,11 @@ public class OperationFactoryGIS implements OperationFactory {
 
 		this.opRatios.put(ADD_RATIO_INDX, addRatio);
 		this.opRatios.put(DELETE_RATIO_INDX, deleteRatio);
-		this.opRatios.put(LOCAL_SEARCH_RATIO_INDX, localSearchRatio);
-		this.opRatios.put(GLOBAL_SEARCH_RATIO_INDX, globalSearchRatio);
+		this.opRatios.put(SHORT_SEARCH_RATIO_INDX, shortSearchRatio);
+		this.opRatios.put(LONG_SEARCH_RATIO_INDX, longSearchRatio);
 
-		this.sumRatios = addRatio + deleteRatio + localSearchRatio
-				+ globalSearchRatio;
+		this.sumRatios = addRatio + deleteRatio + shortSearchRatio
+				+ longSearchRatio;
 
 		this.opCount = opCount;
 	}
@@ -233,7 +233,7 @@ public class OperationFactoryGIS implements OperationFactory {
 			return new OperationGISDeleteNode(args, distanceDistributionState);
 		}
 
-		case LOCAL_SEARCH_RATIO_INDX: {
+		case SHORT_SEARCH_RATIO_INDX: {
 			long startNodeId = -1;
 			Node startNode = null;
 			Node endNode = null;
@@ -261,13 +261,13 @@ public class OperationFactoryGIS implements OperationFactory {
 			// -> 2 startId
 			// -> 3 endId
 			String[] args = new String[] { opId.toString(),
-					OperationGISShortestPathLocal.class.getName(),
+					OperationGISShortestPathShort.class.getName(),
 					Long.toString(startNodeId), Long.toString(endNode.getId()) };
 
-			return new OperationGISShortestPathLocal(args);
+			return new OperationGISShortestPathShort(args);
 		}
 
-		case GLOBAL_SEARCH_RATIO_INDX: {
+		case LONG_SEARCH_RATIO_INDX: {
 			Object[] results = Rnd.getSampleFromMap(
 					distanceDistributionState.values,
 					distanceDistributionState.sumValues, 1, RndType.unif);
@@ -300,10 +300,10 @@ public class OperationFactoryGIS implements OperationFactory {
 			// -> 2 startId
 			// -> 3 endId
 			String[] args = new String[] { opId.toString(),
-					OperationGISShortestPathGlobal.class.getName(),
+					OperationGISShortestPathLong.class.getName(),
 					Long.toString(startNodeId), Long.toString(endNodeId) };
 
-			return new OperationGISShortestPathGlobal(args);
+			return new OperationGISShortestPathLong(args);
 		}
 
 		}
