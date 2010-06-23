@@ -2,6 +2,7 @@ package sim_tst;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
+import p_graph_service.PGraphDatabaseService;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
 
 import simulator.OperationFactory;
@@ -73,16 +74,28 @@ public class GISGenerateOperations {
 		System.out.printf("%s", getTimeStr(System.currentTimeMillis()
 				- startTime));
 
+		start(logOutputPath, db, addRatio, delRatio, shortRatio, longRatio,
+				shuffleRatio, opCount);
+
+		db.shutdown();
+	}
+
+	public static void start(String logOutputPath, GraphDatabaseService db,
+			Double addRatio, Double delRatio, Double shortRatio,
+			Double longRatio, Double shuffleRatio, Long opCount) {
+
 		OperationFactory operationFactory = new OperationFactoryGIS(db,
 				addRatio, delRatio, shortRatio, longRatio, shuffleRatio,
 				opCount);
 
+		long startTime = System.currentTimeMillis();
+		System.out.printf("SimulatorGIS From Generator...");
+
 		Simulator sim = new SimulatorGIS(db, logOutputPath, operationFactory);
 		sim.startSIM();
 
-		System.out.println("SLUT");
-
-		db.shutdown();
+		System.out.printf("%s", getTimeStr(System.currentTimeMillis()
+				- startTime));
 	}
 
 	private static String getTimeStr(long msTotal) {
