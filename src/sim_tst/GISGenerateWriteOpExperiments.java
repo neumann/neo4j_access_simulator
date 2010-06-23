@@ -16,11 +16,6 @@ import simulator.gis.SimulatorGIS;
 
 public class GISGenerateWriteOpExperiments {
 
-	/**
-	 * t
-	 * 
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
 		// Params: InputDbPath OutputDbsPath InputLogsPath GraphNodeCount
@@ -33,8 +28,11 @@ public class GISGenerateWriteOpExperiments {
 		}
 
 		String inputDbDirStr = args[0];
+
 		String outputDirStr = args[1];
+
 		String inputLogsDirStr = args[2];
+
 		int nodesInGraph = Integer.parseInt(args[3]);
 
 		PGraphDatabaseService db;

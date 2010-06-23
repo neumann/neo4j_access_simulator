@@ -46,14 +46,16 @@ public class GISGenerateOperations {
 
 		// ****************
 
-		// logOutputPath =
-		// "var/gis/logs-output/log-gis-romania-SHORT_10000.txt";
-		// dbDir = "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS/";
-		// addRatio = 0d;
-		// delRatio = 0d;
-		// shortRatio = 1d;
-		// longRatio = 0d;
-		// opCount = 500l;
+		// String logOutputPath =
+		// "/home/alex/workspace/graph_cluster_utils/sample dbs/romania-gis-COORD-BAL_NS4-GID-NAME-COORDS-BICYCLE/gis-logs.txt";
+		// String dbDir =
+		// "/home/alex/workspace/graph_cluster_utils/sample dbs/romania-gis-COORD-BAL_NS4-GID-NAME-COORDS-BICYCLE/";
+		// Double addRatio = 0d;
+		// Double delRatio = 0d;
+		// Double shortRatio = 0.8d;
+		// Double longRatio = 0.2d;
+		// Double shuffleRatio = 0d;
+		// Long opCount = 500l;
 
 		// ****************
 

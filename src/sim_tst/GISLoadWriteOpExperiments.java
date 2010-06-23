@@ -44,8 +44,11 @@ public class GISLoadWriteOpExperiments {
 		}
 
 		String inputDbDirStr = args[0];
+
 		String outputDirStr = args[1];
+
 		String inputLogsDirStr = args[2];
+
 		String insertTypeStr = args[3];
 
 		InsertType insertType = InsertType.RANDOM;

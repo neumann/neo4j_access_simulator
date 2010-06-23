@@ -7,7 +7,9 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
 import simulator.gis.astar.AStarRouting;
-import simulator.gis.astar.GeoCostEvaluator;
+import org.neo4j.graphalgo.impl.util.GeoEstimateEvaluator;
+
+//import simulator.gis.astar.GeoCostEvaluator;
 
 public abstract class OperationGISShortestPath extends OperationGIS {
 
@@ -47,16 +49,23 @@ public abstract class OperationGISShortestPath extends OperationGIS {
 					pathStr = pathStr + "," + node.getId();
 				}
 
+			// NOTE Commented to clean up logs
 			// this.info.put(GIS_PATH_LENGTH_TAG, pathLen.toString());
 			// this.info.put(GIS_PATH_TAG, pathStr);
 
-			Double distance = GeoCostEvaluator.distance((Double) startNode
-					.getProperty(Consts.LATITUDE), (Double) startNode
-					.getProperty(Consts.LONGITUDE), (Double) endNode
-					.getProperty(Consts.LATITUDE), (Double) endNode
-					.getProperty(Consts.LONGITUDE));
+			// NOTE OLD
+			// Double distance = GeoCostEvaluator.distance((Double) startNode
+			// .getProperty(Consts.LATITUDE), (Double) startNode
+			// .getProperty(Consts.LONGITUDE), (Double) endNode
+			// .getProperty(Consts.LATITUDE), (Double) endNode
+			// .getProperty(Consts.LONGITUDE));
+			// NODE NEW
+			GeoEstimateEvaluator geoEval = new GeoEstimateEvaluator(
+					Consts.LATITUDE, Consts.LONGITUDE);
+			Double distance = geoEval.getCost(startNode, endNode);
 
-			this.info.put(GIS_DISTANCE_TAG, distance.toString());
+			// NOTE Commented to clean up logs
+			// this.info.put(GIS_DISTANCE_TAG, distance.toString());
 
 			tx.success();
 		} catch (Exception e) {
