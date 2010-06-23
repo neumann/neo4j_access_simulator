@@ -26,10 +26,16 @@ public class LogOperationFactoryGIS extends LogOperationFactory {
 
 		if (args[1].equals(OperationGISShortestPathShort.class.getName())) {
 			return new OperationGISShortestPathShort(args);
+			// return new OperationGISDummy();
 		}
 
 		if (args[1].equals(OperationGISShortestPathLong.class.getName())) {
 			return new OperationGISShortestPathLong(args);
+			// return new OperationGISDummy();
+		}
+
+		if (args[1].equals(OperationGISShuffleNode.class.getName())) {
+			return new OperationGISShuffleNode(args);
 		}
 
 		throw new Error("Unsupported GIS Operation: " + args[1]);

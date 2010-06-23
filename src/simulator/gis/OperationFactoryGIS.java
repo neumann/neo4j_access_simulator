@@ -172,23 +172,6 @@ public class OperationFactoryGIS implements OperationFactory {
 				endNode = doRandomWalk(startNode, 1);
 			}
 
-			// Object[] results = Rnd.getSampleFromMap(
-			// distanceDistributionState.values,
-			// distanceDistributionState.sumValues, 1, RndType.unif);
-			//
-			// long startNodeId = (Long) results[0];
-			//
-			// Node startNode = graphDb.getNodeById(startNodeId);
-			//
-			// if (startNode == null)
-			// throw new Exception(String.format("startNode[%d] == null",
-			// startNodeId));
-			//
-			// Node endNode = doRandomWalk(startNode, 1);
-			//
-			// if (endNode == null)
-			// throw new Exception("endNode == null");
-
 			double lonStart = (Double) startNode.getProperty(Consts.LONGITUDE);
 			double latStart = (Double) startNode.getProperty(Consts.LATITUDE);
 
