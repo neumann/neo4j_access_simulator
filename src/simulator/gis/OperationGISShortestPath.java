@@ -9,8 +9,6 @@ import org.neo4j.graphdb.Transaction;
 import simulator.gis.astar.AStarRouting;
 import org.neo4j.graphalgo.impl.util.GeoEstimateEvaluator;
 
-//import simulator.gis.astar.GeoCostEvaluator;
-
 public abstract class OperationGISShortestPath extends OperationGIS {
 
 	private long startId = -1;
@@ -53,13 +51,6 @@ public abstract class OperationGISShortestPath extends OperationGIS {
 			// this.info.put(GIS_PATH_LENGTH_TAG, pathLen.toString());
 			// this.info.put(GIS_PATH_TAG, pathStr);
 
-			// NOTE OLD
-			// Double distance = GeoCostEvaluator.distance((Double) startNode
-			// .getProperty(Consts.LATITUDE), (Double) startNode
-			// .getProperty(Consts.LONGITUDE), (Double) endNode
-			// .getProperty(Consts.LATITUDE), (Double) endNode
-			// .getProperty(Consts.LONGITUDE));
-			// NODE NEW
 			GeoEstimateEvaluator geoEval = new GeoEstimateEvaluator(
 					Consts.LATITUDE, Consts.LONGITUDE);
 			Double distance = geoEval.getCost(startNode, endNode);

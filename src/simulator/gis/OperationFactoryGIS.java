@@ -85,8 +85,6 @@ public class OperationFactoryGIS implements OperationFactory {
 		this.opRatios.put(LONG_SEARCH_RATIO_INDX, longSearchRatio);
 		this.opRatios.put(SHUFFLE_RATIO_INDX, shuffleRatio);
 
-		// this.sumRatios = addRatio + deleteRatio + shortSearchRatio
-		// + longSearchRatio;
 		this.sumRatios = 0;
 		for (Double opRatio : this.opRatios.values()) {
 			sumRatios += opRatio;
@@ -392,129 +390,6 @@ public class OperationFactoryGIS implements OperationFactory {
 				distanceDistributionState.sumValues);
 
 	}
-
-	// public static int getBucharestDiameter(GraphDatabaseService graphDb) {
-	// // Bucharest [longitude=26.102965, latitude=44.434295]
-	// // Bucharest Area = 285 km²
-	// return getNetworkDiameterForCity(graphDb, 26.102965, 44.434295, 285);
-	// }
-
-	// Bucharest [longitude=26.102965, latitude=44.434295]
-	// Bucharest Area = 285 km²
-	// private static int getNetworkDiameterForCity(GraphDatabaseService
-	// graphDb,
-	// double midLon, double midLat, double cityArea) {
-	//
-	// long time = System.currentTimeMillis();
-	// System.out.printf("Calculating city borders...");
-	//
-	// double cityWidth = Math.sqrt(cityArea); // km
-	// double minLon = midLon - ((cityWidth / 2) * kmsInDeg);
-	// double maxLon = midLon + ((cityWidth / 2) * kmsInDeg);
-	//
-	// double cityHeight = Math.sqrt(cityArea); // km
-	// double minLat = midLat - ((cityHeight / 2) * kmsInDeg);
-	// double maxLat = midLat + ((cityHeight / 2) * kmsInDeg);
-	//
-	// System.out.printf("%s", getTimeStr(System.currentTimeMillis() - time));
-	// System.out.printf("\tLon [%f - %f]\n", minLon, maxLon);
-	// System.out.printf("\tLat [%f - %f]\n", minLat, maxLat);
-	//
-	// time = System.currentTimeMillis();
-	// System.out.printf("Finding related Nodes...");
-	//
-	// HashSet<Node> nodes = getCityNodes(graphDb, minLon, maxLon, minLat,
-	// maxLat);
-	//
-	// System.out.printf("[%d]...%s", nodes.size(), getTimeStr(System
-	// .currentTimeMillis()
-	// - time));
-	//
-	// return getNetworkDiameter(nodes);
-	// }
-
-	// private static HashSet<Node> getCityNodes(GraphDatabaseService graphDb,
-	// double minLon, double maxLon, double minLat, double maxLat) {
-	//
-	// HashSet<Node> nodes = new HashSet<Node>();
-	//
-	// Transaction tx = graphDb.beginTx();
-	// try {
-	//
-	// for (Node node : graphDb.getAllNodes()) {
-	// double nodeLon = (Double) node.getProperty(Consts.LONGITUDE);
-	// double nodeLat = (Double) node.getProperty(Consts.LATITUDE);
-	// if ((minLon < nodeLon) && (nodeLon <= maxLon)
-	// && (minLat < nodeLat) && (nodeLat <= maxLat))
-	// nodes.add(node);
-	// }
-	//
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// } finally {
-	// tx.finish();
-	// }
-	//
-	// return nodes;
-	// }
-
-	// private static int getNetworkDiameter(HashSet<Node> nodes) {
-	//
-	// CostEvaluator<Integer> costEval = new CostEvaluator<Integer>() {
-	//
-	// @Override
-	// public Integer getCost(Relationship relationship, boolean backwards) {
-	// return 1;
-	// }
-	// };
-	//
-	// CostAccumulator<Integer> costAcc = new IntegerAdder();
-	//
-	// Comparator<Integer> costComp = new IntegerComparator();
-	//
-	// Node startNode = nodes.iterator().next();
-	// Integer startCost = 0;
-	// SingleSourceShortestPath<Integer> singleSourceShortestPath = new
-	// SingleSourceShortestPathDijkstra<Integer>(
-	// startCost, startNode, costEval, costAcc, costComp,
-	// Direction.BOTH, GISRelationshipTypes.BICYCLE_WAY);
-	//
-	// Integer zeroValue = 0;
-	//
-	// // NetworkDiameter<Integer> networkDiameter = new
-	// // NetworkDiameter<Integer>(
-	// // singleSourceShortestPath, zeroValue, nodes, costComp);
-	//
-	// Eccentricity<Integer> eccentricity = new Eccentricity<Integer>(
-	// singleSourceShortestPath, zeroValue, nodes, costComp);
-	//
-	// long time = System.currentTimeMillis();
-	// System.out.printf("Calculating Centralities...");
-	//
-	// // networkDiameter.calculate();
-	// eccentricity.processShortestPaths(nodes.iterator().next(),
-	// singleSourceShortestPath);
-	//
-	// System.out.printf("...%s",
-	// getTimeStr(System.currentTimeMillis() - time));
-	//
-	// time = System.currentTimeMillis();
-	// System.out.printf("Calculating Diameter...");
-	//
-	// int diameter = 0;
-	// for (Node node : nodes) {
-	// // int nodeCentrality = networkDiameter.getCentrality(node);
-	// int nodeCentrality = (Integer) eccentricity.getCentrality(node);
-	// if (nodeCentrality > diameter)
-	// diameter = nodeCentrality;
-	// }
-	//
-	// System.out.printf("[%d]...%s", nodes.size(), getTimeStr(System
-	// .currentTimeMillis()
-	// - time));
-	//
-	// return diameter;
-	// }
 
 	private static String getTimeStr(long msTotal) {
 		long ms = msTotal % 1000;

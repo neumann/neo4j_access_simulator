@@ -7,8 +7,6 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import simulator.Operation;
 import simulator.gis.astar.Coordinates;
 
-//import simulator.gis.astar.GeoCostEvaluator;
-
 public abstract class OperationGIS extends Operation {
 
 	protected static final String GIS_PATH_LENGTH_TAG = "pathlen";
@@ -67,11 +65,6 @@ public abstract class OperationGIS extends Operation {
 
 		for (Coordinates cityCoords : citiesCoords) {
 
-			// NOTE OLD
-			// double distanceToCity = GeoCostEvaluator.distance(cityCoords
-			// .getLatitude(), cityCoords.getLongtude(), sourceLat,
-			// sourceLon);
-			// NOTE NEW
 			double distanceToCity = distance(cityCoords.getLatitude(),
 					cityCoords.getLongtude(), sourceLat, sourceLon);
 
