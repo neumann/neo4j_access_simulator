@@ -11,9 +11,6 @@ import simulator.gis.SimulatorGIS;
 
 public class GISGenerateOperations {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
 		// Params: LogOutputPath DBDirectory AddRatio DelRatio ShortRatio
@@ -59,6 +56,14 @@ public class GISGenerateOperations {
 
 		// ****************
 
+		start(logOutputPath, dbDir, addRatio, delRatio, shortRatio, longRatio,
+				shuffleRatio, opCount);
+	}
+
+	public static void start(String logOutputPath, String dbDir,
+			Double addRatio, Double delRatio, Double shortRatio,
+			Double longRatio, Double shuffleRatio, Long opCount) {
+
 		long startTime = System.currentTimeMillis();
 
 		System.out.printf("Loading DB...");
@@ -78,7 +83,6 @@ public class GISGenerateOperations {
 		System.out.println("SLUT");
 
 		db.shutdown();
-
 	}
 
 	private static String getTimeStr(long msTotal) {

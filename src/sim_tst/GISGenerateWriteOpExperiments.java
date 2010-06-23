@@ -35,6 +35,12 @@ public class GISGenerateWriteOpExperiments {
 
 		int nodesInGraph = Integer.parseInt(args[3]);
 
+		start(inputDbDirStr, outputDirStr, inputLogsDirStr, nodesInGraph);
+	}
+
+	public static void start(String inputDbDirStr, String outputDirStr,
+			String inputLogsDirStr, int nodesInGraph) {
+
 		PGraphDatabaseService db;
 		OperationFactory operationFactory;
 		Simulator sim;
@@ -96,7 +102,7 @@ public class GISGenerateWriteOpExperiments {
 	}
 
 	// If targetLocation does not exist, it will be created.
-	public static void copyDirectory(File sourceLocation, File targetLocation)
+	private static void copyDirectory(File sourceLocation, File targetLocation)
 			throws IOException {
 
 		if (sourceLocation.isDirectory()) {

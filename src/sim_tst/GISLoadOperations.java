@@ -13,9 +13,6 @@ import simulator.gis.SimulatorGIS;
 
 public class GISLoadOperations {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
 		// Params: LogInputPath LogOutputPath DBDirectory
@@ -41,6 +38,13 @@ public class GISLoadOperations {
 		// dbDir = "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS";
 
 		// ****************
+
+		start(logInputPath, logOutputPath, dbDir);
+
+	}
+
+	public static void start(String logInputPath, String logOutputPath,
+			String dbDir) {
 
 		long startTime = System.currentTimeMillis();
 
