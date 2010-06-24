@@ -1,7 +1,6 @@
 package simulator.tree;
 
 import java.util.LinkedList;
-import java.util.TreeSet;
 
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -31,12 +30,12 @@ public class SearchFiles_ReadOp extends Operation {
 
 			while (!nodesToGo.isEmpty()) {
 				Node n = nodesToGo.remove();
-				TreeSet<Relationship> rsSet = new TreeSet<Relationship>();
-				for (Relationship rs : n.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.OUTGOING)) {
-					rsSet.add(rs);
-				}
+//				TreeSet<Relationship> rsSet = new TreeSet<Relationship>();
+//				for (Relationship rs : n.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.OUTGOING)) {
+//					rsSet.add(rs);
+//				}
 				
-				for (Relationship rs : rsSet){
+				for (Relationship rs : n.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.OUTGOING)){
 					Node endN = rs.getEndNode();
 					if (endN.getId() == enodeID) {
 						return true;

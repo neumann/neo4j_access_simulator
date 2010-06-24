@@ -27,12 +27,12 @@ public class ReadOps_onTree {
 		GraphDatabaseService db;	
 		Simulator sim;
 		
-		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
-		sim = new TreeOps_Sim(db,"readSearchLog", 10000, simType.SEARCH);
-		sim.startSIM();
+//		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
+//		sim = new TreeOps_Sim(db,"readSearchLog", 10000, simType.SEARCH);
+//		sim.startSIM();
 		
 		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
-		sim = new TreeOps_Sim(db,"readCountLog", 10000, simType.COUNT);
+		sim = new TreeOps_Sim(db,"readCountLog3", 10000, simType.COUNT);
 		sim.startSIM();
 		
 		
