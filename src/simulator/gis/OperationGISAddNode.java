@@ -61,6 +61,7 @@ public class OperationGISAddNode extends OperationGIS {
 
 			newNode.setProperty(Consts.LONGITUDE, lon);
 			newNode.setProperty(Consts.LATITUDE, lat);
+			newNode.setProperty(Consts.NODE_GID, newNode.getId());
 
 			for (Relationship rel : startNode.getRelationships()) {
 				if (rel.getOtherNode(startNode).getId() != endNode.getId())
