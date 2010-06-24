@@ -20,7 +20,7 @@ public class TreeHardColorBalanced {
 		
 //		GraphDatabaseService db = new PGraphDatabaseServiceSIM("var/fstree-nHard_700kNodes_1300Relas", 0);
 		
-		hardColor("var/fstree-nHard_700kNodes_1300Relas", 4);
+		hardColor("var/fstree-nHard2_700kNodes_1300Relas", 2);
 	}
 
 	public static void hardColor(String file, int partitions) {
