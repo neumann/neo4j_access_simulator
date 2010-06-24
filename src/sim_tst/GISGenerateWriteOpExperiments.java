@@ -16,11 +16,6 @@ import simulator.gis.SimulatorGIS;
 
 public class GISGenerateWriteOpExperiments {
 
-	/**
-	 * t
-	 * 
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
 		// Params: InputDbPath OutputDbsPath InputLogsPath GraphNodeCount
@@ -33,9 +28,18 @@ public class GISGenerateWriteOpExperiments {
 		}
 
 		String inputDbDirStr = args[0];
+
 		String outputDirStr = args[1];
+
 		String inputLogsDirStr = args[2];
+
 		int nodesInGraph = Integer.parseInt(args[3]);
+
+		start(inputDbDirStr, outputDirStr, inputLogsDirStr, nodesInGraph);
+	}
+
+	public static void start(String inputDbDirStr, String outputDirStr,
+			String inputLogsDirStr, int nodesInGraph) {
 
 		PGraphDatabaseService db;
 		OperationFactory operationFactory;
@@ -60,15 +64,16 @@ public class GISGenerateWriteOpExperiments {
 			db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
 					new RandomPlacement());
 
-			double ratioGlobal = 0.80 * 0.05; // 5% of all Read Ops are Global
-			double ratioLocal = 0.80 * 0.95; // 95% of all Read Ops are Global
-			double ratioAdd = 0.10;
-			double ratioDel = 0.10;
+			double ratioLong = 0.80 * 0.05; // 5% of all Read Ops are Long
+			double ratioShort = 0.80 * 0.95; // 95% of all Read Ops are Long
+			double ratioAdd = 0.00;
+			double ratioDel = 0.00;
+			double ratioShuffle = 0.20;
 			int opCount = (int) Math.round(nodesInGraph * changes[i]
 					* readRatio);
 
 			operationFactory = new OperationFactoryGIS(db, ratioAdd, ratioDel,
-					ratioLocal, ratioGlobal, opCount);
+					ratioShort, ratioLong, ratioShuffle, opCount);
 
 			String logOutputPath = inputLogsDir.getAbsolutePath()
 					+ "/read_write_op_" + i;
@@ -97,7 +102,7 @@ public class GISGenerateWriteOpExperiments {
 	}
 
 	// If targetLocation does not exist, it will be created.
-	public static void copyDirectory(File sourceLocation, File targetLocation)
+	private static void copyDirectory(File sourceLocation, File targetLocation)
 			throws IOException {
 
 		if (sourceLocation.isDirectory()) {

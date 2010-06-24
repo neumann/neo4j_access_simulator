@@ -13,14 +13,11 @@ import simulator.gis.SimulatorGIS;
 
 public class GISLoadOperations {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
 		// Params: LogInputPath LogOutputPath DBDirectory
-		// E.g. logs-input/log-gis-romania-GLOBAL_500.txt
-		// logs-output/log-gis-romania-GLOBAL_500_Results.txt var/
+		// E.g. logs-input/log-gis-romania-LONG_500.txt
+		// logs-output/log-gis-romania-LONG_500_Results.txt var/
 
 		if (args[0].equals("help")) {
 			System.out.println("Params - " + "LogInputPath:Str "
@@ -35,13 +32,19 @@ public class GISLoadOperations {
 
 		// ****************
 
-		// logInputPath = "var/gis/logs-input/log-gis-romania-GLOBAL_500.txt";
+		// logInputPath = "var/gis/logs-input/log-gis-romania-LONG_500.txt";
 		// logOutputPath =
-		// "var/gis/logs-output/log-gis-romania-GLOBAL_500_Results.txt";
+		// "var/gis/logs-output/log-gis-romania-LONG_500_Results.txt";
 		// dbDir = "var/gis/romania-BAL2-GID-NAME-COORDS-ALL_RELS";
 
 		// ****************
 
+		start(logInputPath, logOutputPath, dbDir);
+
+	}
+
+	public static void start(String logInputPath, String logOutputPath,
+			String dbDir) {
 		long startTime = System.currentTimeMillis();
 
 		System.out.printf("Loading DB...");
@@ -51,16 +54,25 @@ public class GISLoadOperations {
 		System.out.printf("%s", getTimeStr(System.currentTimeMillis()
 				- startTime));
 
+		start(logInputPath, logOutputPath, db);
+
+		db.shutdown();
+	}
+
+	public static void start(String logInputPath, String logOutputPath,
+			GraphDatabaseService db) {
+
 		OperationFactory operationFactory = new LogOperationFactoryGIS(
 				logInputPath);
+
+		long startTime = System.currentTimeMillis();
+		System.out.printf("SimulatorGIS From File...");
 
 		Simulator sim = new SimulatorGIS(db, logOutputPath, operationFactory);
 		sim.startSIM();
 
-		System.out.println("SLUT");
-
-		db.shutdown();
-
+		System.out.printf("%s", getTimeStr(System.currentTimeMillis()
+				- startTime));
 	}
 
 	private static String getTimeStr(long msTotal) {

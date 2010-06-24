@@ -26,12 +26,6 @@ public class GISLoadWriteOpExperiments {
 		RANDOM, TRAFFIC, SIZE
 	}
 
-	/**
-	 * t
-	 * 
-	 * @param args
-	 * @throws Exception
-	 */
 	public static void main(String[] args) throws Exception {
 
 		// Params: InputDbPath OutputDbsPath InputLogsPath InsertType
@@ -44,9 +38,18 @@ public class GISLoadWriteOpExperiments {
 		}
 
 		String inputDbDirStr = args[0];
+
 		String outputDirStr = args[1];
+
 		String inputLogsDirStr = args[2];
+
 		String insertTypeStr = args[3];
+
+		start(inputDbDirStr, outputDirStr, inputLogsDirStr, insertTypeStr);
+	}
+
+	public static void start(String inputDbDirStr, String outputDirStr,
+			String inputLogsDirStr, String insertTypeStr) throws Exception {
 
 		InsertType insertType = InsertType.RANDOM;
 		if (insertTypeStr.equals("random") == true) {
@@ -123,11 +126,10 @@ public class GISLoadWriteOpExperiments {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	// If targetLocation does not exist, it will be created.
-	public static void copyDirectory(File sourceLocation, File targetLocation)
+	private static void copyDirectory(File sourceLocation, File targetLocation)
 			throws IOException {
 
 		if (sourceLocation.isDirectory()) {
