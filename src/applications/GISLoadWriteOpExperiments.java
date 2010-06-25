@@ -1,4 +1,4 @@
-package sim_tst;
+package applications;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,25 +6,35 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.neo4j.graphdb.RelationshipType;
+
 import p_graph_service.PGraphDatabaseService;
+import p_graph_service.policy.LowNodecountPlacement;
+import p_graph_service.policy.LowTrafficPlacement;
 import p_graph_service.policy.RandomPlacement;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
 import simulator.OperationFactory;
 import simulator.Simulator;
-import simulator.gis.OperationFactoryGIS;
+import simulator.gis.LogOperationFactoryGIS;
 import simulator.gis.SimulatorGIS;
+import simulator.tree.TreeLogIgnore_Sim;
 
-public class GISGenerateWriteOpExperiments {
+public class GISLoadWriteOpExperiments {
 
-	public static void main(String[] args) {
+	private enum InsertType {
+		RANDOM, TRAFFIC, SIZE
+	}
 
-		// Params: InputDbPath OutputDbsPath InputLogsPath GraphNodeCount
-		// E.g. var/gis-didic2 result_dbs/ logs-input/ 785891
+	public static void main(String[] args) throws Exception {
+
+		// Params: InputDbPath OutputDbsPath InputLogsPath InsertType
+		// E.g. var/gis-didic2 result_dbs/ logs-input/ random
 
 		if (args[0].equals("help")) {
 			System.out.println("Params - " + "InputDbParth:Str "
 					+ "OutputDbsPath:Str " + "InputLogsPath:Str "
-					+ "GraphNodeCount:Int ");
+					+ "InsertType:Enum(random,traffic,size) ");
 		}
 
 		String inputDbDirStr = args[0];
@@ -33,20 +43,29 @@ public class GISGenerateWriteOpExperiments {
 
 		String inputLogsDirStr = args[2];
 
-		int nodesInGraph = Integer.parseInt(args[3]);
+		String insertTypeStr = args[3];
 
-		start(inputDbDirStr, outputDirStr, inputLogsDirStr, nodesInGraph);
+		start(inputDbDirStr, outputDirStr, inputLogsDirStr, insertTypeStr);
 	}
 
 	public static void start(String inputDbDirStr, String outputDirStr,
-			String inputLogsDirStr, int nodesInGraph) {
+			String inputLogsDirStr, String insertTypeStr) throws Exception {
+
+		InsertType insertType = InsertType.RANDOM;
+		if (insertTypeStr.equals("random") == true) {
+			insertType = InsertType.RANDOM;
+		} else if (insertTypeStr.equals("traffic") == true) {
+			insertType = InsertType.TRAFFIC;
+		} else if (insertTypeStr.equals("size") == true) {
+			insertType = InsertType.SIZE;
+		} else {
+			throw new Exception("Invalid InsertType");
+		}
 
 		PGraphDatabaseService db;
 		OperationFactory operationFactory;
 		Simulator sim;
 
-		// size of the graph
-		int readRatio = 5;
 		double[] changes = new double[5];
 
 		changes[0] = 0.01;
@@ -60,28 +79,37 @@ public class GISGenerateWriteOpExperiments {
 		File inputLogsDir = new File(inputLogsDirStr);
 
 		for (int i = 0; i < changes.length; i++) {
+			db = null;
 
-			db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
-					new RandomPlacement());
+			switch (insertType) {
+			case RANDOM:
+				db = new PGraphDatabaseServiceSIM(
+						sourceDbDir.getAbsolutePath(), 0, new RandomPlacement());
+				break;
+			case TRAFFIC:
+				db = new PGraphDatabaseServiceSIM(
+						sourceDbDir.getAbsolutePath(), 0,
+						new LowTrafficPlacement());
+				break;
+			case SIZE:
+				db = new PGraphDatabaseServiceSIM(
+						sourceDbDir.getAbsolutePath(), 0,
+						new LowNodecountPlacement());
+				break;
+			}
 
-			double ratioLong = 0.80 * 0.05; // 5% of all Read Ops are Long
-			double ratioShort = 0.80 * 0.95; // 95% of all Read Ops are Long
-			double ratioAdd = 0.00;
-			double ratioDel = 0.00;
-			double ratioShuffle = 0.20;
-			int opCount = (int) Math.round(nodesInGraph * changes[i]
-					* readRatio);
+			String logName = "read_write_op_" + i;
 
-			operationFactory = new OperationFactoryGIS(db, ratioAdd, ratioDel,
-					ratioShort, ratioLong, ratioShuffle, opCount);
+			operationFactory = new LogOperationFactoryGIS(inputLogsDir
+					.getAbsolutePath()
+					+ "/" + logName);
 
-			String logOutputPath = inputLogsDir.getAbsolutePath()
-					+ "/read_write_op_" + i;
+			String logOutputPath = sourceDbDir.getAbsolutePath() + "/"
+					+ logName;
 
 			sim = new SimulatorGIS(db, logOutputPath, operationFactory);
 
 			sim.startSIM();
-
 			db.shutdown();
 
 			double perc = 0;
@@ -89,16 +117,15 @@ public class GISGenerateWriteOpExperiments {
 				perc += changes[j];
 			}
 
-			File targetDbDir = new File(outputDir.getAbsolutePath() + "/"
+			File target = new File(outputDir.getAbsolutePath() + "/"
 					+ sourceDbDir.getName() + "_" + perc);
 
 			try {
-				copyDirectory(sourceDbDir, targetDbDir);
+				copyDirectory(sourceDbDir, target);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	// If targetLocation does not exist, it will be created.

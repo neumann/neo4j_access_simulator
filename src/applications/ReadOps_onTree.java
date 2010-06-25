@@ -1,4 +1,4 @@
-package sim_tst;
+package applications;
 
 import graph_gen_utils.NeoFromFile;
 import graph_gen_utils.partitioner.Partitioner;
