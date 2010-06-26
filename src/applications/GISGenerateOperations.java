@@ -1,4 +1,7 @@
-package sim_tst;
+package applications;
+
+import jobs.SimJob;
+import jobs.SimJobGenerateOpsGIS;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
@@ -8,15 +11,17 @@ import p_graph_service.sim.PGraphDatabaseServiceSIM;
 import simulator.OperationFactory;
 import simulator.Simulator;
 import simulator.gis.OperationFactoryGIS;
+import simulator.gis.OperationFactoryGISConfig;
 import simulator.gis.SimulatorGIS;
 
 public class GISGenerateOperations {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		// Params: LogOutputPath DBDirectory AddRatio DelRatio ShortRatio
 		// LongRatio OpCount
-		// E.g. logs-output/log-gis-romania-SHORT_10000.txt var/ 0 0 1 0 0 10000
+		// E.g. logs-output/log-gis-romania-SHORT_10000.txt var/ 0 0 1 0 0
+		// 10000
 
 		if (args[0].equals("help")) {
 			System.out.println("Params - " + "LogOutputPath:Str "
@@ -57,45 +62,24 @@ public class GISGenerateOperations {
 
 		// ****************
 
-		start(logOutputPath, dbDir, addRatio, delRatio, shortRatio, longRatio,
-				shuffleRatio, opCount);
-	}
-
-	public static void start(String logOutputPath, String dbDir,
-			Double addRatio, Double delRatio, Double shortRatio,
-			Double longRatio, Double shuffleRatio, Long opCount) {
-
 		long startTime = System.currentTimeMillis();
 
 		System.out.printf("Loading DB...");
 
-		GraphDatabaseService db = new PGraphDatabaseServiceSIM(dbDir, 0);
+		PGraphDatabaseService pdb = new PGraphDatabaseServiceSIM(dbDir, 0);
 
 		System.out.printf("%s", getTimeStr(System.currentTimeMillis()
 				- startTime));
 
-		start(logOutputPath, db, addRatio, delRatio, shortRatio, longRatio,
-				shuffleRatio, opCount);
-
-		db.shutdown();
-	}
-
-	public static void start(String logOutputPath, GraphDatabaseService db,
-			Double addRatio, Double delRatio, Double shortRatio,
-			Double longRatio, Double shuffleRatio, Long opCount) {
-
-		OperationFactory operationFactory = new OperationFactoryGIS(db,
+		OperationFactoryGISConfig config = new OperationFactoryGISConfig(
 				addRatio, delRatio, shortRatio, longRatio, shuffleRatio,
-				opCount);
+				opCount, logOutputPath);
 
-		long startTime = System.currentTimeMillis();
-		System.out.printf("SimulatorGIS From Generator...");
+		SimJob job = new SimJobGenerateOpsGIS(
+				new OperationFactoryGISConfig[] { config }, pdb);
 
-		Simulator sim = new SimulatorGIS(db, logOutputPath, operationFactory);
-		sim.startSIM();
-
-		System.out.printf("%s", getTimeStr(System.currentTimeMillis()
-				- startTime));
+		job.start();
+		pdb.shutdown();
 	}
 
 	private static String getTimeStr(long msTotal) {

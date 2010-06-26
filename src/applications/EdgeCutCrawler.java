@@ -1,4 +1,4 @@
-package sim_tst;
+package applications;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;

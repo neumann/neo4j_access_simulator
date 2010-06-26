@@ -66,9 +66,8 @@ public class OperationFactoryGIS implements OperationFactory {
 	// Average path length is therefore 11
 	private final static int averagePathLength = 11;
 
-	public OperationFactoryGIS(GraphDatabaseService graphDb, double addRatio,
-			double deleteRatio, double shortSearchRatio,
-			double longSearchRatio, double shuffleRatio, long opCount) {
+	public OperationFactoryGIS(GraphDatabaseService graphDb,
+			OperationFactoryGISConfig config) {
 
 		this.graphDb = graphDb;
 
@@ -79,18 +78,18 @@ public class OperationFactoryGIS implements OperationFactory {
 
 		System.out.printf("%s", getTimeStr(System.currentTimeMillis() - time));
 
-		this.opRatios.put(ADD_RATIO_INDX, addRatio);
-		this.opRatios.put(DELETE_RATIO_INDX, deleteRatio);
-		this.opRatios.put(SHORT_SEARCH_RATIO_INDX, shortSearchRatio);
-		this.opRatios.put(LONG_SEARCH_RATIO_INDX, longSearchRatio);
-		this.opRatios.put(SHUFFLE_RATIO_INDX, shuffleRatio);
+		this.opRatios.put(ADD_RATIO_INDX, config.getAddRatio());
+		this.opRatios.put(DELETE_RATIO_INDX, config.getDelRatio());
+		this.opRatios.put(SHORT_SEARCH_RATIO_INDX, config.getShortRatio());
+		this.opRatios.put(LONG_SEARCH_RATIO_INDX, config.getLongRatio());
+		this.opRatios.put(SHUFFLE_RATIO_INDX, config.getShuffleRatio());
 
 		this.sumRatios = 0;
 		for (Double opRatio : this.opRatios.values()) {
 			sumRatios += opRatio;
 		}
 
-		this.opCount = opCount;
+		this.opCount = config.getOpCount();
 	}
 
 	public Iterable<Operation> getOperation() {
