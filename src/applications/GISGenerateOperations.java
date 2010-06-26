@@ -3,16 +3,10 @@ package applications;
 import jobs.SimJob;
 import jobs.SimJobGenerateOpsGIS;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-
 import p_graph_service.PGraphDatabaseService;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
 
-import simulator.OperationFactory;
-import simulator.Simulator;
-import simulator.gis.OperationFactoryGIS;
 import simulator.gis.OperationFactoryGISConfig;
-import simulator.gis.SimulatorGIS;
 
 public class GISGenerateOperations {
 

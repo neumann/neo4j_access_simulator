@@ -2,7 +2,6 @@ package applications;
 
 import jobs.SimJob;
 import jobs.SimJobLoadOpsGIS;
-
 import p_graph_service.PGraphDatabaseService;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
 
@@ -42,7 +41,8 @@ public class GISLoadOperations {
 				- startTime));
 
 		String[] operationLogsIn = new String[] { logInputPath };
-		SimJob job = new SimJobLoadOpsGIS(operationLogsIn, logOutputDirPath, pdb);
+		SimJob job = new SimJobLoadOpsGIS(operationLogsIn, logOutputDirPath,
+				pdb);
 		job.start();
 		pdb.shutdown();
 

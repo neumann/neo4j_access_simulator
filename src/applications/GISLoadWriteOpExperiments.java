@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.neo4j.graphdb.RelationshipType;
-
 import p_graph_service.PGraphDatabaseService;
 import p_graph_service.policy.LowNodecountPlacement;
 import p_graph_service.policy.LowTrafficPlacement;
@@ -18,7 +16,6 @@ import simulator.OperationFactory;
 import simulator.Simulator;
 import simulator.gis.LogOperationFactoryGIS;
 import simulator.gis.SimulatorGIS;
-import simulator.tree.TreeLogIgnore_Sim;
 
 public class GISLoadWriteOpExperiments {
 
@@ -32,7 +29,7 @@ public class GISLoadWriteOpExperiments {
 		// E.g. var/gis-didic2 result_dbs/ logs-input/ random
 
 		if (args[0].equals("help")) {
-			System.out.println("Params - " + "InputDbParth:Str "
+			System.out.println("Params - " + "InputDbPath:Str "
 					+ "OutputDbsPath:Str " + "InputLogsPath:Str "
 					+ "InsertType:Enum(random,traffic,size) ");
 		}
