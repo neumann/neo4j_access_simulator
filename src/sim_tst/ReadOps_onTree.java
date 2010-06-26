@@ -27,24 +27,93 @@ public class ReadOps_onTree {
 		GraphDatabaseService db;	
 		Simulator sim;
 		
-//		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
-//		sim = new TreeOps_Sim(db,"readSearchLog", 10000, simType.SEARCH);
-//		sim.startSIM();
+		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
+		sim = new TreeOps_Sim(db,"readSearchLog", 10000, simType.SEARCH);
+		sim.startSIM();
 		
 		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
-		sim = new TreeOps_Sim(db,"readCountLog3", 10000, simType.COUNT);
+		sim = new TreeOps_Sim(db,"readCountLog", 10000, simType.COUNT);
+		sim.startSIM();
+		
+		//-------------------------------
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-nHard2_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readSearchLog_nHard2", "readSearchLog");
+		sim.startSIM();
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-nHard2_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readCountLog_nHard2", "readCountLog");
 		sim.startSIM();
 		
 		
 		
-//		db = new PGraphDatabaseServiceSIM("var/fstree-nHard2_700kNodes_1300Relas",0);
-//		sim = new TreeLog_Sim(db,"readSearchLog_nHard2", "readSearchLog");
-//		sim.startSIM();
-//		
-//		db = new PGraphDatabaseServiceSIM("var/fstree-didic2_700kNodes_1300Relas",0);
-//		sim = new TreeLog_Sim(db,"readCountLog_nHard2", "readCountLog");
-//		sim.startSIM();
-					
+		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readSearchLog_nHard4", "readSearchLog");
+		sim.startSIM();
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readCountLog_nHard4", "readCountLog");
+		sim.startSIM();
+		
+		
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-rand4_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readSearchLog_rand4", "readSearchLog");
+		sim.startSIM();
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-rand4_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readCountLog_rand4", "readCountLog");
+		sim.startSIM();
+		
+		
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-rand2_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readSearchLog_rand2", "readSearchLog");
+		sim.startSIM();
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-rand2_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readCountLog_rand2", "readCountLog");
+		sim.startSIM();
+		
+		
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readSearchLog_didic4", "readSearchLog");
+		sim.startSIM();
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-didic4_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readCountLog_didic4", "readCountLog");
+		sim.startSIM();
+		
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-didic2_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readSearchLog_didic2", "readSearchLog");
+		sim.startSIM();
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-didic2_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readCountLog_didic2", "readCountLog");
+		sim.startSIM();
+		
+		
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-Hard4_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readSearchLog_Hard4", "readSearchLog");
+		sim.startSIM();
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-Hard4_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readCountLog_Hard4", "readCountLog");
+		sim.startSIM();
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-Hard2_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readSearchLog_Hard2", "readSearchLog");
+		sim.startSIM();
+		
+		db = new PGraphDatabaseServiceSIM("var/fstree-Hard2_700kNodes_1300Relas",0);
+		sim = new TreeLog_Sim(db,"readCountLog_Hard2", "readCountLog");
+		sim.startSIM();
+		
+		
+		
 		// run the other experiments
 //		WriteOps_onTree.runWriteOps();
 //		 convertDB();

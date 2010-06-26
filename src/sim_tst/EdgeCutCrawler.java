@@ -16,15 +16,26 @@ public class EdgeCutCrawler {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		args = new String[3];
-		args[0] = "var/fstree-nHard4_700kNodes_1300Relas";
-		args[1] = "var/fstree-nHard4_700kNodes_1300Relas/edgeCutInfo";
-		args[2] = "4";
 		
-		int partitions  = Integer.parseInt(args[2]);
-		long[][] edgeInfo = new long[partitions][partitions];
+		cal("var/fstree-didic2_700kNodes_1300Relas", "cut_didic2", 2);
+		cal("var/fstree-didic4_700kNodes_1300Relas", "cut_didic4", 4);
 		
-		GraphDatabaseService db = new PGraphDatabaseServiceSIM(args[0], 0);
+		cal("var/fstree-nHard2_700kNodes_1300Relas", "cut_nHard2", 2);
+		cal("var/fstree-nHard4_700kNodes_1300Relas", "cut_nHard4", 4);
+		
+		cal("var/fstree-rand2_700kNodes_1300Relas", "cut_rand2", 2);
+		cal("var/fstree-rand4_700kNodes_1300Relas", "cut_rand4", 4);
+		
+		cal("var/fstree-Hard2_700kNodes_1300Relas", "cut_Hard2", 2);
+		cal("var/fstree-Hard4_700kNodes_1300Relas", "cut_Hard4", 4);
+		
+	}
+
+	
+	private static void cal(String dbFolder, String out, int part){
+		long[][] edgeInfo = new long[part][part];
+		
+		GraphDatabaseService db = new PGraphDatabaseServiceSIM(dbFolder, 0);
 		
 		for(Node n : db.getAllNodes()){
 			Byte colS = (Byte) n.getProperty("_color");
@@ -35,9 +46,10 @@ public class EdgeCutCrawler {
 		}
 		PrintStream ps;
 		try {
-			ps = new PrintStream(args[1]);
-			for(int i = 0; i<partitions; i++){
-				for(int j = 0; j < partitions; i++){
+			ps = new PrintStream(out);
+			for(int i = 0; i< part; i++){
+				for(int j = 0; j < part; j++){
+					System.out.println(i + " "+j);
 					ps.print(edgeInfo[i][j]+" ");
 				}
 				ps.println();
@@ -49,5 +61,4 @@ public class EdgeCutCrawler {
 		
 		db.shutdown();
 	}
-
 }
