@@ -6,6 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
+
 import p_graph_service.PGraphDatabaseService;
 import p_graph_service.policy.RandomPlacement;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
@@ -20,12 +24,11 @@ public class GISGenerateWriteOpExperiments {
 	public static void main(String[] args) {
 
 		// Params: InputDbPath OutputDbsPath InputLogsPath GraphNodeCount
-		// E.g. var/gis-didic2 result_dbs/ logs-input/ 785891
+		// E.g. var/gis-didic2 result_dbs/ logs-input/
 
 		if (args[0].equals("help")) {
-			System.out.println("Params - " + "InputDbParth:Str "
-					+ "OutputDbsPath:Str " + "InputLogsPath:Str "
-					+ "GraphNodeCount:Int ");
+			System.out.println("Params - " + "InputDbPath:Str "
+					+ "OutputDbsPath:Str " + "InputLogsPath:Str");
 		}
 
 		String inputDbDirStr = args[0];
@@ -34,31 +37,53 @@ public class GISGenerateWriteOpExperiments {
 
 		String inputLogsDirStr = args[2];
 
-		int nodesInGraph = Integer.parseInt(args[3]);
-
-		start(inputDbDirStr, outputDirStr, inputLogsDirStr, nodesInGraph);
+		start(inputDbDirStr, outputDirStr, inputLogsDirStr);
 	}
 
 	public static void start(String inputDbDirStr, String outputDirStr,
-			String inputLogsDirStr, int nodesInGraph) {
+			String inputLogsDirStr) {
 
 		PGraphDatabaseService db;
 		OperationFactory operationFactory;
 		Simulator sim;
 
-		// size of the graph
 		int readRatio = 5;
 		double[] changes = new double[5];
-
 		changes[0] = 0.01;
 		changes[1] = 0.01;
 		changes[2] = 0.03;
 		changes[3] = 0.05;
 		changes[4] = 0.15;
 
+		byte[][] seeds = new byte[5][16];
+		seeds[0] = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+				15, 16 };
+		seeds[1] = new byte[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+				16, 17 };
+		seeds[2] = new byte[] { 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+				16, 17, 18 };
+		seeds[3] = new byte[] { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+				17, 18, 19 };
+		seeds[4] = new byte[] { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+				18, 19, 20 };
+
 		File sourceDbDir = new File(inputDbDirStr);
 		File outputDir = new File(outputDirStr);
 		File inputLogsDir = new File(inputLogsDirStr);
+
+		int nodesInGraph = 0;
+		db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0);
+		Transaction tx = db.beginTx();
+		try {
+			for (Node node : db.getAllNodes())
+				nodesInGraph++;
+		} catch (Exception e) {
+			tx.failure();
+			e.printStackTrace();
+		} finally {
+			tx.finish();
+			db.shutdown();
+		}
 
 		for (int i = 0; i < changes.length; i++) {
 
@@ -82,7 +107,8 @@ public class GISGenerateWriteOpExperiments {
 
 			operationFactory = new OperationFactoryGIS(db, config);
 
-			sim = new SimulatorGIS(db, logOutputPath, operationFactory);
+			sim = new SimulatorGIS(db, logOutputPath, operationFactory,
+					seeds[i]);
 
 			sim.startSIM();
 

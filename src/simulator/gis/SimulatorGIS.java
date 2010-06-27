@@ -8,12 +8,9 @@ import simulator.Rnd;
 import simulator.Simulator;
 
 public class SimulatorGIS extends Simulator {
-	private long count = 0;
 	private OperationFactory operationFactory = null;
-
-	public SimulatorGIS(GraphDatabaseService db, String logFile) {
-		super(db, logFile);
-	}
+	private byte[] seed = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+			13, 14, 15, 16 };
 
 	public SimulatorGIS(GraphDatabaseService db, String logFile,
 			OperationFactory operationFactory) {
@@ -21,8 +18,16 @@ public class SimulatorGIS extends Simulator {
 		this.operationFactory = operationFactory;
 	}
 
+	public SimulatorGIS(GraphDatabaseService db, String logFile,
+			OperationFactory operationFactory, byte[] seed) {
+		super(db, logFile);
+		this.operationFactory = operationFactory;
+		this.seed = seed;
+	}
+
 	@Override
 	public void initiate() {
+		Rnd.setSeed(seed);
 	}
 
 	@Override

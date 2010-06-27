@@ -16,11 +16,11 @@ public class SimJobLoadOpsGIS implements SimJob {
 	private File operationLogOutDir = null;
 	private PGraphDatabaseService pdb = null;
 
-	public SimJobLoadOpsGIS(String[] operationLogsIn, String operationLogOutDir,
+	public SimJobLoadOpsGIS(String[] operationLogsIn, String operationLogsOutDir,
 			PGraphDatabaseService pdb) {
 		this.operationLogsIn = new ArrayList<String>(Arrays
 				.asList(operationLogsIn));
-		this.operationLogOutDir = new File(operationLogOutDir);
+		this.operationLogOutDir = new File(operationLogsOutDir);
 		this.pdb = pdb;
 	}
 

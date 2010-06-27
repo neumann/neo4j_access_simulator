@@ -92,10 +92,6 @@ public class OperationFactoryGIS implements OperationFactory {
 		this.opCount = config.getOpCount();
 	}
 
-	public Iterable<Operation> getOperation() {
-		return null;
-	}
-
 	@Override
 	public boolean hasNext() {
 		return opId < opCount;
