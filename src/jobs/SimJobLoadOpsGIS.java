@@ -16,8 +16,8 @@ public class SimJobLoadOpsGIS implements SimJob {
 	private File operationLogOutDir = null;
 	private PGraphDatabaseService pdb = null;
 
-	public SimJobLoadOpsGIS(String[] operationLogsIn, String operationLogsOutDir,
-			PGraphDatabaseService pdb) {
+	public SimJobLoadOpsGIS(String[] operationLogsIn,
+			String operationLogsOutDir, PGraphDatabaseService pdb) {
 		this.operationLogsIn = new ArrayList<String>(Arrays
 				.asList(operationLogsIn));
 		this.operationLogOutDir = new File(operationLogsOutDir);
@@ -37,6 +37,12 @@ public class SimJobLoadOpsGIS implements SimJob {
 
 		Simulator sim = new SimulatorGIS(pdb, operationLogOut, operationFactory);
 		sim.startSIM();
+		sim.shutdown();
+
+		try {
+			sim.join();
+		} catch (InterruptedException e1) {
+		}
 	}
 
 	private String logInToLogOut(String operationLogIn) {

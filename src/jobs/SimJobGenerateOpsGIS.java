@@ -35,6 +35,12 @@ public class SimJobGenerateOpsGIS implements SimJob {
 		Simulator sim = new SimulatorGIS(pdb, config.getOperationLogOut(),
 				operationFactory);
 		sim.startSIM();
+		sim.shutdown();
+
+		try {
+			sim.join();
+		} catch (InterruptedException e1) {
+		}
 	}
 
 }
