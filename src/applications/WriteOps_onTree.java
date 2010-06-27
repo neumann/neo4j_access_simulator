@@ -20,6 +20,7 @@ import p_graph_service.policy.LowNodecountPlacement;
 import p_graph_service.policy.LowTrafficPlacement;
 import p_graph_service.policy.RandomPlacement;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
+import simulator.Rnd;
 import simulator.Simulator;
 import simulator.tree.Distribution;
 import simulator.tree.TreeLogIgnore_Factory;
@@ -52,16 +53,16 @@ public class WriteOps_onTree {
 		changes[3] = 0.05;
 		changes[4] = 0.15;
 
+		byte[] seed = { 1, 2, 3, 4, 5, 6, 7, 8,
+				9, 10, 11, 12, 13, 14, 15, 16 };
+		
 		File source = new File("var/fstree-didic4_700kNodes_1300Relas_");
 		Distribution dis = new Distribution(0.40, 0.40, 0.10, 0.10);
 		for (int i = 0; i < changes.length; i++) {
 			db = new PGraphDatabaseServiceSIM(
-					"var/fstree-didic4_700kNodes_1300Relas_", 0,
-					new RandomPlacement());
-			sim = new TreeOps_Sim(
-					db,
-					"var/fstree-didic4_700kNodes_1300Relas_/ReadWrite_didic4_mix"+i,
-					(int)Math.round(nodesInGraph*changes[i]*readRatio), simType.MIX, dis);
+					"var/fstree-didic4_700kNodes_1300Relas_", 0, new RandomPlacement());
+			sim = new TreeOps_Sim(db, "var/fstree-didic4_700kNodes_1300Relas_/ReadWrite_didic4_mix"+i, (int)Math.round(nodesInGraph*changes[i]*readRatio), simType.MIX, dis);
+			Rnd.setSeed(seed);
 			sim.startSIM();
 			db.shutdown();
 			
@@ -75,6 +76,11 @@ public class WriteOps_onTree {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+			
+			// changing the seed
+			for(int run = 0; run<seed.length ; run++){
+				seed[run] += 3;
 			}
 		}
 //		

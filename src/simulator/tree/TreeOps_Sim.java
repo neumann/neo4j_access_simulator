@@ -4,6 +4,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 
 import simulator.Operation;
 import simulator.OperationFactory;
+import simulator.Rnd;
 import simulator.Simulator;
 
 public class TreeOps_Sim extends Simulator {
@@ -11,6 +12,7 @@ public class TreeOps_Sim extends Simulator {
 	private int i;
 	private simType type;
 	private Distribution dis = null;
+	private int seed;
 	
 	public enum simType {
 		SEARCH, COUNT, MIX
@@ -23,11 +25,11 @@ public class TreeOps_Sim extends Simulator {
 		this.type = t;
 	}
 	
-	public TreeOps_Sim(GraphDatabaseService db, String logFile, int lenght, simType t,Distribution dis) {
+	
+	public TreeOps_Sim(GraphDatabaseService db, String logFile, int lenght, simType t,Distribution dis ) {
 		super(db, logFile);
 		this.i = lenght;
 		this.type = t;
-		this.dis = dis;
 	}
 	
 	
