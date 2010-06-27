@@ -71,54 +71,75 @@ public class GISLoadWriteOpExperiments {
 		changes[3] = 0.05;
 		changes[4] = 0.15;
 
-		File sourceDbDir = new File(inputDbDirStr);
-		File outputDir = new File(outputDirStr);
-		File inputLogsDir = new File(inputLogsDirStr);
-
 		for (int i = 0; i < changes.length; i++) {
 			db = null;
 
+			System.out.printf("Opening DB...");
+
 			switch (insertType) {
 			case RANDOM:
-				db = new PGraphDatabaseServiceSIM(
-						sourceDbDir.getAbsolutePath(), 0, new RandomPlacement());
+				db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
+						new RandomPlacement());
 				break;
 			case TRAFFIC:
-				db = new PGraphDatabaseServiceSIM(
-						sourceDbDir.getAbsolutePath(), 0,
+				db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
 						new LowTrafficPlacement());
 				break;
 			case SIZE:
-				db = new PGraphDatabaseServiceSIM(
-						sourceDbDir.getAbsolutePath(), 0,
+				db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
 						new LowNodecountPlacement());
 				break;
 			}
 
-			String logName = "read_write_op_" + i;
+			if (db == null)
+				throw new Exception(String
+						.format("DB [%s] could not be created\n", insertType
+								.toString()));
 
-			operationFactory = new LogOperationFactoryGIS(inputLogsDir
-					.getAbsolutePath()
-					+ "/" + logName);
-
-			String logOutputPath = sourceDbDir.getAbsolutePath() + "/"
-					+ logName;
-
-			sim = new SimulatorGIS(db, logOutputPath, operationFactory);
-
-			sim.startSIM();
-			db.shutdown();
+			System.out.printf("Done\n");
 
 			double perc = 0;
 			for (int j = 0; j <= i; j++) {
 				perc += changes[j];
 			}
 
-			File target = new File(outputDir.getAbsolutePath() + "/"
-					+ sourceDbDir.getName() + "_" + perc);
+			String logName = String.format("%s%0,3.0f", "read_write_op_",
+					perc * 100);
+
+			String logInputPath = (new File(inputLogsDirStr)).getAbsolutePath()
+					+ "/" + logName;
+
+			operationFactory = new LogOperationFactoryGIS(logInputPath);
+
+			String logOutputPath = (new File(inputDbDirStr)).getAbsolutePath()
+					+ "/" + logName;
+
+			System.out.printf("Simulation Details\n");
+			System.out.printf("\tInput Log Path = %s\n", logInputPath);
+			System.out.printf("\tOutput Log Path = %s\n", logOutputPath);
+
+			sim = new SimulatorGIS(db, logOutputPath, operationFactory);
+
+			sim.startSIM();
+			sim.shutdown();
 
 			try {
-				copyDirectory(sourceDbDir, target);
+				sim.join();
+			} catch (InterruptedException e1) {
+			}
+
+			System.out.println("********************");
+			System.out.println("Simulation Finished");
+			System.out.println("********************");
+
+			db.shutdown();
+
+			String targetDirName = String.format("%s/%s_%0,3.0f", (new File(
+					outputDirStr)).getAbsolutePath(), (new File(inputDbDirStr))
+					.getName(), perc * 100);
+
+			try {
+				copyDirectory(new File(inputDbDirStr), new File(targetDirName));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

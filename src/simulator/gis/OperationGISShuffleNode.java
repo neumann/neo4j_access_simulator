@@ -45,6 +45,7 @@ public class OperationGISShuffleNode extends OperationGIS {
 			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
+			tx.failure();
 			result = false;
 		} finally {
 			tx.finish();

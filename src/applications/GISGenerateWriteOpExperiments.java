@@ -23,6 +23,27 @@ public class GISGenerateWriteOpExperiments {
 
 	public static void main(String[] args) {
 
+		// Thread t = new Thread();
+		// System.out.printf("Thread Alive [Created] = %b\n", t.isAlive());
+		// t.start();
+		// System.out.printf("Thread Alive [Started] = %b\n", t.isAlive());
+		// while (t.isAlive() == true) {
+		// System.out.printf(".");
+		// }
+		// System.out.println();
+		// System.out.printf("Thread Alive [After Poll] = %b\n", t.isAlive());
+		// try {
+		// t.join();
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+		// System.out.printf("Thread Alive [Join Returned] = %b\n",
+		// t.isAlive());
+
+		// String targetDirName = String.format("%s/%s_%0,3.0f", "outputDir",
+		// "sourceDir", 0.01 * 100);
+		// System.out.println(targetDirName);
+
 		// Params: InputDbPath OutputDbsPath InputLogsPath GraphNodeCount
 		// E.g. var/gis-didic2 result_dbs/ logs-input/
 
@@ -48,6 +69,7 @@ public class GISGenerateWriteOpExperiments {
 		Simulator sim;
 
 		int readRatio = 5;
+
 		double[] changes = new double[5];
 		changes[0] = 0.01;
 		changes[1] = 0.01;
@@ -67,39 +89,44 @@ public class GISGenerateWriteOpExperiments {
 		seeds[4] = new byte[] { 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
 				18, 19, 20 };
 
-		File sourceDbDir = new File(inputDbDirStr);
-		File outputDir = new File(outputDirStr);
 		File inputLogsDir = new File(inputLogsDirStr);
 
-		int nodesInGraph = 0;
-		db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0);
-		Transaction tx = db.beginTx();
-		try {
-			for (Node node : db.getAllNodes())
-				nodesInGraph++;
-		} catch (Exception e) {
-			tx.failure();
-			e.printStackTrace();
-		} finally {
-			tx.finish();
-			db.shutdown();
-		}
+		double ratioLong = 0.80 * 0.05; // 5% of all Read Ops are Long
+		double ratioShort = 0.80 * 0.95; // 95% of all Read Ops are Long
+		double ratioAdd = 0.00;
+		double ratioDel = 0.00;
+		double ratioShuffle = 0.20;
 
 		for (int i = 0; i < changes.length; i++) {
 
+			System.out.printf("Opening DB...");
 			db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
 					new RandomPlacement());
+			System.out.printf("Done\n");
 
-			double ratioLong = 0.80 * 0.05; // 5% of all Read Ops are Long
-			double ratioShort = 0.80 * 0.95; // 95% of all Read Ops are Long
-			double ratioAdd = 0.00;
-			double ratioDel = 0.00;
-			double ratioShuffle = 0.20;
+			System.out.printf("Counting nodes in DB...");
+			int nodesInGraph = 0;
+			Transaction tx = db.beginTx();
+			try {
+				for (Node node : db.getAllNodes())
+					nodesInGraph++;
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				tx.finish();
+			}
+			System.out.printf("%d Nodes Found\n", nodesInGraph);
+
 			int opCount = (int) Math.round(nodesInGraph * changes[i]
 					* readRatio);
 
-			String logOutputPath = inputLogsDir.getAbsolutePath()
-					+ "/read_write_op_" + i;
+			double perc = 0;
+			for (int j = 0; j <= i; j++) {
+				perc += changes[j];
+			}
+
+			String logOutputPath = String.format("%s%s%0,3.0f", inputLogsDir
+					.getAbsolutePath(), "/read_write_op_", perc * 100);
 
 			OperationFactoryGISConfig config = new OperationFactoryGISConfig(
 					ratioAdd, ratioDel, ratioShort, ratioLong, ratioShuffle,
@@ -107,23 +134,33 @@ public class GISGenerateWriteOpExperiments {
 
 			operationFactory = new OperationFactoryGIS(db, config);
 
+			System.out.printf("Simulation Details\n");
+			System.out.printf("\tOperation Count = %d\n", opCount);
+			System.out.printf("\tLog Output Path = %s\n", logOutputPath);
+
 			sim = new SimulatorGIS(db, logOutputPath, operationFactory,
 					seeds[i]);
 
 			sim.startSIM();
+			sim.shutdown();
+
+			try {
+				sim.join();
+			} catch (InterruptedException e1) {
+			}
+
+			System.out.println("********************");
+			System.out.println("Simulation Finished");
+			System.out.println("********************");
 
 			db.shutdown();
 
-			double perc = 0;
-			for (int j = 0; j <= i; j++) {
-				perc += changes[j];
-			}
-
-			File targetDbDir = new File(outputDir.getAbsolutePath() + "/"
-					+ sourceDbDir.getName() + "_" + perc);
+			String targetDirName = String.format("%s/%s_%0,3.0f", (new File(
+					outputDirStr)).getAbsolutePath(), (new File(inputDbDirStr))
+					.getName(), perc * 100);
 
 			try {
-				copyDirectory(sourceDbDir, targetDbDir);
+				copyDirectory(new File(inputDbDirStr), new File(targetDirName));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

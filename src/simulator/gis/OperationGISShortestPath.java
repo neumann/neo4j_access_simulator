@@ -35,17 +35,34 @@ public abstract class OperationGISShortestPath extends OperationGIS {
 			Node startNode = db.getNodeById(startId);
 			Node endNode = db.getNodeById(endId);
 
-			AStarRouting astar = new AStarRouting();
-			Iterable<Node> pathNodes = astar.doShortestPath(db, startNode,
-					endNode);
+			Iterable<Node> pathNodes = null;
+
+			try {
+				AStarRouting astar = new AStarRouting();
+				pathNodes = astar.doShortestPath(db, startNode, endNode);
+			} catch (Exception e) {
+				throw new Exception(
+						String
+								.format(
+										"ShortestPathLong, error in AStar!\n\tstartNode[%s] endNode[%s]\n%s",
+										startNode, endNode, e.getMessage()));
+			}
 
 			String pathStr = "";
 			Integer pathLen = 0;
-			if (pathNodes != null)
-				for (Node node : pathNodes) {
-					pathLen++;
-					pathStr = pathStr + "," + node.getId();
-				}
+			try {
+				if (pathNodes != null)
+					for (Node node : pathNodes) {
+						pathLen++;
+						pathStr = pathStr + "," + node.getId();
+					}
+			} catch (Exception e) {
+				throw new Exception(
+						String
+								.format(
+										"ShortestPathLong, error in PathLen calculation\n\tstartNode[%s] endNode[%s]\n%s",
+										startNode, endNode, e.getMessage()));
+			}
 
 			// NOTE Commented to clean up logs
 			// this.info.put(GIS_PATH_LENGTH_TAG, pathLen.toString());
@@ -53,7 +70,16 @@ public abstract class OperationGISShortestPath extends OperationGIS {
 
 			GeoEstimateEvaluator geoEval = new GeoEstimateEvaluator(
 					Consts.LATITUDE, Consts.LONGITUDE);
-			Double distance = geoEval.getCost(startNode, endNode);
+			Double distance = -1d;
+			try {
+				distance = geoEval.getCost(startNode, endNode);
+			} catch (Exception e) {
+				throw new Exception(
+						String
+								.format(
+										"ShortestPathLong, error in Distance calculation\n\tstartNode[%s] endNode[%s]\n%s",
+										startNode, endNode, e.getMessage()));
+			}
 
 			// NOTE Commented to clean up logs
 			// this.info.put(GIS_DISTANCE_TAG, distance.toString());
@@ -61,6 +87,7 @@ public abstract class OperationGISShortestPath extends OperationGIS {
 			tx.success();
 		} catch (Exception e) {
 			e.printStackTrace();
+			tx.failure();
 			result = false;
 		} finally {
 			tx.finish();
