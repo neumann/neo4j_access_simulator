@@ -18,22 +18,28 @@ public class EdgeCutCrawler {
 	public static void main(String[] args) {
 		
 		cal("var/fstree-didic2_700kNodes_1300Relas", "cut_didic2", 2);
-		cal("var/fstree-didic4_700kNodes_1300Relas", "cut_didic4", 4);
+		cal("var/fstree-Didic4_700kNodes_1300Relas", "cut_didic4", 4);
 		
-		cal("var/fstree-nHard2_700kNodes_1300Relas", "cut_nHard2", 2);
-		cal("var/fstree-nHard4_700kNodes_1300Relas", "cut_nHard4", 4);
+		cal("var/fstree-Hard2_700kNodes_1300Relas", "cut_hard2", 2);
+		cal("var/fstree-Hard4_700kNodes_1300Relas", "cut_hard4", 4);
+		
+		cal("var/fstree-nHard2_700kNodes_1300Relas", "cut_nhard2", 2);
+		cal("var/fstree-nHard4_700kNodes_1300Relas", "cut_nhard4", 4);
 		
 		cal("var/fstree-rand2_700kNodes_1300Relas", "cut_rand2", 2);
 		cal("var/fstree-rand4_700kNodes_1300Relas", "cut_rand4", 4);
-		
-		cal("var/fstree-Hard2_700kNodes_1300Relas", "cut_Hard2", 2);
-		cal("var/fstree-Hard4_700kNodes_1300Relas", "cut_Hard4", 4);
 		
 	}
 
 	
 	private static void cal(String dbFolder, String out, int part){
 		long[][] edgeInfo = new long[part][part];
+		// not really necessary
+		for (int i = 0; i < edgeInfo.length; i++) {
+			for (int j = 0; j < edgeInfo.length; j++) {
+				edgeInfo[i][j]=0;
+			}
+		}
 		
 		GraphDatabaseService db = new PGraphDatabaseServiceSIM(dbFolder, 0);
 		
@@ -47,9 +53,14 @@ public class EdgeCutCrawler {
 		PrintStream ps;
 		try {
 			ps = new PrintStream(out);
+			ps.print("EndP ");
+			for (int i = 0; i < edgeInfo.length; i++) {
+				ps.print(i+" ");
+			}
+			ps.println();
 			for(int i = 0; i< part; i++){
+				ps.print("StartP"+i + " ");
 				for(int j = 0; j < part; j++){
-					System.out.println(i + " "+j);
 					ps.print(edgeInfo[i][j]+" ");
 				}
 				ps.println();
