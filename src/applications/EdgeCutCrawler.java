@@ -32,7 +32,7 @@ public class EdgeCutCrawler {
 	}
 
 	
-	private static void cal(String dbFolder, String out, int part){
+	public static void cal(String dbFolder, String out, int part){
 		long[][] edgeInfo = new long[part][part];
 		// not really necessary
 		for (int i = 0; i < edgeInfo.length; i++) {

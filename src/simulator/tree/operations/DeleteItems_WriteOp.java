@@ -1,4 +1,4 @@
-package simulator.tree;
+package simulator.tree.operations;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,6 +10,7 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 
 import simulator.Operation;
+import simulator.tree.TreeArgs;
 import simulator.tree.TreeArgs.TreeRelTypes;
 
 public class DeleteItems_WriteOp extends Operation {

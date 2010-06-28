@@ -39,7 +39,7 @@ public class TreeHardColorBalanced {
 			}
 		}
 		for(Node n : rootFolder){
-			for (Relationship rs: n.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM,Direction.OUTGOING)) {
+			for (Relationship rs: n.getRelationships(TreeArgs.TreeRelTypes.CHILD_FOLDER,Direction.OUTGOING)) {
 				nodesToGo.addLast(rs.getEndNode());
 			}
 		}

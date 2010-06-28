@@ -1,4 +1,4 @@
-package simulator.tree;
+package simulator.tree.operations;
 
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -6,6 +6,8 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
 import simulator.Operation;
+import simulator.tree.TreeArgs;
+import simulator.tree.TreeArgs.TreeRelTypes;
 
 public class AddFile_WriteOp extends Operation {
 

@@ -1,7 +1,6 @@
-package simulator.tree;
+package simulator;
 
 import org.neo4j.graphdb.GraphDatabaseService;
-import simulator.Operation;
 
 public class Empty_Op extends Operation {
 
