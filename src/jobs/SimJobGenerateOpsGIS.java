@@ -36,11 +36,6 @@ public class SimJobGenerateOpsGIS implements SimJob {
 				operationFactory);
 		sim.startSIM();
 		sim.shutdown();
-
-		try {
-			sim.join();
-		} catch (InterruptedException e1) {
-		}
 	}
 
 }

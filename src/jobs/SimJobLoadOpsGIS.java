@@ -38,11 +38,6 @@ public class SimJobLoadOpsGIS implements SimJob {
 		Simulator sim = new SimulatorGIS(pdb, operationLogOut, operationFactory);
 		sim.startSIM();
 		sim.shutdown();
-
-		try {
-			sim.join();
-		} catch (InterruptedException e1) {
-		}
 	}
 
 	private String logInToLogOut(String operationLogIn) {

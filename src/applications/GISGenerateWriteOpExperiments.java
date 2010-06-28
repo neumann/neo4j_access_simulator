@@ -137,11 +137,6 @@ public class GISGenerateWriteOpExperiments {
 
 			sim.startSIM();
 
-			try {
-				sim.join();
-			} catch (InterruptedException e1) {
-			}
-
 			System.out.println("********************");
 			System.out.println("Simulation Finished");
 			System.out.println("********************");
