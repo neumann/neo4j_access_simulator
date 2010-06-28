@@ -28,11 +28,12 @@ public class ReadOps_onTree {
 		GraphDatabaseService db;	
 		Simulator sim;
 		
-		TreeHardColorBalanced.hardColor("var/fstree-nHard4_700kNodes_1300Relas", 4);
+//		TreeHardColorBalanced.hardColor("var/fstree-nHard4_700kNodes_1300Relas", 4);
 		TreeHardColorBalanced.hardColor("var/fstree-nHard2_700kNodes_1300Relas", 2);
-		EdgeCutCrawler.cal("var/fstree-nHard4_700kNodes_1300Relas", "var/fstree-nHard4_700kNodes_1300Relas/edgeCutInfo", 4);
-		EdgeCutCrawler.cal("var/fstree-nHard2_700kNodes_1300Relas", "var/fstree-nHard2_700kNodes_1300Relas/edgeCutInfo", 4);
-		
+//		EdgeCutCrawler.cal("var/fstree-nHard4_700kNodes_1300Relas", "var/fstree-nHard4_700kNodes_1300Relas/edgeCutInfo", 4);
+		EdgeCutCrawler.cal("var/fstree-nHard2_700kNodes_1300Relas", "var/fstree-nHard2_700kNodes_1300Relas/edgeCutInfo", 2);
+	
+		if(true)return;
 		
 		db = new PGraphDatabaseServiceSIM("var/fstree-nHard4_700kNodes_1300Relas",0);
 		sim = new TreeOps_Sim(db,"readCountLog", 10000, simType.COUNT);

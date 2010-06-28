@@ -4,7 +4,7 @@ import java.io.PrintStream;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
-public abstract class Simulator{
+public abstract class ThreadedSimulator extends Thread {
 	private static final String logFileDelim = ";";
 	private PrintStream log = null;
 
@@ -37,7 +37,7 @@ public abstract class Simulator{
 		log.println();
 	}
 
-	public Simulator(GraphDatabaseService db, String logFile) {
+	public ThreadedSimulator(GraphDatabaseService db, String logFile) {
 		this.db = db;
 		try {
 			this.log = new PrintStream(logFile);
@@ -46,16 +46,22 @@ public abstract class Simulator{
 		}
 	}
 
-	public void shutdown(){
+	public void shutdown() {
 		this.toExit = true;
+		if (getState() == Thread.State.WAITING) {
+			this.notify();
+		}
 	}
 
 	public abstract void initiate();
 
 	public abstract void loop();
 
-	public void startSIM() {	
-		run();	
+	public void startSIM() {
+		if (getState() == Thread.State.NEW) {
+			initiate();
+			run();
+		}
 	}
 
 	public void toHold() {
@@ -64,11 +70,25 @@ public abstract class Simulator{
 
 	public void unHold() {
 		this.toHold = false;
+		if (getState() == Thread.State.WAITING) {
+			this.notify();
+		}
 	}
 
+	@Override
 	public void run() {
 		while (!toExit) {
-			loop();
+			if (!toHold) {
+				loop();
+			}
+			if (toHold) {
+				try {
+					toHold = false;
+					wait();
+				} catch (InterruptedException ie) {
+					// do nothing
+				}
+			}
 		}
 		log.flush();
 		log.close();
