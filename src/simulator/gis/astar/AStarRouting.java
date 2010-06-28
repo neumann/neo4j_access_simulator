@@ -22,14 +22,39 @@ public class AStarRouting {
 			.doubleCostEvaluator(Consts.WEIGHT);
 
 	public Iterable<Node> doShortestPath(final GraphDatabaseService graphDb,
-			Node startNode, Node endNode) {
+			Node startNode, Node endNode) throws Exception {
 
-		Expander relExpander = TraversalFactory.expanderForTypes(
-				GISRelationshipTypes.BICYCLE_WAY, Direction.BOTH);
-		PathFinder<WeightedPath> sp = GraphAlgoFactory.aStar(relExpander,
-				costEval, estimateEval);
+		Expander relExpander = null;
+		PathFinder<WeightedPath> sp = null;
+		Path path = null;
 
-		Path path = sp.findSinglePath(startNode, endNode);
+		try {
+			relExpander = TraversalFactory.expanderForTypes(
+					GISRelationshipTypes.BICYCLE_WAY, Direction.BOTH);
+		} catch (Exception e) {
+			throw new Exception(String.format(
+					"AStarRouting, error in RelExpander!\n%s", e.getMessage()));
+
+		}
+
+		try {
+			sp = GraphAlgoFactory.aStar(relExpander, costEval, estimateEval);
+		} catch (Exception e) {
+			throw new Exception(String.format(
+					"AStarRouting, error in GraphAlgoFactory.aStar!\n%s", e
+							.getMessage()));
+
+		}
+
+		try {
+			path = sp.findSinglePath(startNode, endNode);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(String.format(
+					"AStarRouting, error in sp.findSinglePath!\n%s", e
+							.getMessage()));
+
+		}
 
 		if (path == null)
 			return null;

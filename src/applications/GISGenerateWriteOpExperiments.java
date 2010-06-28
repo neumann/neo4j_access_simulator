@@ -21,29 +21,7 @@ import simulator.gis.SimulatorGIS;
 
 public class GISGenerateWriteOpExperiments {
 
-	public static void main(String[] args) {
-
-		// Thread t = new Thread();
-		// System.out.printf("Thread Alive [Created] = %b\n", t.isAlive());
-		// t.start();
-		// System.out.printf("Thread Alive [Started] = %b\n", t.isAlive());
-		// while (t.isAlive() == true) {
-		// System.out.printf(".");
-		// }
-		// System.out.println();
-		// System.out.printf("Thread Alive [After Poll] = %b\n", t.isAlive());
-		// try {
-		// t.join();
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
-		// System.out.printf("Thread Alive [Join Returned] = %b\n",
-		// t.isAlive());
-
-		// String targetDirName = String.format("%s/%s_%0,3.0f", "outputDir",
-		// "sourceDir", 0.01 * 100);
-		// System.out.println(targetDirName);
-
+	public static void main(String[] args) throws IOException {
 		// Params: InputDbPath OutputDbsPath InputLogsPath GraphNodeCount
 		// E.g. var/gis-didic2 result_dbs/ logs-input/
 
@@ -58,15 +36,18 @@ public class GISGenerateWriteOpExperiments {
 
 		String inputLogsDirStr = args[2];
 
+		// ***************
+		// String inputDbDirStr =
+		// "/home/alex/workspace/Test/var/romania-gis-COORD-BAL_NS4-GID-NAME-COORDS-BICYCLE/";
+		// String outputDirStr = "/home/alex/workspace/Test/results/";
+		// String inputLogsDirStr = "/home/alex/workspace/Test/logs-input/";
+		// ***************
+
 		start(inputDbDirStr, outputDirStr, inputLogsDirStr);
 	}
 
 	public static void start(String inputDbDirStr, String outputDirStr,
-			String inputLogsDirStr) {
-
-		PGraphDatabaseService db;
-		OperationFactory operationFactory;
-		Simulator sim;
+			String inputLogsDirStr) throws IOException {
 
 		int readRatio = 5;
 
@@ -76,6 +57,13 @@ public class GISGenerateWriteOpExperiments {
 		changes[2] = 0.03;
 		changes[3] = 0.05;
 		changes[4] = 0.15;
+		// NOTE Small For Test Only
+		// double[] changes = new double[5];
+		// changes[0] = 0.00001;
+		// changes[1] = 0.00001;
+		// changes[2] = 0.00003;
+		// changes[3] = 0.00005;
+		// changes[4] = 0.00015;
 
 		byte[][] seeds = new byte[5][16];
 		seeds[0] = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
@@ -93,15 +81,17 @@ public class GISGenerateWriteOpExperiments {
 
 		double ratioLong = 0.80 * 0.05; // 5% of all Read Ops are Long
 		double ratioShort = 0.80 * 0.95; // 95% of all Read Ops are Long
+		// NOTE Small For Test Only
+		// double ratioLong = 0.80 * 0.00;
+		// double ratioShort = 0.80 * 1.00;
 		double ratioAdd = 0.00;
 		double ratioDel = 0.00;
 		double ratioShuffle = 0.20;
 
 		for (int i = 0; i < changes.length; i++) {
-
 			System.out.printf("Opening DB...");
-			db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
-					new RandomPlacement());
+			PGraphDatabaseService db = new PGraphDatabaseServiceSIM(
+					inputDbDirStr, 0, new RandomPlacement());
 			System.out.printf("Done\n");
 
 			System.out.printf("Counting nodes in DB...");
@@ -127,22 +117,25 @@ public class GISGenerateWriteOpExperiments {
 
 			String logOutputPath = String.format("%s%s%0,3.0f", inputLogsDir
 					.getAbsolutePath(), "/read_write_op_", perc * 100);
+			// NOTE Small For Test Only
+			// String logOutputPath = String.format("%s%s%0,5.0f", inputLogsDir
+			// .getAbsolutePath(), "/read_write_op_", perc * 1000000);
 
 			OperationFactoryGISConfig config = new OperationFactoryGISConfig(
 					ratioAdd, ratioDel, ratioShort, ratioLong, ratioShuffle,
 					opCount, logOutputPath);
 
-			operationFactory = new OperationFactoryGIS(db, config);
+			OperationFactory operationFactory = new OperationFactoryGIS(db,
+					config);
 
 			System.out.printf("Simulation Details\n");
 			System.out.printf("\tOperation Count = %d\n", opCount);
 			System.out.printf("\tLog Output Path = %s\n", logOutputPath);
 
-			sim = new SimulatorGIS(db, logOutputPath, operationFactory,
-					seeds[i]);
+			Simulator sim = new SimulatorGIS(db, logOutputPath,
+					operationFactory, seeds[i]);
 
 			sim.startSIM();
-			sim.shutdown();
 
 			try {
 				sim.join();
@@ -158,12 +151,12 @@ public class GISGenerateWriteOpExperiments {
 			String targetDirName = String.format("%s/%s_%0,3.0f", (new File(
 					outputDirStr)).getAbsolutePath(), (new File(inputDbDirStr))
 					.getName(), perc * 100);
+			// NOTE Small For Test Only
+			// String targetDirName = String.format("%s/%s_%0,5.0f", (new File(
+			// outputDirStr)).getAbsolutePath(), (new File(inputDbDirStr))
+			// .getName(), perc * 1000000);
 
-			try {
-				copyDirectory(new File(inputDbDirStr), new File(targetDirName));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			copyDirectory(new File(inputDbDirStr), new File(targetDirName));
 		}
 
 	}

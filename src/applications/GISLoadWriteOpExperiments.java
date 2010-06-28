@@ -59,10 +59,6 @@ public class GISLoadWriteOpExperiments {
 			throw new Exception("Invalid InsertType");
 		}
 
-		PGraphDatabaseService db;
-		OperationFactory operationFactory;
-		Simulator sim;
-
 		double[] changes = new double[5];
 
 		changes[0] = 0.01;
@@ -72,7 +68,8 @@ public class GISLoadWriteOpExperiments {
 		changes[4] = 0.15;
 
 		for (int i = 0; i < changes.length; i++) {
-			db = null;
+
+			PGraphDatabaseService db = null;
 
 			System.out.printf("Opening DB...");
 
@@ -109,7 +106,8 @@ public class GISLoadWriteOpExperiments {
 			String logInputPath = (new File(inputLogsDirStr)).getAbsolutePath()
 					+ "/" + logName;
 
-			operationFactory = new LogOperationFactoryGIS(logInputPath);
+			OperationFactory operationFactory = new LogOperationFactoryGIS(
+					logInputPath);
 
 			String logOutputPath = (new File(inputDbDirStr)).getAbsolutePath()
 					+ "/" + logName;
@@ -118,10 +116,10 @@ public class GISLoadWriteOpExperiments {
 			System.out.printf("\tInput Log Path = %s\n", logInputPath);
 			System.out.printf("\tOutput Log Path = %s\n", logOutputPath);
 
-			sim = new SimulatorGIS(db, logOutputPath, operationFactory);
+			Simulator sim = new SimulatorGIS(db, logOutputPath,
+					operationFactory);
 
 			sim.startSIM();
-			sim.shutdown();
 
 			try {
 				sim.join();
