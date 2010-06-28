@@ -1,5 +1,6 @@
 package simulator.tree;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import org.neo4j.graphdb.Direction;
@@ -246,22 +247,18 @@ public class TreeOps_Factory implements OperationFactory {
 
 		// endNode
 		Node curN = db.getNodeById(endNID);
-		Vector<Long> n2Go = new Vector<Long>();
+		ArrayList<Long> path = new ArrayList<Long>();
 		
 		while(curN != null){
 			Node node =  curN;
 			curN = null;
-			for (Relationship rs : node.getRelationships(Direction.INCOMING)) {
-				if(!TreeArgs.isEvent(rs)){
-					curN = rs.getStartNode();
-					n2Go.add(curN.getId());
-					break;
-				}
-			}
+			Relationship rs = node.getSingleRelationship(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.INCOMING);
+			curN = rs.getStartNode();
+			path.add(curN.getId());
 		}
 	
-		int choice = (int)Rnd.nextLong(0, n2Go.size(), RndType.expo);
-		srtNID = n2Go.get(choice);
+		int choice = (int)Rnd.nextLong(0, path.size(), RndType.unif);
+		srtNID = path.get(choice);
 		
 		String[] args = { count + "", SearchFiles_ReadOp.class.getName(), srtNID + "", endNID + "" };
 		return new SearchFiles_ReadOp(args);

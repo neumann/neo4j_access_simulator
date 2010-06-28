@@ -55,6 +55,7 @@ public abstract class Simulator{
 	public abstract void loop();
 
 	public void startSIM() {	
+		initiate();
 		run();	
 	}
 
