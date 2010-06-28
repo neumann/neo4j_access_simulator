@@ -12,7 +12,6 @@ public class TreeOps_Sim extends Simulator {
 	private int i;
 	private simType type;
 	private Distribution dis = null;
-	private int seed;
 	
 	public enum simType {
 		SEARCH, COUNT, MIX
@@ -30,6 +29,7 @@ public class TreeOps_Sim extends Simulator {
 		super(db, logFile);
 		this.i = lenght;
 		this.type = t;
+		this.dis = dis;
 	}
 	
 	
@@ -39,15 +39,18 @@ public class TreeOps_Sim extends Simulator {
 		switch (type) {
 		case MIX:
 			if(dis == null){
-				dis = new Distribution(0,0,0.5,0.5);
+				return;
+				
 			}
-			fac = new TreeOps_Factory(i, getDB(), dis);
+			fac = new TreeOps_Factory(i, getDB(), dis,1000);
 			return;
 		case COUNT:
-			fac = new SearchFilesOnly_Factory( i, getDB());
+			dis = new Distribution(1,0,0,0, 0);
+			fac = new TreeOps_Factory( i, getDB(), dis, i);
 			return;
 		case SEARCH:
-			fac = new CountFilesOnly_Factory( i, getDB());
+			dis = new Distribution(0,1,0,0, 0);
+			fac = new TreeOps_Factory( i, getDB(), dis, i);
 			return;
 		default:
 			break;

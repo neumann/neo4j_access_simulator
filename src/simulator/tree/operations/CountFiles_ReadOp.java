@@ -1,4 +1,4 @@
-package simulator.tree;
+package simulator.tree.operations;
 
 import java.util.LinkedList;
 
@@ -8,6 +8,8 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
 import simulator.Operation;
+import simulator.tree.TreeArgs;
+import simulator.tree.TreeArgs.TreeRelTypes;
 
 public class CountFiles_ReadOp extends Operation {
 

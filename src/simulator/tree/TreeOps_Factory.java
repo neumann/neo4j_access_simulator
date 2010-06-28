@@ -13,52 +13,63 @@ import simulator.Operation;
 import simulator.OperationFactory;
 import simulator.Rnd;
 import simulator.Rnd.RndType;
+import simulator.tree.operations.AddFile_WriteOp;
+import simulator.tree.operations.CountFiles_ReadOp;
+import simulator.tree.operations.DeleteItems_WriteOp;
+import simulator.tree.operations.SearchFiles_ReadOp;
+import simulator.tree.operations.Shuffle_WriteOp;
 
 public class TreeOps_Factory implements OperationFactory {
-	private double invNumMax = 0;
-	private double numMax = 0;
+	private double fileMax = 0;
+	private double folderMax = 0;
+	private double fileFolderMax = 0;
+	
 
-	private static final int STEP_SIZE = 100;
+	private Evaluator fileEval = new FileEvaluator();
+	private Evaluator folderEval = new FolderEvaluator();
+	private Evaluator fileFolderEval = new FileFolderEvaluator();
+	
+	
+	private final int STEP_SIZE;
 
 	private final Distribution dis;
 	private int length;
 
 	private long[] file;
 	private long[] folder;
-
+	private long[] fileFolder;
+	
+	
 	private int folderPoint = 0;
-	private int invFilePoint = 0;
-
+	private int filePoint = 0;
+	private int fileFolderPoint = 0;
+	
+	
 	private final GraphDatabaseService db;
 	private long count = 0;
 
-	public TreeOps_Factory(int lenght, GraphDatabaseService db, Distribution dis) {
+	public TreeOps_Factory(int lenght, GraphDatabaseService db, Distribution dis, int Stepsize) {
+		this.STEP_SIZE = Stepsize;
 		this.db = db;
 		this.length = lenght;
 		this.dis = dis;
 
 		// calculate max
-		Transaction tx = db.beginTx();
-		try {
-			for (Node n : db.getAllNodes()) {
-				if (n.hasProperty(TreeArgs.listLenght)) {
-					int val = (Integer) n.getProperty(TreeArgs.listLenght);
-					double invVal = 1 / ((double) val);
-					numMax += val;
-					invNumMax += invVal;
-				}
-			}
-			tx.success();
-		} finally {
-			tx.finish();
+		for (Node n : db.getAllNodes()) {
+			fileMax += fileEval.evaluate(n);
+			folderMax += folderEval.evaluate(n);
 		}
+		fileFolderMax = fileMax+folderMax;
+		
 		// add sample
-		folder = Rnd.getSampleFromDB(db, new lengthEvaluatorFolders(), numMax,
+		folder = Rnd.getSampleFromDB(db, folderEval, folderMax,
 				STEP_SIZE, RndType.unif);
 
 		// delete sample
-		file = Rnd.getSampleFromDB(db, new invLengthEvaluator(), invNumMax,
+		file = Rnd.getSampleFromDB(db, fileEval, fileMax,
 				STEP_SIZE, RndType.unif);
+		
+		fileFolder = Rnd.getSampleFromDB(db, fileFolderEval, fileFolderMax, Stepsize, RndType.unif);
 	}
 
 	@Override
@@ -80,8 +91,8 @@ public class TreeOps_Factory implements OperationFactory {
 			Node validNode = null;
 
 			while (validNode == null) {
-				validNodeID = file[invFilePoint];
-				invFilePoint++;
+				validNodeID = file[filePoint];
+				filePoint++;
 				Transaction tx = db.beginTx();
 				tx.success();
 				try {
@@ -91,15 +102,15 @@ public class TreeOps_Factory implements OperationFactory {
 				} finally {
 					tx.finish();
 				}
-				if (invFilePoint >= STEP_SIZE) {
-					file = Rnd.getSampleFromDB(db, new invLengthEvaluator(),
-							invNumMax, STEP_SIZE, RndType.unif);
-					invFilePoint = 0;
+				if (filePoint >= STEP_SIZE) {
+					file = Rnd.getSampleFromDB(db, fileEval,
+							fileMax, STEP_SIZE, RndType.unif);
+					filePoint = 0;
 				}
 			}
 			String[] args = { count + "", DeleteItems_WriteOp.class.getName(),
 					validNodeID + "" };
-			invNumMax--;
+			fileMax--;
 			count++;
 			return new DeleteItems_WriteOp(args);
 		}
@@ -110,8 +121,8 @@ public class TreeOps_Factory implements OperationFactory {
 			Node validNode = null;
 
 			while (validNode == null) {
-				validNodeID = file[invFilePoint];
-				invFilePoint++;
+				validNodeID = file[filePoint];
+				filePoint++;
 				Transaction tx = db.beginTx();
 				tx.success();
 				try {
@@ -123,16 +134,16 @@ public class TreeOps_Factory implements OperationFactory {
 					tx.finish();
 				}
 
-				if (invFilePoint >= STEP_SIZE) {
-					file = Rnd.getSampleFromDB(db, new invLengthEvaluator(),
-							invNumMax, STEP_SIZE, RndType.unif);
-					invFilePoint = 0;
+				if (filePoint >= STEP_SIZE) {
+					file = Rnd.getSampleFromDB(db, fileEval,
+							fileMax, STEP_SIZE, RndType.unif);
+					filePoint = 0;
 				}
 			}
 
 			String[] args = { count + "", AddFile_WriteOp.class.getName(),
 					validNodeID + "" };
-			invNumMax++;
+			fileMax++;
 			count++;
 			return new AddFile_WriteOp(args);
 		}
@@ -143,19 +154,19 @@ public class TreeOps_Factory implements OperationFactory {
 			Node validNode = null;
 
 			while (validNode == null) {
-				validNodeID = folder[folderPoint];
-				folderPoint++;
+				validNodeID = fileFolder[fileFolderPoint];
+				fileFolderPoint++;
 				try {
 					validNode = db.getNodeById(validNodeID);
 				} catch (Exception e) {
 					// nothing to do here
 				}
 
-				if (folderPoint >= STEP_SIZE) {
-					folder = Rnd.getSampleFromDB(db,
-							new lengthEvaluatorFolders(), numMax, STEP_SIZE,
+				if (fileFolderPoint >= STEP_SIZE) {
+					fileFolder = Rnd.getSampleFromDB(db,
+							fileFolderEval, fileFolderMax, STEP_SIZE,
 							RndType.unif);
-					folderPoint = 0;
+					fileFolderPoint = 0;
 				}
 			}
 
@@ -185,7 +196,7 @@ public class TreeOps_Factory implements OperationFactory {
 
 				if (folderPoint >= STEP_SIZE) {
 					folder = Rnd.getSampleFromDB(db,
-							new lengthEvaluatorFolders(), numMax, STEP_SIZE,
+							folderEval, folderMax, STEP_SIZE,
 							RndType.unif);
 					folderPoint = 0;
 				}
@@ -196,30 +207,63 @@ public class TreeOps_Factory implements OperationFactory {
 			return new CountFiles_ReadOp(args);
 		}
 
+		if (choice < dis.shuffleOp) {
+			// sample still valid?
+			long validNodeID = -1;
+			Node validNode = null;
+
+			while (validNode == null) {
+				validNodeID = file[filePoint];
+				filePoint++;
+				Transaction tx = db.beginTx();
+				tx.success();
+				try {
+					validNode = db.getNodeById(validNodeID);
+				} catch (Exception e) {
+					// nothing to do here
+				} finally {
+					tx.finish();
+				}
+				if (filePoint >= STEP_SIZE) {
+					file = Rnd.getSampleFromDB(db, new FileEvaluator(),
+							fileMax, STEP_SIZE, RndType.unif);
+					filePoint = 0;
+				}
+			}
+			String[] args = { count + "", Shuffle_WriteOp.class.getName(),
+					validNodeID + "" };
+			fileMax--;
+			count++;
+			return new Shuffle_WriteOp(args);
+		}
 		return null;
 
 	}
 
 	private Operation createSearchOp(long id) {
-		long srtNID = id;
-		long endNID = -1;
+		long srtNID = -1;
+		long endNID = id;
 
-		// startNode
-		Node sNode = db.getNodeById(id);
-		Vector<Node> n2Go = new Vector<Node>();
-		n2Go.add(sNode);
-		int marker = 0;
-		while(marker <= n2Go.size()){
-			Node n = n2Go.get(marker);
-			for(Relationship rs : n.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.OUTGOING)){
-				n2Go.add(rs.getEndNode());
+		// endNode
+		Node curN = db.getNodeById(endNID);
+		Vector<Long> n2Go = new Vector<Long>();
+		
+		while(curN != null){
+			Node node =  curN;
+			curN = null;
+			for (Relationship rs : node.getRelationships(Direction.INCOMING)) {
+				if(!TreeArgs.isEvent(rs)){
+					curN = rs.getStartNode();
+					n2Go.add(curN.getId());
+					break;
+				}
 			}
 		}
-		long res = Rnd.nextLong(0, n2Go.size()-1, Rnd.RndType.unif);
-		endNID = n2Go.get((int)res).getId();
+	
+		int choice = (int)Rnd.nextLong(0, n2Go.size(), RndType.expo);
+		srtNID = n2Go.get(choice);
 		
-		String[] args = { count + "", SearchFiles_ReadOp.class.getName(),
-				srtNID + "", endNID + "" };
+		String[] args = { count + "", SearchFiles_ReadOp.class.getName(), srtNID + "", endNID + "" };
 		return new SearchFiles_ReadOp(args);
 	}
 
@@ -228,7 +272,7 @@ public class TreeOps_Factory implements OperationFactory {
 		// nothing to do here
 	}
 
-	private class invLengthEvaluator extends Evaluator {
+	private class FileEvaluator extends Evaluator {
 		@Override
 		public double evaluate(Node n) {
 			if (n.hasProperty(TreeArgs.name)) {
@@ -240,7 +284,7 @@ public class TreeOps_Factory implements OperationFactory {
 		}
 	}
 
-	private class lengthEvaluatorFolders extends Evaluator {
+	private class FolderEvaluator extends Evaluator {
 		@Override
 		public double evaluate(Node n) {
 			if (n.hasProperty(TreeArgs.listLenght)
@@ -254,6 +298,16 @@ public class TreeOps_Factory implements OperationFactory {
 				}
 			}
 			return 0;
+		}
+	}
+	
+	private class FileFolderEvaluator extends Evaluator {
+		private Evaluator fileEval = new FileEvaluator();
+		private Evaluator folderEval = new FolderEvaluator();
+		
+		@Override
+		public double evaluate(Node n) {
+			return fileEval.evaluate(n)+folderEval.evaluate(n);
 		}
 	}
 }

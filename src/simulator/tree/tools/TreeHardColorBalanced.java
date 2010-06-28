@@ -39,33 +39,41 @@ public class TreeHardColorBalanced {
 			}
 		}
 		for(Node n : rootFolder){
-			for (Relationship rs: n.getRelationships(TreeArgs.TreeRelTypes.CHILD_ITEM,Direction.OUTGOING)) {
+			for (Relationship rs: n.getRelationships(TreeArgs.TreeRelTypes.CHILD_FOLDER,Direction.OUTGOING)) {
 				nodesToGo.addLast(rs.getEndNode());
 			}
 		}
 		
-				
+		// calculate how many folder each gets
+		int lenght = nodesToGo.size()/partitions;
+		int left = nodesToGo.size() % partitions;
+		int[] partFolder = new int[partitions];
+		int sum = 0; 
+		for (int i = 0; i < partFolder.length; i++) {
+			partFolder[i]=lenght;
+			if(left>0){
+				partFolder[i]++;
+				left--;
+			}
+			sum+=partFolder[i];
+		}
+		
 		Transaction tx = graphDB.beginTx();
-		int lenght = Math.round(nodesToGo.size()/(float)partitions);
 		try {
 			Byte col = -1;
-			int j =0;
-			for(int i = 0 ; i < partitions; i++){
+			for (int i = 0; i < partFolder.length; i++) {
 				col++;
-				j = i*lenght;
-				while( j < (i+1)*lenght && j< nodesToGo.size()){
-					nodesToGo.get(j).setProperty("_color", col);
-					j++;
+				for(int j = 0; j < partFolder[i]; j++){
+					Node n = nodesToGo.remove();
+					n.setProperty("_color", col);
+					nodesToGo.add(n);
 				}
-			}
-			while (j<nodesToGo.size()) {
-				nodesToGo.get(j).setProperty("_color", col);
-				j++;
 			}
 			tx.success();
 		} finally {
 			tx.finish();
 		}	
+		
 		
 		// color the rest of the tree according to its parents
 		Transaction ty = graphDB.beginTx();

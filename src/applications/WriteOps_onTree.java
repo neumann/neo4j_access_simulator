@@ -23,8 +23,6 @@ import p_graph_service.sim.PGraphDatabaseServiceSIM;
 import simulator.Rnd;
 import simulator.Simulator;
 import simulator.tree.Distribution;
-import simulator.tree.TreeLogIgnore_Factory;
-import simulator.tree.TreeLogIgnore_Sim;
 import simulator.tree.TreeLog_Sim;
 import simulator.tree.TreeOps_Sim;
 import simulator.tree.TreeOps_Sim.simType;
@@ -56,15 +54,14 @@ public class WriteOps_onTree {
 		byte[] seed = { 1, 2, 3, 4, 5, 6, 7, 8,
 				9, 10, 11, 12, 13, 14, 15, 16 };
 		
-		File source = new File("var/fstree-didic4_700kNodes_1300Relas_");
-		Distribution dis = new Distribution(0.40, 0.40, 0.10, 0.10);
+		File source = new File("var/fstree-didic4_700kNodes_1300Relas_randAdd");
+		Distribution dis = new Distribution(0.40, 0.40, 0, 0, 0.20);
 		for (int i = 0; i < changes.length; i++) {
 			db = new PGraphDatabaseServiceSIM(
-					"var/fstree-didic4_700kNodes_1300Relas_", 0, new RandomPlacement());
-			sim = new TreeOps_Sim(db, "var/fstree-didic4_700kNodes_1300Relas_/ReadWrite_didic4_mix"+i, (int)Math.round(nodesInGraph*changes[i]*readRatio), simType.MIX, dis);
+					"var/fstree-didic4_700kNodes_1300Relas_randAdd", 0, new RandomPlacement(seed[0]));
+			sim = new TreeOps_Sim(db, "var/fstree-didic4_700kNodes_1300Relas_randAdd/ReadWrite_didic4_mix"+i, (int)Math.round(nodesInGraph*changes[i]*readRatio), simType.MIX, dis);
 			Rnd.setSeed(seed);
 			sim.startSIM();
-			db.shutdown();
 			
 			double perc = 0;
 			for (int j = 0; j <= i; j++) {
@@ -84,36 +81,34 @@ public class WriteOps_onTree {
 			}
 		}
 //		
-//		File source = new File("var/fstree-didic4_700kNodes_1300Relas_trff");
-//		for (int i = 0; i < changes.length; i++) {
-//			db = new PGraphDatabaseServiceSIM(
-//					"var/fstree-didic4_700kNodes_1300Relas_trff", 0,
-//					new LowTrafficPlacement());
-//			sim = new TreeLog_Sim(db, "var/fstree-didic4_700kNodes_1300Relas_trff/ReadWrite_didic4_mix_trffAdd"+i, "var/ReadWrite_didic4_mix"+i );
-//			sim.startSIM();
-//			db.shutdown();
-//			
-//			double perc = 0;
-//			for (int j = 0; j <= i; j++) {
-//				perc +=changes[j];
-//			}
-//			File target = new File("results/fstree-didic4_700kNodes_1300Relas_trffAdd"+perc);
-//			try {
-//				copyDirectory(source, target);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-		
-		source = new File("var/fstree-didic4_700kNodes_1300Relas_minN");
+		source = new File("var/fstree-didic4_700kNodes_1300Relas_trffAdd");
 		for (int i = 0; i < changes.length; i++) {
 			db = new PGraphDatabaseServiceSIM(
-					"var/fstree-didic4_700kNodes_1300Relas_minN", 0,
-					new LowNodecountPlacement());
-			sim = new TreeLogIgnore_Sim(db, "var/fstree-didic4_700kNodes_1300Relas_minN/ReadWrite_didic4_mix_minAdd"+i, "var/ReadWrite_didic4_mix"+i );
+					"var/fstree-didic4_700kNodes_1300Relas_trffAdd", 0,
+					new LowTrafficPlacement());
+			sim = new TreeLog_Sim(db, "var/fstree-didic4_700kNodes_1300Relas_trffAdd/ReadWrite_didic4_mix_trffAdd"+i, "var/ReadWrite_didic4_mix"+i );
 			sim.startSIM();
-			db.shutdown();
+			
+			double perc = 0;
+			for (int j = 0; j <= i; j++) {
+				perc +=changes[j];
+			}
+			File target = new File("results/fstree-didic4_700kNodes_1300Relas_trffAdd"+perc);
+			try {
+				copyDirectory(source, target);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		source = new File("var/fstree-didic4_700kNodes_1300Relas_minAdd");
+		for (int i = 0; i < changes.length; i++) {
+			db = new PGraphDatabaseServiceSIM(
+					"var/fstree-didic4_700kNodes_1300Relas_minAdd", 0,
+					new LowNodecountPlacement());
+			sim = new TreeLog_Sim(db, "var/fstree-didic4_700kNodes_1300Relas_minAdd/ReadWrite_didic4_mix_minAdd"+i, "var/ReadWrite_didic4_mix"+i );
+			sim.startSIM();
 			
 			double perc = 0;
 			for (int j = 0; j <= i; j++) {
