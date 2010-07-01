@@ -1,7 +1,6 @@
 package simulator.tree;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -33,7 +32,7 @@ public class TreeOps_Factory implements OperationFactory {
 	
 	private final int STEP_SIZE;
 
-	private final Distribution dis;
+	private final TreeOpDistribution dis;
 	private int length;
 
 	private long[] file;
@@ -49,7 +48,7 @@ public class TreeOps_Factory implements OperationFactory {
 	private final GraphDatabaseService db;
 	private long count = 0;
 
-	public TreeOps_Factory(int lenght, GraphDatabaseService db, Distribution dis, int Stepsize) {
+	public TreeOps_Factory(int lenght, GraphDatabaseService db, TreeOpDistribution dis, int Stepsize) {
 		this.STEP_SIZE = Stepsize;
 		this.db = db;
 		this.length = lenght;
@@ -250,14 +249,15 @@ public class TreeOps_Factory implements OperationFactory {
 		ArrayList<Long> path = new ArrayList<Long>();
 		
 		while(curN != null){
-			Node node =  curN;
+			Relationship rs = curN.getSingleRelationship(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.INCOMING);
 			curN = null;
-			Relationship rs = node.getSingleRelationship(TreeArgs.TreeRelTypes.CHILD_ITEM, Direction.INCOMING);
-			curN = rs.getStartNode();
-			path.add(curN.getId());
+			if(rs != null){
+				curN = rs.getStartNode();
+				path.add(curN.getId());
+			}
 		}
 	
-		int choice = (int)Rnd.nextLong(0, path.size(), RndType.unif);
+		int choice = (int)Rnd.nextLong(0, path.size()-1, RndType.unif);
 		srtNID = path.get(choice);
 		
 		String[] args = { count + "", SearchFiles_ReadOp.class.getName(), srtNID + "", endNID + "" };

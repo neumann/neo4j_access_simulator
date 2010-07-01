@@ -2,6 +2,8 @@ package simulator.twitter;
 
 import simulator.LogOperationFactory;
 import simulator.Operation;
+import simulator.twitter.operations.ReadOp_Search;
+import simulator.twitter.operations.Shuffle_WriteOp;
 
 public class TwitterLog_Factory extends LogOperationFactory {
 
@@ -14,7 +16,10 @@ public class TwitterLog_Factory extends LogOperationFactory {
 		if(args[1].equals(ReadOp_Search.class.getName())){
 			return new ReadOp_Search(args);
 		}
-		throw new Error("Unsupported GIS Operation: " + args[1]);
+		if(args[1].equals(Shuffle_WriteOp.class.getName())){
+			return new Shuffle_WriteOp(args);
+		}
+		throw new Error("Unsupported Twitter Operation: " + args[1]);
 	}
 
 }

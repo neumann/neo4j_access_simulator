@@ -15,11 +15,10 @@ import p_graph_service.sim.PGraphDatabaseServiceSIM;
 import simulator.BasicSimulator;
 import simulator.Rnd;
 import simulator.Simulator;
-import simulator.tree.TreeLog_Factory;
-import simulator.tree.TreeOpDistribution;
-import simulator.tree.TreeOps_Factory;
+import simulator.twitter.TwitterLog_Factory;
+import simulator.twitter.TwitterOps_Factory;
 
-public class WriteOps_onTree {
+public class WriteOps_onTwitter {
 
 	/**t	
 	 * @param args
@@ -33,7 +32,7 @@ public class WriteOps_onTree {
 		Simulator sim;
 
 		// size of the graph
-		int nodesInGraph = 730027;
+		int nodesInGraph = 611643;
 		int readRatio = 5;
 		double[] changes = new double[5];
 
@@ -46,12 +45,13 @@ public class WriteOps_onTree {
 		byte[] seed = { 1, 2, 3, 4, 5, 6, 7, 8,
 				9, 10, 11, 12, 13, 14, 15, 16 };
 		
-		File source = new File("var/fstree-didic4_700kNodes_1300Relas_randAdd");
-		TreeOpDistribution dis = new TreeOpDistribution(0.40, 0.40, 0, 0, 0.20);
+		File source = new File("var/twitter-256th-V[611643]E[852461]-didic4s-randAdd");
+		//read write distribution
+		double[] dis = {0.8,0.2};
 		for (int i = 0; i < changes.length; i++) {
 			db = new PGraphDatabaseServiceSIM(
-					"var/fstree-didic4_700kNodes_1300Relas_randAdd", 0, new RandomPlacement(seed[0]));
-			TreeOps_Factory fac = new TreeOps_Factory((int)Math.round(nodesInGraph*changes[i]*readRatio), db, dis, 1000);
+					"var/twitter-256th-V[611643]E[852461]-didic4s-randAdd", 0, new RandomPlacement(seed[0]));
+			TwitterOps_Factory fac = new TwitterOps_Factory((int)Math.round(nodesInGraph*changes[i]*readRatio), db, dis);
 			sim = new BasicSimulator(db, "var/ReadWrite_didic4_mix"+i, fac);
 			Rnd.setSeed(seed);
 			sim.startSIM();
@@ -60,7 +60,7 @@ public class WriteOps_onTree {
 			for (int j = 0; j <= i; j++) {
 				perc +=changes[j];
 			}
-			File target = new File("results/fstree-didic4_700kNodes_1300Relas_randAdd"+perc);
+			File target = new File("results/twitter-256th-V[611643]E[852461]-didic4s-randAdd"+perc);
 			try {
 				copyDirectory(source, target);
 			} catch (IOException e) {
@@ -74,20 +74,20 @@ public class WriteOps_onTree {
 			}
 		}
 //		
-		source = new File("var/fstree-didic4_700kNodes_1300Relas_trffAdd");
+		source = new File("var/twitter-256th-V[611643]E[852461]-didic4s-trffAdd");
 		for (int i = 0; i < changes.length; i++) {
 			db = new PGraphDatabaseServiceSIM(
-					"var/fstree-didic4_700kNodes_1300Relas_trffAdd", 0,
+					"var/twitter-256th-V[611643]E[852461]-didic4s-trffAdd", 0,
 					new LowTrafficPlacement());
-			TreeLog_Factory fac = new TreeLog_Factory("var/ReadWrite_didic4_mix"+i);
-			sim = new BasicSimulator(db, "var/fstree-didic4_700kNodes_1300Relas_trffAdd/ReadWrite_didic4_mix_trffAdd"+i,  fac);
+			TwitterLog_Factory fac = new TwitterLog_Factory("var/ReadWrite_didic4_mix"+i);
+			sim = new BasicSimulator(db, "var/twitter-256th-V[611643]E[852461]-didic4s-trffAdd/ReadWrite_didic4_mix_trffAdd"+i,  fac);
 			sim.startSIM();
 			
 			double perc = 0;
 			for (int j = 0; j <= i; j++) {
 				perc +=changes[j];
 			}
-			File target = new File("results/fstree-didic4_700kNodes_1300Relas_trffAdd"+perc);
+			File target = new File("results/twitter-256th-V[611643]E[852461]-didic4s-trffAdd"+perc);
 			try {
 				copyDirectory(source, target);
 			} catch (IOException e) {
@@ -96,20 +96,20 @@ public class WriteOps_onTree {
 			}
 		}
 		
-		source = new File("var/fstree-didic4_700kNodes_1300Relas_minAdd");
+		source = new File("var/twitter-256th-V[611643]E[852461]-didic4s-minAdd");
 		for (int i = 0; i < changes.length; i++) {
 			db = new PGraphDatabaseServiceSIM(
-					"var/fstree-didic4_700kNodes_1300Relas_minAdd", 0,
+					"var/twitter-256th-V[611643]E[852461]-didic4s-minAdd", 0,
 					new LowNodecountPlacement());
-			TreeLog_Factory fac = new TreeLog_Factory("var/ReadWrite_didic4_mix"+i);
-			sim = new BasicSimulator(db, "var/fstree-didic4_700kNodes_1300Relas_minAdd/ReadWrite_didic4_mix_minAdd"+i, fac );
+			TwitterLog_Factory fac = new TwitterLog_Factory("var/ReadWrite_didic4_mix"+i);
+			sim = new BasicSimulator(db, "var/twitter-256th-V[611643]E[852461]-didic4s-minAdd/ReadWrite_didic4_mix_minAdd"+i, fac );
 			sim.startSIM();
 			
 			double perc = 0;
 			for (int j = 0; j <= i; j++) {
 				perc +=changes[j];
 			}
-			File target = new File("results/fstree-didic4_700kNodes_1300Relas_minAdd"+perc);
+			File target = new File("results/twitter-256th-V[611643]E[852461]-didic4s-minAdd"+perc);
 			try {
 				copyDirectory(source, target);
 			} catch (IOException e) {

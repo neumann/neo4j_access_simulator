@@ -13,9 +13,9 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
 import simulator.BasicSimulator;
 import simulator.Simulator;
-import simulator.tree.TreeLog_Factory;
+import simulator.twitter.TwitterLog_Factory;
 
-public class ReadOps_onTree {
+public class ReadOps_onTwitter {
 
 	/**
 	 * @param args
@@ -36,7 +36,7 @@ public class ReadOps_onTree {
 			if(!tst.isDirectory())continue;
 			System.out.println("applying "+ inputLog + " to "+ inputDBs[i]);
 			db = new PGraphDatabaseServiceSIM(var+"/"+ inputDBs[i],0);
-			TreeLog_Factory fac = new TreeLog_Factory(inputLog);
+			TwitterLog_Factory fac = new TwitterLog_Factory(inputLog);
 			sim = new BasicSimulator(db,outPutFolder+ "/"+inputDBs[i]+"_"+ inputLog, fac);
 			sim.startSIM();
 		}

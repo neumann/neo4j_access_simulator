@@ -9,7 +9,6 @@ import org.neo4j.graphdb.Relationship;
 
 import simulator.Operation;
 import simulator.tree.TreeArgs;
-import simulator.tree.TreeArgs.TreeRelTypes;
 
 public class SearchFiles_ReadOp extends Operation {
 

@@ -31,7 +31,7 @@ public class TreeLog_Factory extends LogOperationFactory {
 		else if(args[1].equals(Shuffle_WriteOp.class.getName())){
 			return new Shuffle_WriteOp(args);
 		}
-		throw new Error("Unsupported GIS Operation: " + args[1]);
+		throw new Error("Unsupported Tree Operation: " + args[1]);
 	}
 
 }

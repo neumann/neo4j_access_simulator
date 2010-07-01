@@ -1,13 +1,13 @@
 package simulator.tree;
 
-public class Distribution{
+public class TreeOpDistribution{
 	final double countOp;
 	final double searchOp;
 	final double addOp;
 	final double delOp;
 	final double shuffleOp;
 	
-	public Distribution(double count, double search, double add, double del, double shuffle) {
+	public TreeOpDistribution(double count, double search, double add, double del, double shuffle) {
 		delOp = del;
 		addOp = delOp + add; 
 		searchOp = addOp + search;

@@ -8,13 +8,11 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
-
 import simulator.tree.TreeArgs;
-import simulator.tree.TreeArgs.TreeRelTypes;
 
 public class TreeHardColor {
 	public static void main(String[] args) {
-		hardColor("", 2);
+		hardColor(args[0], Integer.parseInt(args[1]));
 	}
 
 	public static void hardColor(String file, int partitions) {

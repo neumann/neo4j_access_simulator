@@ -1,4 +1,4 @@
-package simulator.twitter;
+package simulator.twitter.operations;
 
 import java.util.Iterator;
 

@@ -7,7 +7,6 @@ import org.neo4j.graphdb.Transaction;
 
 import simulator.Operation;
 import simulator.tree.TreeArgs;
-import simulator.tree.TreeArgs.TreeRelTypes;
 
 public class AddFile_WriteOp extends Operation {
 

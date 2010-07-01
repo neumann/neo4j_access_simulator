@@ -9,18 +9,13 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
-import p_graph_service.core.DBInstanceContainer;
-import p_graph_service.sim.PGraphDatabaseServiceSIM;
-
 import simulator.tree.TreeArgs;
-import simulator.tree.TreeArgs.TreeRelTypes;
 
 public class TreeHardColorBalanced {
 	public static void main(String[] args) {
 		
-//		GraphDatabaseService db = new PGraphDatabaseServiceSIM("var/fstree-nHard_700kNodes_1300Relas", 0);
+		hardColor(args[0], Integer.parseInt(args[1]));
 		
-		hardColor("var/fstree-nHard2_700kNodes_1300Relas", 2);
 	}
 
 	public static void hardColor(String file, int partitions) {
@@ -30,7 +25,7 @@ public class TreeHardColorBalanced {
 		LinkedList<Node> rootFolder = new LinkedList<Node>();
 		GraphDatabaseService graphDB = new EmbeddedGraphDatabase(graphDir);
 		
-		//go to folder level
+		//go to folder on leaf level
 		rootFolder.add(graphDB.getReferenceNode());
 		while(!rootFolder.peek().hasProperty(TreeArgs.hasSub)){ 
 			Node n = rootFolder.removeFirst();
@@ -38,11 +33,19 @@ public class TreeHardColorBalanced {
 				rootFolder.addLast(rs.getEndNode());
 			}
 		}
-		for(Node n : rootFolder){
+		while(!rootFolder.isEmpty()){
+			Node n = rootFolder.remove();
+			boolean ctrl = true;
 			for (Relationship rs: n.getRelationships(TreeArgs.TreeRelTypes.CHILD_FOLDER,Direction.OUTGOING)) {
-				nodesToGo.addLast(rs.getEndNode());
+				rootFolder.addLast(rs.getEndNode());
+				ctrl = false;
+			}
+			if(ctrl){
+				nodesToGo.addLast(n);
 			}
 		}
+			
+		
 		
 		// calculate how many folder each gets
 		int lenght = nodesToGo.size()/partitions;
@@ -78,7 +81,7 @@ public class TreeHardColorBalanced {
 		// color the rest of the tree according to its parents
 		Transaction ty = graphDB.beginTx();
 		int count = 0;
-		int max = 100;
+		int max = 1000;
 		int sumCount = 0;
 		try {
 			while (!nodesToGo.isEmpty()) {

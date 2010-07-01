@@ -15,10 +15,10 @@ import simulator.tree.TreeArgs;
 public class TreeInformationGratherer {
 	private static GraphDatabaseService db;
 	public static void main(String[] args) {
-		db = new EmbeddedGraphDatabase("var/fstree-didic2_700kNodes_1300Relas");
+		db = new EmbeddedGraphDatabase(args[0]);
 		
-		//NodeInfo();
-//		TreeHight();
+		NodeInfo();
+		TreeHight();
 		NodesPerLevel();
 		
 		db.shutdown();
