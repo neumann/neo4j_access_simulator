@@ -15,6 +15,10 @@ import p_graph_service.sim.PGraphDatabaseServiceSIM;
 import simulator.OperationFactory;
 import simulator.Simulator;
 import simulator.gis.LogOperationFactoryGIS;
+import simulator.gis.OperationGISAddNode;
+import simulator.gis.OperationGISDeleteNode;
+import simulator.gis.OperationGISShortestPathLong;
+import simulator.gis.OperationGISShortestPathShort;
 import simulator.gis.SimulatorGIS;
 
 public class GISLoadWriteOpExperiments {
@@ -25,118 +29,115 @@ public class GISLoadWriteOpExperiments {
 
 	public static void main(String[] args) throws Exception {
 
-		// Params: InputDbPath OutputDbsPath InputLogsPath InsertType
-		// E.g. var/gis-didic2 result_dbs/ logs-input/ random
+		// Params: InputDbPath OutputDbPath InputLogPath InsertType
+		// E.g. var/gis-didic2 result_dbs/gis-didic2_01
+		// logs-input/read_write_op_01 logs-output/read_write_op_traffic_01
+		// traffic
 
 		if (args[0].equals("help")) {
 			System.out.println("Params - " + "InputDbPath:Str "
-					+ "OutputDbsPath:Str " + "InputLogsPath:Str "
+					+ "OutputDbPath:Str " + "InputLogPath:Str "
+					+ "OutputLogPath:Str "
 					+ "InsertType:Enum(random,traffic,size) ");
 		}
 
-		String inputDbDirStr = args[0];
+		String inputDbPath = args[0];
 
-		String outputDirStr = args[1];
+		String outputDbPath = args[1];
 
-		String inputLogsDirStr = args[2];
+		String inputLogPath = args[2];
 
-		String insertTypeStr = args[3];
+		String outputLogPath = args[3];
 
-		start(inputDbDirStr, outputDirStr, inputLogsDirStr, insertTypeStr);
+		String insertTypeStr = args[4];
+
+		start(inputDbPath, outputDbPath, inputLogPath, outputLogPath,
+				insertTypeStr);
 	}
 
-	public static void start(String inputDbDirStr, String outputDirStr,
-			String inputLogsDirStr, String insertTypeStr) throws Exception {
+	public static void start(String inputDbPath, String outputDbPath,
+			String inputLogPath, String outputLogPath, String insertTypeStr)
+			throws Exception {
+
+		String[] ignoreOps = null;
 
 		InsertType insertType = InsertType.RANDOM;
 		if (insertTypeStr.equals("random") == true) {
 			insertType = InsertType.RANDOM;
+
+			// Only do shuffle operations
+			ignoreOps = new String[] { OperationGISAddNode.class.getName(),
+					OperationGISDeleteNode.class.getName(),
+					OperationGISShortestPathShort.class.getName(),
+					OperationGISShortestPathLong.class.getName() };
+			// ignoreOps = new String[] {};
 		} else if (insertTypeStr.equals("traffic") == true) {
 			insertType = InsertType.TRAFFIC;
+
+			// Only do shuffle & read operations
+			ignoreOps = new String[] { OperationGISAddNode.class.getName(),
+					OperationGISDeleteNode.class.getName() };
+			// ignoreOps = new String[] {};
 		} else if (insertTypeStr.equals("size") == true) {
 			insertType = InsertType.SIZE;
+
+			// Only do shuffle operations
+			ignoreOps = new String[] { OperationGISAddNode.class.getName(),
+					OperationGISDeleteNode.class.getName(),
+					OperationGISShortestPathShort.class.getName(),
+					OperationGISShortestPathLong.class.getName() };
+			// ignoreOps = new String[] {};
 		} else {
 			throw new Exception("Invalid InsertType");
 		}
 
-		double[] changes = new double[5];
+		PGraphDatabaseService db = null;
 
-		changes[0] = 0.01;
-		changes[1] = 0.01;
-		changes[2] = 0.03;
-		changes[3] = 0.05;
-		changes[4] = 0.15;
+		System.out.printf("Opening DB...");
 
-		for (int i = 0; i < changes.length; i++) {
-
-			PGraphDatabaseService db = null;
-
-			System.out.printf("Opening DB...");
-
-			switch (insertType) {
-			case RANDOM:
-				db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
-						new RandomPlacement());
-				break;
-			case TRAFFIC:
-				db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
-						new LowTrafficPlacement());
-				break;
-			case SIZE:
-				db = new PGraphDatabaseServiceSIM(inputDbDirStr, 0,
-						new LowNodecountPlacement());
-				break;
-			}
-
-			if (db == null)
-				throw new Exception(String
-						.format("DB [%s] could not be created\n", insertType
-								.toString()));
-
-			System.out.printf("Done\n");
-
-			double perc = 0;
-			for (int j = 0; j <= i; j++) {
-				perc += changes[j];
-			}
-
-			String logName = String.format("%s%0,3.0f", "read_write_op_",
-					perc * 100);
-
-			String logInputPath = (new File(inputLogsDirStr)).getAbsolutePath()
-					+ "/" + logName;
-
-			OperationFactory operationFactory = new LogOperationFactoryGIS(
-					logInputPath);
-
-			String logOutputPath = (new File(inputDbDirStr)).getAbsolutePath()
-					+ "/" + logName;
-
-			System.out.printf("Simulation Details\n");
-			System.out.printf("\tInput Log Path = %s\n", logInputPath);
-			System.out.printf("\tOutput Log Path = %s\n", logOutputPath);
-
-			Simulator sim = new SimulatorGIS(db, logOutputPath,
-					operationFactory);
-
-			sim.startSIM();
-
-			System.out.println("********************");
-			System.out.println("Simulation Finished");
-			System.out.println("********************");
-
-			db.shutdown();
-
-			String targetDirName = String.format("%s/%s_%0,3.0f", (new File(
-					outputDirStr)).getAbsolutePath(), (new File(inputDbDirStr))
-					.getName(), perc * 100);
-
-			try {
-				copyDirectory(new File(inputDbDirStr), new File(targetDirName));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		switch (insertType) {
+		case RANDOM:
+			db = new PGraphDatabaseServiceSIM(inputDbPath, 0,
+					new RandomPlacement());
+			break;
+		case TRAFFIC:
+			db = new PGraphDatabaseServiceSIM(inputDbPath, 0,
+					new LowTrafficPlacement());
+			break;
+		case SIZE:
+			db = new PGraphDatabaseServiceSIM(inputDbPath, 0,
+					new LowNodecountPlacement());
+			break;
 		}
+
+		if (db == null)
+			throw new Exception(String.format("DB [%s] could not be created\n",
+					insertType.toString()));
+
+		System.out.printf("Done\n");
+
+		System.out.printf("Simulation Details\n");
+		System.out.printf("\tInput Log Path = %s\n", inputLogPath);
+		System.out.printf("\tOutput Log Path = %s\n", outputLogPath);
+
+		OperationFactory operationFactory = new LogOperationFactoryGIS(
+				inputLogPath, ignoreOps);
+
+		Simulator sim = new SimulatorGIS(db, outputLogPath, operationFactory);
+
+		sim.startSIM();
+
+		System.out.println("********************");
+		System.out.println("Simulation Finished");
+		System.out.println("********************");
+
+		db.shutdown();
+
+		System.out.printf("Copying DB Snapshot...");
+		copyDirectory(new File(inputDbPath), new File(outputDbPath));
+		System.out.printf("Done\n");
+		System.out.printf("From [%s] To [%s]", new File(inputDbPath)
+				.getAbsoluteFile(), new File(outputDbPath).getAbsoluteFile());
 	}
 
 	// If targetLocation does not exist, it will be created.

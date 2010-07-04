@@ -22,6 +22,7 @@ import simulator.gis.SimulatorGIS;
 public class GISGenerateWriteOpExperiment {
 
 	public static void main(String[] args) throws IOException {
+
 		// Params: InputDbPath OutputDbPath LogPath PercentChurn
 		// E.g. var/gis-didic2 result_dbs/gis-didic2_01
 		// logs-input/read_write_op_01 0.01
@@ -55,8 +56,9 @@ public class GISGenerateWriteOpExperiment {
 		double ratioShuffle = 0.20;
 
 		System.out.printf("Opening DB...");
+		int randomPlacementSeed = 1;
 		PGraphDatabaseService db = new PGraphDatabaseServiceSIM(inputDbPath, 0,
-				new RandomPlacement());
+				new RandomPlacement(randomPlacementSeed));
 		System.out.printf("Done\n");
 
 		System.out.printf("Counting nodes in DB...");
