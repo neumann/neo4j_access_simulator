@@ -53,6 +53,7 @@ public class WriteOps_onTree {
 			db = new PGraphDatabaseServiceSIM(
 					"var/fstree-didic4_700kNodes_1300Relas_randAdd", 0,
 					new RandomPlacement(seed[0]));
+			db.setDBChangeLog("var/fstree-didic4_700kNodes_1300Relas_randAdd/changelog"+i);
 			TreeOps_Factory fac = new TreeOps_Factory((int) Math
 					.round(nodesInGraph * changes[i] * readRatio), db, dis,
 					1000);
@@ -84,6 +85,7 @@ public class WriteOps_onTree {
 			db = new PGraphDatabaseServiceSIM(
 					"var/fstree-didic4_700kNodes_1300Relas_trffAdd", 0,
 					new LowTrafficPlacement());
+			db.setDBChangeLog("var/fstree-didic4_700kNodes_1300Relas_trffAdd/changelog"+i);
 			LogOperationFactoryTree fac = new LogOperationFactoryTree(
 					"var/ReadWrite_didic4_mix" + i);
 			sim = new SimulatorBasic(db,
@@ -110,6 +112,7 @@ public class WriteOps_onTree {
 			db = new PGraphDatabaseServiceSIM(
 					"var/fstree-didic4_700kNodes_1300Relas_minAdd", 0,
 					new LowNodecountPlacement());
+			db.setDBChangeLog("var/fstree-didic4_700kNodes_1300Relas_minAdd/changelog"+i);
 			LogOperationFactoryTree fac = new LogOperationFactoryTree(
 					"var/ReadWrite_didic4_mix" + i);
 			sim = new SimulatorBasic(db,
