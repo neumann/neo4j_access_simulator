@@ -13,10 +13,10 @@ public class TwitterLog_Factory extends LogOperationFactory {
 
 	@Override
 	public Operation createOperation(String[] args) {
-		if(args[1].equals(ReadOp_Search.class.getName())){
+		if (args[1].contains("twitter") && args[1].contains(".ReadOp_Search")) {
 			return new ReadOp_Search(args);
 		}
-		if(args[1].equals(Shuffle_WriteOp.class.getName())){
+		if (args[1].contains("twitter") && args[1].contains(".Shuffle_WriteOp")) {
 			return new Shuffle_WriteOp(args);
 		}
 		throw new Error("Unsupported Twitter Operation: " + args[1]);

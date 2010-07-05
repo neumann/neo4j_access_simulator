@@ -47,7 +47,7 @@ public class WriteOps_onTree {
 				9, 10, 11, 12, 13, 14, 15, 16 };
 		
 		File source = new File("var/fstree-didic4_700kNodes_1300Relas_randAdd");
-		TreeOpDistribution dis = new TreeOpDistribution(0.40, 0.40, 0, 0, 0.20);
+		TreeOpDistribution dis = new TreeOpDistribution(0.0, 0.80, 0, 0, 0.20);
 		for (int i = 0; i < changes.length; i++) {
 			db = new PGraphDatabaseServiceSIM(
 					"var/fstree-didic4_700kNodes_1300Relas_randAdd", 0, new RandomPlacement(seed[0]));
