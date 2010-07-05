@@ -5,9 +5,9 @@ import simulator.Operation;
 import simulator.twitter.operations.ReadOp_Search;
 import simulator.twitter.operations.Shuffle_WriteOp;
 
-public class TwitterLog_Factory extends LogOperationFactory {
+public class LogOperationFactoryTwitter extends LogOperationFactory {
 
-	public TwitterLog_Factory(String fn) {
+	public LogOperationFactoryTwitter(String fn) {
 		super(fn);
 	}
 

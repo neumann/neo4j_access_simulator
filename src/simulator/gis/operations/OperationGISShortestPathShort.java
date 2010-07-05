@@ -1,4 +1,4 @@
-package simulator.gis;
+package simulator.gis.operations;
 
 public class OperationGISShortestPathShort extends OperationGISShortestPath {
 

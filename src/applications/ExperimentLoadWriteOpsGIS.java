@@ -14,14 +14,14 @@ import p_graph_service.policy.RandomPlacement;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
 import simulator.OperationFactory;
 import simulator.Simulator;
+import simulator.SimulatorBasic;
 import simulator.gis.LogOperationFactoryGIS;
-import simulator.gis.OperationGISAddNode;
-import simulator.gis.OperationGISDeleteNode;
-import simulator.gis.OperationGISShortestPathLong;
-import simulator.gis.OperationGISShortestPathShort;
-import simulator.gis.SimulatorGIS;
+import simulator.gis.operations.OperationGISAddNode;
+import simulator.gis.operations.OperationGISDeleteNode;
+import simulator.gis.operations.OperationGISShortestPathLong;
+import simulator.gis.operations.OperationGISShortestPathShort;
 
-public class GISLoadWriteOpExperiments {
+public class ExperimentLoadWriteOpsGIS {
 
 	private enum InsertType {
 		RANDOM, TRAFFIC, SIZE
@@ -123,7 +123,7 @@ public class GISLoadWriteOpExperiments {
 		OperationFactory operationFactory = new LogOperationFactoryGIS(
 				inputLogPath, ignoreOps);
 
-		Simulator sim = new SimulatorGIS(db, outputLogPath, operationFactory);
+		Simulator sim = new SimulatorBasic(db, outputLogPath, operationFactory);
 
 		sim.startSIM();
 

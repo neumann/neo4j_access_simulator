@@ -2,16 +2,16 @@ package jobs;
 
 import p_graph_service.PGraphDatabaseService;
 import simulator.LogOperationFactory;
-import simulator.gis.LogOperationFactoryGIS;
+import simulator.tree.LogOperationFactoryTree;
 
-public class SimJobLoadOpsGIS extends SimJobLoadOps {
+public class SimJobLoadOpsTree extends SimJobLoadOps {
 
-	public SimJobLoadOpsGIS(String[] operationLogsIn,
+	public SimJobLoadOpsTree(String[] operationLogsIn,
 			String operationLogsOutDir, PGraphDatabaseService pdb) {
 		super(operationLogsIn, operationLogsOutDir, pdb);
 	}
 
-	public SimJobLoadOpsGIS(String[] operationLogsIn,
+	public SimJobLoadOpsTree(String[] operationLogsIn,
 			String operationLogsOutDir, PGraphDatabaseService pdb,
 			boolean repeat) {
 		super(operationLogsIn, operationLogsOutDir, pdb, repeat);
@@ -19,7 +19,7 @@ public class SimJobLoadOpsGIS extends SimJobLoadOps {
 
 	@Override
 	protected LogOperationFactory getLogOperationFactory(String operationLogIn) {
-		return new LogOperationFactoryGIS(operationLogIn);
+		return new LogOperationFactoryTree(operationLogIn);
 	}
 
 }

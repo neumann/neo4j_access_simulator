@@ -5,6 +5,12 @@ import java.util.HashSet;
 
 import simulator.LogOperationFactory;
 import simulator.Operation;
+import simulator.gis.operations.OperationGISAddNode;
+import simulator.gis.operations.OperationGISDeleteNode;
+import simulator.gis.operations.OperationGISDummy;
+import simulator.gis.operations.OperationGISShortestPathLong;
+import simulator.gis.operations.OperationGISShortestPathShort;
+import simulator.gis.operations.OperationGISShuffleNode;
 
 public class LogOperationFactoryGIS extends LogOperationFactory {
 	protected RandomAccessFile file = null;

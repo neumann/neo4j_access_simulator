@@ -8,7 +8,7 @@ import p_graph_service.sim.PGraphDatabaseServiceSIM;
 
 import simulator.gis.OperationFactoryGISConfig;
 
-public class GISGenerateOperations {
+public class GenerateOperationsGIS {
 
 	public static void main(String[] args) throws Exception {
 

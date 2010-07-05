@@ -4,7 +4,7 @@ import java.io.PrintStream;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
-public abstract class ThreadedSimulator extends Thread {
+public abstract class SimulatorThreadedBasic extends Thread {
 	private static final String logFileDelim = ";";
 	private PrintStream log = null;
 
@@ -37,7 +37,7 @@ public abstract class ThreadedSimulator extends Thread {
 		log.println();
 	}
 
-	public ThreadedSimulator(GraphDatabaseService db, String logFile) {
+	public SimulatorThreadedBasic(GraphDatabaseService db, String logFile) {
 		this.db = db;
 		try {
 			this.log = new PrintStream(logFile);

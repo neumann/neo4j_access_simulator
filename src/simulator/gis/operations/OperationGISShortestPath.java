@@ -1,4 +1,4 @@
-package simulator.gis;
+package simulator.gis.operations;
 
 import graph_gen_utils.general.Consts;
 

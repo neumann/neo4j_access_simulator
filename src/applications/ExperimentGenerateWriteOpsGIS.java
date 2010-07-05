@@ -15,11 +15,11 @@ import p_graph_service.policy.RandomPlacement;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
 import simulator.OperationFactory;
 import simulator.Simulator;
+import simulator.SimulatorBasic;
 import simulator.gis.OperationFactoryGIS;
 import simulator.gis.OperationFactoryGISConfig;
-import simulator.gis.SimulatorGIS;
 
-public class GISGenerateWriteOpExperiment {
+public class ExperimentGenerateWriteOpsGIS {
 
 	public static void main(String[] args) throws IOException {
 
@@ -88,7 +88,7 @@ public class GISGenerateWriteOpExperiment {
 		System.out.printf("\tDB Input Path = %s\n", inputDbPath);
 		System.out.printf("\tDB Output Path = %s\n", outputDbPath);
 
-		Simulator sim = new SimulatorGIS(db, logOutputPath, operationFactory);
+		Simulator sim = new SimulatorBasic(db, logOutputPath, operationFactory);
 
 		sim.startSIM();
 

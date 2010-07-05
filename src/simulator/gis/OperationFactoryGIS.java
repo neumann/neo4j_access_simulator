@@ -28,6 +28,12 @@ import simulator.OperationFactory;
 import simulator.Rnd;
 import simulator.Rnd.RndType;
 import simulator.gis.astar.GISRelationshipTypes;
+import simulator.gis.operations.OperationGIS;
+import simulator.gis.operations.OperationGISAddNode;
+import simulator.gis.operations.OperationGISDeleteNode;
+import simulator.gis.operations.OperationGISShortestPathLong;
+import simulator.gis.operations.OperationGISShortestPathShort;
+import simulator.gis.operations.OperationGISShuffleNode;
 
 public class OperationFactoryGIS implements OperationFactory {
 

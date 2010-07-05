@@ -5,7 +5,7 @@ import jobs.SimJobLoadOpsGIS;
 import p_graph_service.PGraphDatabaseService;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
 
-public class GISLoadOperations {
+public class LoadOperationsGIS {
 
 	public static void main(String[] args) throws Exception {
 
@@ -42,7 +42,7 @@ public class GISLoadOperations {
 
 		String[] operationLogsIn = new String[] { logInputPath };
 		SimJob job = new SimJobLoadOpsGIS(operationLogsIn, logOutputDirPath,
-				pdb);
+				pdb, false);
 		job.start();
 		pdb.shutdown();
 

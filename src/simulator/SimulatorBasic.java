@@ -1,4 +1,4 @@
-package simulator.gis;
+package simulator;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
@@ -7,18 +7,18 @@ import simulator.OperationFactory;
 import simulator.Rnd;
 import simulator.Simulator;
 
-public class SimulatorGIS extends Simulator {
+public class SimulatorBasic extends Simulator {
 	private OperationFactory operationFactory = null;
 	private byte[] seed = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
 			13, 14, 15, 16 };
 
-	public SimulatorGIS(GraphDatabaseService db, String logFile,
+	public SimulatorBasic(GraphDatabaseService db, String logFile,
 			OperationFactory operationFactory) {
 		super(db, logFile);
 		this.operationFactory = operationFactory;
 	}
 
-	public SimulatorGIS(GraphDatabaseService db, String logFile,
+	public SimulatorBasic(GraphDatabaseService db, String logFile,
 			OperationFactory operationFactory, byte[] seed) {
 		super(db, logFile);
 		this.operationFactory = operationFactory;
@@ -51,7 +51,7 @@ public class SimulatorGIS extends Simulator {
 		} else {
 			shutdown();
 		}
-
+		
 	}
 
 	private static String getTimeStr(long msTotal) {

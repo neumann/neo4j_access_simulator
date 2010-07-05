@@ -1,4 +1,4 @@
-package applications;
+package applications_old;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,16 +12,18 @@ import p_graph_service.policy.LowNodecountPlacement;
 import p_graph_service.policy.LowTrafficPlacement;
 import p_graph_service.policy.RandomPlacement;
 import p_graph_service.sim.PGraphDatabaseServiceSIM;
-import simulator.BasicSimulator;
 import simulator.Rnd;
 import simulator.Simulator;
-import simulator.tree.TreeLog_Factory;
+import simulator.SimulatorBasic;
+import simulator.tree.LogOperationFactoryTree;
 import simulator.tree.TreeOpDistribution;
 import simulator.tree.TreeOps_Factory;
 
 public class WriteOps_onTree {
 
-	/**t	
+	/**
+	 * t
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -43,51 +45,58 @@ public class WriteOps_onTree {
 		changes[3] = 0.05;
 		changes[4] = 0.15;
 
-		byte[] seed = { 1, 2, 3, 4, 5, 6, 7, 8,
-				9, 10, 11, 12, 13, 14, 15, 16 };
-		
+		byte[] seed = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+
 		File source = new File("var/fstree-didic4_700kNodes_1300Relas_randAdd");
 		TreeOpDistribution dis = new TreeOpDistribution(0.0, 0.80, 0, 0, 0.20);
 		for (int i = 0; i < changes.length; i++) {
 			db = new PGraphDatabaseServiceSIM(
-					"var/fstree-didic4_700kNodes_1300Relas_randAdd", 0, new RandomPlacement(seed[0]));
-			TreeOps_Factory fac = new TreeOps_Factory((int)Math.round(nodesInGraph*changes[i]*readRatio), db, dis, 1000);
-			sim = new BasicSimulator(db, "var/ReadWrite_didic4_mix"+i, fac);
+					"var/fstree-didic4_700kNodes_1300Relas_randAdd", 0,
+					new RandomPlacement(seed[0]));
+			TreeOps_Factory fac = new TreeOps_Factory((int) Math
+					.round(nodesInGraph * changes[i] * readRatio), db, dis,
+					1000);
+			sim = new SimulatorBasic(db, "var/ReadWrite_didic4_mix" + i, fac);
 			Rnd.setSeed(seed);
 			sim.startSIM();
-			
+
 			double perc = 0;
 			for (int j = 0; j <= i; j++) {
-				perc +=changes[j];
+				perc += changes[j];
 			}
-			File target = new File("results/fstree-didic4_700kNodes_1300Relas_randAdd"+perc);
+			File target = new File(
+					"results/fstree-didic4_700kNodes_1300Relas_randAdd" + perc);
 			try {
 				copyDirectory(source, target);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			// changing the seed
-			for(int run = 0; run<seed.length ; run++){
+			for (int run = 0; run < seed.length; run++) {
 				seed[run] += 3;
 			}
 		}
-//		
+		//		
 		source = new File("var/fstree-didic4_700kNodes_1300Relas_trffAdd");
 		for (int i = 0; i < changes.length; i++) {
 			db = new PGraphDatabaseServiceSIM(
 					"var/fstree-didic4_700kNodes_1300Relas_trffAdd", 0,
 					new LowTrafficPlacement());
-			TreeLog_Factory fac = new TreeLog_Factory("var/ReadWrite_didic4_mix"+i);
-			sim = new BasicSimulator(db, "var/fstree-didic4_700kNodes_1300Relas_trffAdd/ReadWrite_didic4_mix_trffAdd"+i,  fac);
+			LogOperationFactoryTree fac = new LogOperationFactoryTree(
+					"var/ReadWrite_didic4_mix" + i);
+			sim = new SimulatorBasic(db,
+					"var/fstree-didic4_700kNodes_1300Relas_trffAdd/ReadWrite_didic4_mix_trffAdd"
+							+ i, fac);
 			sim.startSIM();
-			
+
 			double perc = 0;
 			for (int j = 0; j <= i; j++) {
-				perc +=changes[j];
+				perc += changes[j];
 			}
-			File target = new File("results/fstree-didic4_700kNodes_1300Relas_trffAdd"+perc);
+			File target = new File(
+					"results/fstree-didic4_700kNodes_1300Relas_trffAdd" + perc);
 			try {
 				copyDirectory(source, target);
 			} catch (IOException e) {
@@ -95,21 +104,25 @@ public class WriteOps_onTree {
 				e.printStackTrace();
 			}
 		}
-		
+
 		source = new File("var/fstree-didic4_700kNodes_1300Relas_minAdd");
 		for (int i = 0; i < changes.length; i++) {
 			db = new PGraphDatabaseServiceSIM(
 					"var/fstree-didic4_700kNodes_1300Relas_minAdd", 0,
 					new LowNodecountPlacement());
-			TreeLog_Factory fac = new TreeLog_Factory("var/ReadWrite_didic4_mix"+i);
-			sim = new BasicSimulator(db, "var/fstree-didic4_700kNodes_1300Relas_minAdd/ReadWrite_didic4_mix_minAdd"+i, fac );
+			LogOperationFactoryTree fac = new LogOperationFactoryTree(
+					"var/ReadWrite_didic4_mix" + i);
+			sim = new SimulatorBasic(db,
+					"var/fstree-didic4_700kNodes_1300Relas_minAdd/ReadWrite_didic4_mix_minAdd"
+							+ i, fac);
 			sim.startSIM();
-			
+
 			double perc = 0;
 			for (int j = 0; j <= i; j++) {
-				perc +=changes[j];
+				perc += changes[j];
 			}
-			File target = new File("results/fstree-didic4_700kNodes_1300Relas_minAdd"+perc);
+			File target = new File(
+					"results/fstree-didic4_700kNodes_1300Relas_minAdd" + perc);
 			try {
 				copyDirectory(source, target);
 			} catch (IOException e) {
@@ -117,10 +130,9 @@ public class WriteOps_onTree {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
-	
 	// If targetLocation does not exist, it will be created.
 	public static void copyDirectory(File sourceLocation, File targetLocation)
 			throws IOException {

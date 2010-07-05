@@ -6,9 +6,9 @@ import java.util.Arrays;
 import p_graph_service.PGraphDatabaseService;
 import simulator.OperationFactory;
 import simulator.Simulator;
+import simulator.SimulatorBasic;
 import simulator.gis.OperationFactoryGIS;
 import simulator.gis.OperationFactoryGISConfig;
-import simulator.gis.SimulatorGIS;
 
 public class SimJobGenerateOpsGIS implements SimJob {
 
@@ -32,7 +32,7 @@ public class SimJobGenerateOpsGIS implements SimJob {
 
 		OperationFactory operationFactory = new OperationFactoryGIS(pdb, config);
 
-		Simulator sim = new SimulatorGIS(pdb, config.getOperationLogOut(),
+		Simulator sim = new SimulatorBasic(pdb, config.getOperationLogOut(),
 				operationFactory);
 		sim.startSIM();
 		sim.shutdown();
