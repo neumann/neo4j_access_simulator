@@ -75,8 +75,9 @@ public abstract class SimJobLoadOps implements SimJob {
 		String logInName = logInFile.substring(0, dotIndex);
 		String logInExt = logInFile.substring(dotIndex, logInFile.length());
 
-		return String.format("%s/%s_OUT%s", operationLogOutDir
-				.getAbsolutePath(), logInName, logInExt);
+		return String.format("%s/%s_OUT_%d%s", operationLogOutDir
+				.getAbsolutePath(), logInName, System.currentTimeMillis(),
+				logInExt);
 	}
 
 }
