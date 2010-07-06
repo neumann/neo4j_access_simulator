@@ -54,6 +54,7 @@ public class WriteOps_onTwitter {
 			db = new PGraphDatabaseServiceSIM(
 					"var/twitter-256th-V[611643]E[852461]-didic4s-randAdd", 0,
 					new RandomPlacement(seed[0]));
+			db.setDBChangeLog("var/twitter-256th-V[611643]E[852461]-didic4s-randAdd/changelog"+i);
 			TwitterOps_Factory fac = new TwitterOps_Factory((int) Math
 					.round(nodesInGraph * changes[i] * readRatio), db, dis);
 			sim = new SimulatorBasic(db, "var/ReadWrite_didic4_mix" + i, fac);
@@ -86,6 +87,7 @@ public class WriteOps_onTwitter {
 			db = new PGraphDatabaseServiceSIM(
 					"var/twitter-256th-V[611643]E[852461]-didic4s-trffAdd", 0,
 					new LowTrafficPlacement());
+			db.setDBChangeLog("var/twitter-256th-V[611643]E[852461]-didic4s-trffAdd/changelog"+i);
 			LogOperationFactoryTwitter fac = new LogOperationFactoryTwitter(
 					"var/ReadWrite_didic4_mix" + i);
 			sim = new SimulatorBasic(
@@ -114,6 +116,7 @@ public class WriteOps_onTwitter {
 			db = new PGraphDatabaseServiceSIM(
 					"var/twitter-256th-V[611643]E[852461]-didic4s-minAdd", 0,
 					new LowNodecountPlacement());
+			db.setDBChangeLog("var/twitter-256th-V[611643]E[852461]-didic4s-minAdd/changelog"+i);
 			LogOperationFactoryTwitter fac = new LogOperationFactoryTwitter(
 					"var/ReadWrite_didic4_mix" + i);
 			sim = new SimulatorBasic(
